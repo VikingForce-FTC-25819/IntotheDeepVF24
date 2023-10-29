@@ -43,6 +43,11 @@ public class coachFieldCentric extends LinearOpMode {
         double drivePower = 0.5; //global drive power level
         double driveYfc = 0;
         double strafeFC = 0;
+        boolean bPrevState = false;
+        boolean bCurrState = false;
+
+
+
 
         // Retrieve the IMU from the hardware map
         IMU imu = hardwareMap.get(IMU.class, "imu");
@@ -92,6 +97,20 @@ public class coachFieldCentric extends LinearOpMode {
                 if (gamepad1.options) {
                     imu.resetYaw();
                 }
+
+                if (gamepad1.right_bumper && (bCurrState != bPrevState)) {
+
+                    // button is transitioning to a pressed state. So increment drivePower by 0.1
+                    drivePower = drivePower + 0.1;
+                }
+
+                else if (gamepad1.left_bumper && (bCurrState != bPrevState)) {
+
+                    // button is transitioning to a pressed state. So increment drivePower by -0.1
+                    drivePower = drivePower - 0.1;
+
+                }
+
 
                 double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
