@@ -79,13 +79,17 @@ public class coachNewArm extends LinearOpMode {
         double LWPower = 0;
         double drivePower = 0.5; //global drive power level
         double armPower = 0;
-        double droneSet = 0.7;
-        double droneLaunch = 0.4;
+        double droneSet = 0.25;
+        double droneLaunch = 0;
+        double servpos = 0;
 
         // Define and Initialize Motors
         leftArm = hardwareMap.get(DcMotor.class, "armL");
         rightArm = hardwareMap.get(DcMotor.class, "armR");
+        drone = hardwareMap.get(Servo.class,"drone");
 
+        drone.scaleRange(0,0.4);
+        drone.setDirection(Servo.Direction.REVERSE);
         drone.setPosition(droneSet);
 
         // Send telemetry message to signify robot waiting;
@@ -99,16 +103,26 @@ public class coachNewArm extends LinearOpMode {
         while (opModeIsActive()) {
 
             while (opModeIsActive()) {
-                armPower = gamepad2.left_stick_y;
+                armPower = -gamepad2.left_stick_y; //reverse y position as -1 is up
 
                 leftArm.setPower(armPower);
-                rightArm.setPower(armPower);
+                rightArm.setPower(-armPower);
 
+                if (gamepad2.y)
+                    drone.setPosition(droneLaunch);
+                else if (gamepad2.x) {
+                    // move to 90 degrees.
+                    drone.setPosition(servpos + 0.1);
+                } else if (gamepad2.b) {
+                    // move to 180 degrees.
+                    drone.setPosition(servpos - 0.1);
+                }
 
+                servpos = drone.getPosition();
 
                 telemetry.addData(">", "Robot Running");
                 telemetry.addData("Arm Power", armPower);
-                telemetry.addData("Drone Servo"), 
+                telemetry.addData("Drone Servo", drone.getPosition());
                 telemetry.update();
 
             }

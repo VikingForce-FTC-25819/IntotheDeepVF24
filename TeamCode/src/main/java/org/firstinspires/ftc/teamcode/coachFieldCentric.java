@@ -98,19 +98,14 @@ public class coachFieldCentric extends LinearOpMode {
                     imu.resetYaw();
                 }
 
-                if (gamepad1.right_bumper && (bCurrState != bPrevState)) {
-
+                if (gamepad1.right_bumper) {
                     // button is transitioning to a pressed state. So increment drivePower by 0.1
-                    drivePower = drivePower + 0.1;
+                    drivePower = Math.min(drivePower + 0.05,0.9);
                 }
-
-                else if (gamepad1.left_bumper && (bCurrState != bPrevState)) {
-
+                else if (gamepad1.left_bumper) {
                     // button is transitioning to a pressed state. So increment drivePower by -0.1
-                    drivePower = drivePower - 0.1;
-
+                    drivePower = Math.max(drivePower - 0.05, 0.1);
                 }
-
 
                 double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
@@ -121,7 +116,7 @@ public class coachFieldCentric extends LinearOpMode {
                 strafe = strafe * 1.1;  // Counteract imperfect strafing
 
                 // Combine drive and turn for blended motion. Use RobotHardware class
-                robot.driveRobot(0.5, driveY, strafe, turn);
+                robot.driveRobot(drivePower, driveY, strafe, turn);
 
                 // Controlling the pixel pick-up with the dpad and buttons (individual)
                 if (gamepad2.dpad_left) {
@@ -144,6 +139,7 @@ public class coachFieldCentric extends LinearOpMode {
                 telemetry.addData("Y", driveY);
                 telemetry.addData("strafe", strafe);
                 telemetry.addData("turn", turn);
+                telemetry.addData("Drive Power", drivePower);
 
                 // Retrieve Rotational Angles and Velocities
                 YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();

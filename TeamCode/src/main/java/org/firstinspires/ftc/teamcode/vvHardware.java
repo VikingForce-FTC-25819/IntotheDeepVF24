@@ -97,8 +97,8 @@ public class vvHardware {
         rightFront = myOpMode.hardwareMap.get(DcMotor.class, "FRM");
         rightRear = myOpMode.hardwareMap.get(DcMotor.class, "RRM");
         leftRear = myOpMode.hardwareMap.get(DcMotor.class, "RLM");
-        leftArm = myOpMode.hardwareMap.get(DcMotor.class, "armL");
-        rightArm = myOpMode.hardwareMap.get(DcMotor.class, "armR");
+        //leftArm = myOpMode.hardwareMap.get(DcMotor.class, "armL");
+        //rightArm = myOpMode.hardwareMap.get(DcMotor.class, "armR");
 
         // Define Servos
         rightWheel = myOpMode.hardwareMap.crservo.get("RSW");
