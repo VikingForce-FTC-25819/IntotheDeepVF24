@@ -88,6 +88,9 @@ public class coachNewArm extends LinearOpMode {
         rightArm = hardwareMap.get(DcMotor.class, "armR");
         drone = hardwareMap.get(Servo.class,"drone");
 
+        leftArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         drone.scaleRange(0,0.4);
         drone.setDirection(Servo.Direction.REVERSE);
         drone.setPosition(droneSet);

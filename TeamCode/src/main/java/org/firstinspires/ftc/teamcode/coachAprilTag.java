@@ -16,7 +16,7 @@ import java.util.List;
 
 /*
  * Coach Price's experimentation
- * This OpMode illustrates the basics of AprilTag recognition and pose estimation,
+ * The basics of AprilTag recognition and pose estimation,
  * including Java Builder structures for specifying Vision parameters.
  *
  * For an introduction to AprilTags, see the FTC-DOCS link below:
@@ -29,11 +29,8 @@ import java.util.List;
  * When an AprilTag in the TagLibrary is detected, the SDK provides location and orientation of the tag, relative to the camera.
  * This information is provided in the "ftcPose" member of the returned "detection", and is explained in the ftc-docs page linked below.
  * https://ftc-docs.firstinspires.org/apriltag-detection-values
- *
- * There are many "default" VisionPortal and AprilTag configuration parameters that may be overridden if desired.
- * These default parameters are shown as comments in the code below.
  */
-@TeleOp(name = "Coach: AprilTag", group = "Concept")
+@TeleOp(name = "CoachAprilTag", group = "Concept")
 
 public class coachAprilTag extends LinearOpMode {
 
@@ -63,6 +60,7 @@ public class coachAprilTag extends LinearOpMode {
         if (opModeIsActive()) {
             while (opModeIsActive()) {
 
+                telemetry.addData("Instructions", "Gamepad 1 Dpad Up to stream");
                 telemetryAprilTag();
 
                 // Push telemetry to the Driver Station.

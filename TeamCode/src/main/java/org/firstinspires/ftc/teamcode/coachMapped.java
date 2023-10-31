@@ -50,17 +50,8 @@ public class coachMapped extends LinearOpMode {
         // initialize all the hardware, using the hardware class. See how clean and simple this is?
         robot.init();
 
-        // bPrevState and bCurrState represent the previous and current state of the button.
-        boolean bPrevState = false;
-        boolean bCurrState = false;
-
-        // bLedOn represents the state of the LED.
-        boolean bLedOn = true;
         // get a reference to our ColorSensor object.
         colorSensor = hardwareMap.get(ColorSensor.class, "CLR");
-
-        // Set the LED in the beginning
-        colorSensor.enableLed(bLedOn);
 
         distFront = hardwareMap.get(DistanceSensor.class, "FDS");
         distRear = hardwareMap.get(DistanceSensor.class, "RDS");
@@ -84,10 +75,19 @@ public class coachMapped extends LinearOpMode {
 
                 armPower = gamepad2.left_stick_y;
 
-                // Combine drive and turn for blended motion. Use RobotHardware class
-                robot.driveRobot(0.5, driveY, strafe, turn);
+                if (gamepad1.right_bumper) {
+                    // button is transitioning to a pressed state. So increment drivePower by 0.1
+                    drivePower = Math.min(drivePower + 0.05,0.9);
+                }
+                else if (gamepad1.left_bumper) {
+                    // button is transitioning to a pressed state. So increment drivePower by -0.1
+                    drivePower = Math.max(drivePower - 0.05, 0.1);
+                }
 
-                robot.moveArm(armPower);
+                // Combine drive and turn for blended motion. Use RobotHardware class
+                robot.driveRobot(drivePower, driveY, strafe, turn);
+
+                //robot.moveArm(armPower);
 
                 // Controlling the pixel pick-up with the dpad and buttons (individual)
                 if (gamepad2.dpad_left) {
@@ -107,10 +107,11 @@ public class coachMapped extends LinearOpMode {
 
 // Adding telemetry readouts
                 telemetry.addData(">", "Robot Running");
+                telemetry.addData("Drive Power", drivePower);
                 telemetry.addData("Y", driveY);
                 telemetry.addData("strafe", strafe);
                 telemetry.addData("turn", turn);
-// check the status of the x button on either gamepad.
+/* check the status of the x button on either gamepad.
                 bCurrState = gamepad1.x;
 
                 // check for button state transitions.
@@ -123,12 +124,11 @@ public class coachMapped extends LinearOpMode {
 
                 // update previous state variable.
                 bPrevState = bCurrState;
-
+*/
                 // convert the RGB values to HSV values.
                 Color.RGBToHSV(colorSensor.red() * 8, colorSensor.green() * 8, colorSensor.blue() * 8, hsvValues);
 
                 // send the info back to driver station using telemetry function.
-                telemetry.addData("LED", bLedOn ? "On" : "Off");
                 telemetry.addData("Clear", colorSensor.alpha());
                 telemetry.addData("Red  ", colorSensor.red());
                 telemetry.addData("Green", colorSensor.green());
