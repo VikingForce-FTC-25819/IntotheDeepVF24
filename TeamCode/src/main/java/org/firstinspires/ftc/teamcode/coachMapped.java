@@ -41,22 +41,25 @@ public class coachMapped extends LinearOpMode {
         double LWPower = 0;
         double drivePower = 0.5; //global drive power level
         double armPower = 0;
+        double droneSet = 0.25;
+        double droneLaunch = 0;
+        double servpos = 0;
 
         // hsvValues is an array that will hold the hue, saturation, and value information.
-        float hsvValues[] = {0F, 0F, 0F};
+        //float hsvValues[] = {0F, 0F, 0F};
         // values is a reference to the hsvValues array.
-        final float values[] = hsvValues;
+        //final float values[] = hsvValues;
 
         // initialize all the hardware, using the hardware class. See how clean and simple this is?
         robot.init();
 
         // get a reference to our ColorSensor object.
-        colorSensor = hardwareMap.get(ColorSensor.class, "CLR");
+        //colorSensor = hardwareMap.get(ColorSensor.class, "CLR");
 
-        distFront = hardwareMap.get(DistanceSensor.class, "FDS");
-        distRear = hardwareMap.get(DistanceSensor.class, "RDS");
+        //distFront = hardwareMap.get(DistanceSensor.class, "FDS");
+        //distRear = hardwareMap.get(DistanceSensor.class, "RDS");
 
-        Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor) distFront;
+        //Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor) distFront;
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData(">", "Robot Ready.  Press Play.");
@@ -70,7 +73,7 @@ public class coachMapped extends LinearOpMode {
 
             while (opModeIsActive()) {
                 driveY = -gamepad1.left_stick_y;
-                strafe = gamepad1.left_stick_x * 1.1;
+                strafe = gamepad1.left_stick_x * -1;
                 turn = gamepad1.right_stick_x;
 
                 armPower = gamepad2.left_stick_y;
@@ -87,23 +90,25 @@ public class coachMapped extends LinearOpMode {
                 // Combine drive and turn for blended motion. Use RobotHardware class
                 robot.driveRobot(drivePower, driveY, strafe, turn);
 
-                //robot.moveArm(armPower);
+                robot.moveArm(armPower);
+
+                servpos = robot.drone.getPosition();
 
                 // Controlling the pixel pick-up with the dpad and buttons (individual)
                 if (gamepad2.dpad_left) {
-                    LWPower = 0.2;
-                    RWPower = -0.2;
+                    robot.setPickupPower(0.2, -0.2);
                 } else if (gamepad2.dpad_right) {
-                    LWPower = -0.2;
-                    RWPower = 0.2;
+                    robot.setPickupPower(-0.2, 0.2);
                 } else if (gamepad2.y)
-                    LWPower = -0.2;
+                    robot.setPickupPower(-0.2, 0);
                 else if (gamepad2.x)
-                    LWPower = 0.2;
+                    robot.setPickupPower(0.2, 0);
                 else {
-                    LWPower = 0;
-                    RWPower = 0;
+                    robot.setPickupPower(0, 0);
                 }
+                //Drone launch
+                if (gamepad2.left_bumper)
+                    robot.setDronePosition(droneLaunch);
 
 // Adding telemetry readouts
                 telemetry.addData(">", "Robot Running");
@@ -111,6 +116,9 @@ public class coachMapped extends LinearOpMode {
                 telemetry.addData("Y", driveY);
                 telemetry.addData("strafe", strafe);
                 telemetry.addData("turn", turn);
+                telemetry.addData("Arm Power", armPower);
+                telemetry.addData("Arm Position", robot.rightArm.getCurrentPosition());
+                telemetry.addData("Drone", servpos);
 /* check the status of the x button on either gamepad.
                 bCurrState = gamepad1.x;
 
@@ -126,7 +134,7 @@ public class coachMapped extends LinearOpMode {
                 bPrevState = bCurrState;
 */
                 // convert the RGB values to HSV values.
-                Color.RGBToHSV(colorSensor.red() * 8, colorSensor.green() * 8, colorSensor.blue() * 8, hsvValues);
+                /*Color.RGBToHSV(colorSensor.red() * 8, colorSensor.green() * 8, colorSensor.blue() * 8, hsvValues);
 
                 // send the info back to driver station using telemetry function.
                 telemetry.addData("Clear", colorSensor.alpha());
@@ -146,7 +154,7 @@ public class coachMapped extends LinearOpMode {
                 // Rev2mDistanceSensor specific methods.
                 telemetry.addData("ID", String.format("%x", sensorTimeOfFlight.getModelID()));
                 telemetry.addData("did time out", Boolean.toString(sensorTimeOfFlight.didTimeoutOccur()));
-
+*/
                 telemetry.update();
 
                 // Use gamepad buttons to move arm up (Y) and down (A)
@@ -162,10 +170,9 @@ public class coachMapped extends LinearOpMode {
                 telemetry.addData("left", "%.2f", left);
                 telemetry.addData("right", "%.2f", right);
                 telemetry.update();
-
+*/
                 // Pace this loop so jaw action is reasonable speed.
                 sleep(50);
-                */
 
             }
         }

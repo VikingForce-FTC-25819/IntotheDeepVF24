@@ -78,6 +78,7 @@ public class vvHardware {
     public static final double HAND_SPEED      =  0.02 ;  // sets rate to move servo
     public static final double ARM_UP_POWER    =  0.45 ;
     public static final double ARM_DOWN_POWER  = -0.45 ;
+    public static final double droneSet = 0.25;
 
     // Define a constructor that allows the OpMode to pass a reference to itself.
     public vvHardware(LinearOpMode opmode) {
@@ -97,18 +98,23 @@ public class vvHardware {
         rightFront = myOpMode.hardwareMap.get(DcMotor.class, "FRM");
         rightRear = myOpMode.hardwareMap.get(DcMotor.class, "RRM");
         leftRear = myOpMode.hardwareMap.get(DcMotor.class, "RLM");
-        //leftArm = myOpMode.hardwareMap.get(DcMotor.class, "armL");
-        //rightArm = myOpMode.hardwareMap.get(DcMotor.class, "armR");
+        leftArm = myOpMode.hardwareMap.get(DcMotor.class, "armL");
+        rightArm = myOpMode.hardwareMap.get(DcMotor.class, "armR");
 
         // Define Servos
         rightWheel = myOpMode.hardwareMap.crservo.get("RSW");
         leftWheel = myOpMode.hardwareMap.crservo.get("LSW");
+        drone = myOpMode.hardwareMap.get(Servo.class,"drone");
+
+        drone.scaleRange(0,1);
+        drone.setDirection(Servo.Direction.REVERSE);
+        drone.setPosition(droneSet);
 
         //define and initialize sensors
-        colorSensor = myOpMode.hardwareMap.get(ColorSensor.class, "CLR");
+        //colorSensor = myOpMode.hardwareMap.get(ColorSensor.class, "CLR");
 
-        distFront = myOpMode.hardwareMap.get(DistanceSensor.class, "FDS");
-        distRear = myOpMode.hardwareMap.get(DistanceSensor.class, "RDS");
+        //distFront = myOpMode.hardwareMap.get(DistanceSensor.class, "FDS");
+        //distRear = myOpMode.hardwareMap.get(DistanceSensor.class, "RDS");
 
         //Set the motor directions
         leftFront.setDirection(DcMotor.Direction.REVERSE);
@@ -116,7 +122,15 @@ public class vvHardware {
         rightRear.setDirection(DcMotor.Direction.FORWARD);
         leftRear.setDirection(DcMotor.Direction.REVERSE);
 
+        rightArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        rightArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        rightArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         myOpMode.telemetry.addData(">", "Hardware Initialized");
+        myOpMode.telemetry.addData("Drone Servo", drone.getPosition());
         myOpMode.telemetry.update();
     }
     /**
@@ -147,7 +161,7 @@ public class vvHardware {
      */
     public void moveArm(double armPower) {
         leftArm.setPower(armPower);
-        rightArm.setPower(armPower);
+        rightArm.setPower(-armPower);
     }
 
     /**
@@ -169,4 +183,5 @@ public class vvHardware {
     public void setDronePosition(double droneSet) {
         drone.setPosition(droneSet);
     }
+
 }
