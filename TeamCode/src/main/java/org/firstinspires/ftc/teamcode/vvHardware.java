@@ -34,6 +34,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -121,12 +122,15 @@ public class vvHardware {
         rightFront.setDirection(DcMotor.Direction.FORWARD);
         rightRear.setDirection(DcMotor.Direction.FORWARD);
         leftRear.setDirection(DcMotor.Direction.REVERSE);
+        rightArm.setDirection(DcMotorSimple.Direction.FORWARD);
+        leftArm.setDirection(DcMotor.Direction.REVERSE);
 
         rightArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         rightArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
+        leftArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         myOpMode.telemetry.addData(">", "Hardware Initialized");
@@ -161,9 +165,23 @@ public class vvHardware {
      */
     public void moveArm(double armPower) {
         leftArm.setPower(armPower);
-        rightArm.setPower(-armPower);
+        rightArm.setPower(armPower);
     }
 
+    /**
+     * Pass the requested arm position and power to the arm drive motors
+     *
+     * @param armPower driving power (-1.0 to 1.0)
+     * @param armPosition full lift range is
+     */
+    public void armPos(int armPosition, double armPower) {
+        leftArm.setTargetPosition(armPosition);
+        rightArm.setTargetPosition(armPosition);
+        leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftArm.setPower(armPower);
+        rightArm.setPower(armPower);
+    }
     /**
      * Set the pickup servo powers
      *

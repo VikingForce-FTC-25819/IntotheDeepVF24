@@ -39,6 +39,8 @@ public class coachMapped extends LinearOpMode {
         double turn = 0;
         double RWPower = 0;
         double LWPower = 0;
+        double RWPowerPU = 0;
+        double LWPowerPU = 0;
         double drivePower = 0.5; //global drive power level
         double armPower = 0;
         double droneSet = 0.25;
@@ -75,8 +77,9 @@ public class coachMapped extends LinearOpMode {
                 driveY = -gamepad1.left_stick_y;
                 strafe = gamepad1.left_stick_x * -1;
                 turn = gamepad1.right_stick_x;
-
-                armPower = gamepad2.left_stick_y;
+                LWPowerPU = gamepad2.left_trigger;
+                RWPowerPU = gamepad2.right_trigger;
+                armPower = -gamepad2.left_stick_y;
 
                 if (gamepad1.right_bumper) {
                     // button is transitioning to a pressed state. So increment drivePower by 0.1
@@ -87,22 +90,30 @@ public class coachMapped extends LinearOpMode {
                     drivePower = Math.max(drivePower - 0.05, 0.1);
                 }
 
-                // Combine drive and turn for blended motion. Use RobotHardware class
+                // Methods called for motion
                 robot.driveRobot(drivePower, driveY, strafe, turn);
 
                 robot.moveArm(armPower);
 
                 servpos = robot.drone.getPosition();
 
+                //Controlling the arm to three specific positions - backdrop, drive, pickup
+                if (gamepad2.dpad_up)
+                    robot.armPos(160, 0.95); //Backdrop location
+                else if (gamepad2.dpad_down)
+                    robot.armPos(0,0.4); //Pickup location
+                else if (gamepad2.dpad_right)
+                    robot.armPos(25,0.9); //Drive location
+
                 // Controlling the pixel pick-up with the dpad and buttons (individual)
-                if (gamepad2.dpad_left) {
-                    robot.setPickupPower(0.2, -0.2);
-                } else if (gamepad2.dpad_right) {
-                    robot.setPickupPower(-0.2, 0.2);
+                if (gamepad2.left_trigger>0) {
+                    robot.setPickupPower(LWPowerPU, 0);
+                } else if (gamepad2.right_trigger>0) {
+                    robot.setPickupPower(0, -RWPowerPU);
                 } else if (gamepad2.y)
                     robot.setPickupPower(-0.2, 0);
                 else if (gamepad2.x)
-                    robot.setPickupPower(0.2, 0);
+                    robot.setPickupPower(0, 0.2);
                 else {
                     robot.setPickupPower(0, 0);
                 }
@@ -118,7 +129,9 @@ public class coachMapped extends LinearOpMode {
                 telemetry.addData("turn", turn);
                 telemetry.addData("Arm Power", armPower);
                 telemetry.addData("Arm Position", robot.rightArm.getCurrentPosition());
+                telemetry.addData("Arm Target", robot.rightArm.getTargetPosition());
                 telemetry.addData("Drone", servpos);
+
 /* check the status of the x button on either gamepad.
                 bCurrState = gamepad1.x;
 
