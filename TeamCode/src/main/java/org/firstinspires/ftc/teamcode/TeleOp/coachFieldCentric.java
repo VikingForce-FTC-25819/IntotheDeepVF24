@@ -1,5 +1,5 @@
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.TeleOp;
 
 import android.graphics.Color;
 
@@ -16,6 +16,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngularVelocity;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
+import org.firstinspires.ftc.teamcode.Core.vvHardware;
+
 /**
  * Mr. Price's field centric teleOp for test and explanation - this one uses a Hardware Class structure
  *
@@ -23,7 +25,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
  * Also need the telemetry to read all sensor values
  */
 
-@TeleOp(name="coachFC", group="TeleOp")
+@TeleOp(name="coachFC", group="2-TeleOp")
 
 public class coachFieldCentric extends LinearOpMode {
 

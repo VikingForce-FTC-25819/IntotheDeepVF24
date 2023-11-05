@@ -1,5 +1,5 @@
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.TeleOp;
 
 import android.graphics.Color;
 
@@ -14,6 +14,7 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.Core.vvHardware;
 
 /**
  * Mr. Price's teleOp for test and explanation - this one uses a Hardware Class structure
@@ -22,7 +23,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  * Also need the telemetry to read all sensor values
  */
 
-@TeleOp(name="coachMap", group="TeleOp")
+@TeleOp(name="coachMap", group="1-TeleOp")
 
 public class coachMapped extends LinearOpMode {
 
