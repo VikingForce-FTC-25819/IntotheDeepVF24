@@ -139,7 +139,7 @@ public class vvHardware {
     }
     /**
      * Calculates the left/right motor powers required to achieve the requested
-     * robot motions: Drive (Axial motion) and Turn (Yaw motion).
+     * robot motions: Drive (Axial-X motion), Strafe (Side-to-Side-Y motion) and Turn (Yaw-Z motion).
      * Then sends these power levels to the motors.
      * @param drivePower Global variable to set total drive power
      * @param driveY    Fwd/Rev driving power (-1.0 to 1.0) +ve is forward

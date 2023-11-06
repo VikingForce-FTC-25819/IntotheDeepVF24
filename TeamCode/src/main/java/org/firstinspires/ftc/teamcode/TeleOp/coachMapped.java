@@ -38,6 +38,8 @@ public class coachMapped extends LinearOpMode {
         double driveY = 0;
         double strafe = 0;
         double turn = 0;
+        int x = 0;
+        int y = 0;
         double RWPower = 0;
         double LWPower = 0;
         double RWPowerPU = 0;
@@ -64,6 +66,9 @@ public class coachMapped extends LinearOpMode {
 
         //Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor) distFront;
 
+        robot.rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
         // Send telemetry message to signify robot waiting;
         telemetry.addData(">", "Robot Ready.  Press Play.");
         telemetry.update();
@@ -76,11 +81,14 @@ public class coachMapped extends LinearOpMode {
 
             while (opModeIsActive()) {
                 driveY = -gamepad1.left_stick_y;
-                strafe = gamepad1.left_stick_x * -1;
+                strafe = gamepad1.left_stick_x * -1.1;
                 turn = gamepad1.right_stick_x;
                 LWPowerPU = gamepad2.left_trigger;
                 RWPowerPU = gamepad2.right_trigger;
                 armPower = -gamepad2.left_stick_y;
+
+                y = robot.rightFront.getCurrentPosition();
+                x = -robot.leftFront.getCurrentPosition(); //parallel, forward encoder distance is 0
 
                 if (gamepad1.right_bumper) {
                     // button is transitioning to a pressed state. So increment drivePower by 0.1
@@ -112,14 +120,14 @@ public class coachMapped extends LinearOpMode {
                 } else if (gamepad2.right_trigger>0) {
                     robot.setPickupPower(0, -RWPowerPU);
                 } else if (gamepad2.y)
-                    robot.setPickupPower(-0.2, 0);
-                else if (gamepad2.x)
                     robot.setPickupPower(0, 0.2);
+                else if (gamepad2.x)
+                    robot.setPickupPower(-0.2, 0);
                 else {
                     robot.setPickupPower(0, 0);
                 }
                 //Drone launch
-                if (gamepad2.left_bumper)
+                if (gamepad2.options)
                     robot.setDronePosition(droneLaunch);
 
 // Adding telemetry readouts
@@ -128,6 +136,8 @@ public class coachMapped extends LinearOpMode {
                 telemetry.addData("Y", driveY);
                 telemetry.addData("strafe", strafe);
                 telemetry.addData("turn", turn);
+                telemetry.addData("Y Encoder",y);
+                telemetry.addData("X Encoder",x);
                 telemetry.addData("Arm Power", armPower);
                 telemetry.addData("Arm Position", robot.rightArm.getCurrentPosition());
                 telemetry.addData("Arm Target", robot.rightArm.getTargetPosition());
