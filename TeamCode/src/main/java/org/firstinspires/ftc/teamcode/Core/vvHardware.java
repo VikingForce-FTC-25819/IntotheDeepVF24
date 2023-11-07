@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode.Core;
 
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -36,9 +37,8 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
-import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.Range;
 
 /*
  * This file defines a Java Class that performs all the setup and configuration for a sample robot's hardware (motors and sensors).
@@ -55,6 +55,7 @@ import com.qualcomm.robotcore.util.Range;
 @Disabled
 public class vvHardware {
 
+
     /* Declare OpMode members. */
     private LinearOpMode myOpMode = null;   // gain access to methods in the calling OpMode.
 
@@ -65,9 +66,11 @@ public class vvHardware {
     public DcMotor leftRear;
     public DcMotor leftArm;
     public DcMotor rightArm;
+    public DcMotor pickUp;
     public CRServo rightWheel;
     public CRServo leftWheel;
     public Servo drone;
+    public IMU imu;
 
     public ColorSensor colorSensor;
     public DistanceSensor distFront;
@@ -101,6 +104,7 @@ public class vvHardware {
         leftRear = myOpMode.hardwareMap.get(DcMotor.class, "RLM");
         leftArm = myOpMode.hardwareMap.get(DcMotor.class, "armL");
         rightArm = myOpMode.hardwareMap.get(DcMotor.class, "armR");
+        pickUp = myOpMode.hardwareMap.get(DcMotor.class, "pickUp");
 
         // Define Servos
         rightWheel = myOpMode.hardwareMap.crservo.get("RSW");
@@ -113,6 +117,19 @@ public class vvHardware {
 
         //define and initialize sensors
         //colorSensor = myOpMode.hardwareMap.get(ColorSensor.class, "CLR");
+
+        // Retrieve the IMU from the hardware map
+        imu = myOpMode.hardwareMap.get(IMU.class, "imu");
+        // Adjust the orientation parameters to match your robot
+        RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.LEFT;
+        RevHubOrientationOnRobot.UsbFacingDirection  usbDirection  = RevHubOrientationOnRobot.UsbFacingDirection.UP;
+        // Without this, the REV Hub's orientation is assumed to be logo up / USB forward
+        RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(logoDirection, usbDirection);
+
+        // Now initialize the IMU with this mounting orientation
+        imu.initialize(new IMU.Parameters(orientationOnRobot));
+
+        imu.resetYaw(); //reset the imu during initialization
 
         //distFront = myOpMode.hardwareMap.get(DistanceSensor.class, "FDS");
         //distRear = myOpMode.hardwareMap.get(DistanceSensor.class, "RDS");
@@ -127,11 +144,18 @@ public class vvHardware {
 
         rightArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        pickUp.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        pickUp.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         leftArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        pickUp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         myOpMode.telemetry.addData(">", "Hardware Initialized");
         myOpMode.telemetry.addData("Drone Servo", drone.getPosition());
@@ -147,16 +171,38 @@ public class vvHardware {
      * @param turn      Right/Left turning power (-1.0 to 1.0) +ve is CW
      */
     public void driveRobot(double drivePower, double driveY, double strafe, double turn) {
+        double strafeBias = 0.9; // given weight distribution need to bias the back wheel power
+        double denominator = Math.max(Math.abs(driveY) + Math.abs(strafe*strafeBias) + Math.abs(turn), 1);
+        double frontLeftPower = (driveY + strafe + turn) / denominator;
+        double backLeftPower = (driveY - (strafe*strafeBias) + turn) / denominator;
+        double frontRightPower = (driveY - strafe - turn) / denominator;
+        double backRightPower = (driveY + (strafe*strafeBias) - turn) / denominator;
+
+        leftFront.setPower(drivePower * frontLeftPower);
+        leftRear.setPower(drivePower * backLeftPower);
+        rightFront.setPower(drivePower * frontRightPower);
+        rightRear.setPower(drivePower * backRightPower);
+    }
+    /**
+     * Sets the target for the chassis to achieve the desired position and heading
+     * robot motions: Drive (Axial-X motion), Strafe (Side-to-Side-Y motion) and Turn (Yaw-Z motion).
+     * Then sends these power levels to the motors.
+     * @param autonPower Global variable to set total drive power
+     * @param driveY    Fwd/Rev driving power (-1.0 to 1.0) +ve is forward
+     * @param strafe    Side to side driving power (-1.0 to 1.0) +ve is left
+     * @param turn      Right/Left turning power (-1.0 to 1.0) +ve is CW
+     */
+    public void driveAuton(double autonPower, double driveY, double strafe, double turn) {
         double denominator = Math.max(Math.abs(driveY) + Math.abs(strafe) + Math.abs(turn), 1);
         double frontLeftPower = (driveY + strafe + turn) / denominator;
         double backLeftPower = (driveY - strafe + turn) / denominator;
         double frontRightPower = (driveY - strafe - turn) / denominator;
         double backRightPower = (driveY + strafe - turn) / denominator;
 
-        leftFront.setPower(drivePower * frontLeftPower);
-        leftRear.setPower(drivePower * backLeftPower);
-        rightFront.setPower(drivePower * frontRightPower);
-        rightRear.setPower(drivePower * backRightPower);
+        leftFront.setPower(autonPower * frontLeftPower);
+        leftRear.setPower(autonPower * backLeftPower);
+        rightFront.setPower(autonPower * frontRightPower);
+        rightRear.setPower(autonPower * backRightPower);
     }
     /**
      * Pass the requested arm power to the appropriate hardware drive motor
@@ -171,17 +217,23 @@ public class vvHardware {
     /**
      * Pass the requested arm position and power to the arm drive motors
      *
-     * @param armPower driving power (-1.0 to 1.0)
+     * @param armEPower driving power (-1.0 to 1.0)
      * @param armPosition full lift range is
      */
-    public void armPos(int armPosition, double armPower) {
+    public void armPos(int armPosition, double armEPower) {
         leftArm.setTargetPosition(armPosition);
         rightArm.setTargetPosition(armPosition);
         leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftArm.setPower(armPower);
-        rightArm.setPower(armPower);
+        leftArm.setPower(armEPower);
+        rightArm.setPower(armEPower);
     }
+    public void movePickUp(int pickUpLoc, double pickUpPwr) {
+        pickUp.setTargetPosition(pickUpLoc);
+        pickUp.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        pickUp.setPower(pickUpPwr);
+    }
+
     /**
      * Set the pickup servo powers
      *

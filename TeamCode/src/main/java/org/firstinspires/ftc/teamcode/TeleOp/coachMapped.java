@@ -12,8 +12,11 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
-
+import com.qualcomm.robotcore.util.ElapsedTime;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AngularVelocity;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.Core.vvHardware;
 
 /**
@@ -30,6 +33,14 @@ public class coachMapped extends LinearOpMode {
     //vvHardware class external pull
     vvHardware   robot       = new vvHardware(this);
 
+    // An Enum is used to represent pickup state
+    // (This is one thing enums are designed to do)
+    public enum PickupState {
+        PickupStart,
+        PickupDrive,
+        PickupPlaceLow,
+        PickupPlaceHigh
+    };
     public ColorSensor colorSensor;
     public DistanceSensor distFront;
     public DistanceSensor distRear;
@@ -46,17 +57,36 @@ public class coachMapped extends LinearOpMode {
         double LWPowerPU = 0;
         double drivePower = 0.5; //global drive power level
         double armPower = 0;
+        double armEPower = 0;
+        double pickUpPwr = 0;
         double droneSet = 0.25;
         double droneLaunch = 0;
         double servpos = 0;
 
-        // hsvValues is an array that will hold the hue, saturation, and value information.
-        //float hsvValues[] = {0F, 0F, 0F};
-        // values is a reference to the hsvValues array.
-        //final float values[] = hsvValues;
+        // The pickupState variable is declared out here
+        // so its value persists between loop() calls
+        PickupState pickupState = PickupState.PickupStart;
+
+        // used with the dump servo, this will get covered in a bit
+        ElapsedTime pickupTimer = new ElapsedTime();
+
+        final int pickupIdle; // the idle position for the pickup motor
+        final int pickupHigh; // the placing position for the pickup motor in the high position
+        final int pickupLow; // the placing position for the pickup motor in the low/forward position
+
+        // the amount of time the pickup takes to activate in seconds
+        final double pickupTime;
+        // the amount of time the arm takes to raise in seconds
+        final double armTime;
+
+        final int armLow; // the low encoder position for the arm
+        final int armHigh; // the high-overhead encoder position for the arm
+
 
         // initialize all the hardware, using the hardware class. See how clean and simple this is?
         robot.init();
+
+            pickupTimer.reset();
 
         // get a reference to our ColorSensor object.
         //colorSensor = hardwareMap.get(ColorSensor.class, "CLR");
@@ -65,9 +95,6 @@ public class coachMapped extends LinearOpMode {
         //distRear = hardwareMap.get(DistanceSensor.class, "RDS");
 
         //Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor) distFront;
-
-        robot.rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData(">", "Robot Ready.  Press Play.");
@@ -86,6 +113,7 @@ public class coachMapped extends LinearOpMode {
                 LWPowerPU = gamepad2.left_trigger;
                 RWPowerPU = gamepad2.right_trigger;
                 armPower = -gamepad2.left_stick_y;
+                //pickUpPwr = -gamepad2.right_stick_y * 0.5;
 
                 y = robot.rightFront.getCurrentPosition();
                 x = -robot.leftFront.getCurrentPosition(); //parallel, forward encoder distance is 0
@@ -106,13 +134,21 @@ public class coachMapped extends LinearOpMode {
 
                 servpos = robot.drone.getPosition();
 
+                //Controlling the pickup location
+                if (gamepad2.left_bumper)
+                    robot.movePickUp(45, 0.7);
+                else if (gamepad2.right_bumper)
+                    robot.movePickUp(-90,0.4);
+                else
+                    robot.movePickUp(0,0.2);
+
                 //Controlling the arm to three specific positions - backdrop, drive, pickup
                 if (gamepad2.dpad_up)
                     robot.armPos(160, 0.95); //Backdrop location
                 else if (gamepad2.dpad_down)
-                    robot.armPos(0,0.4); //Pickup location
+                    robot.armPos(0,0.2); //Pickup location
                 else if (gamepad2.dpad_right)
-                    robot.armPos(25,0.9); //Drive location
+                    robot.armPos(45,0.9); //Drive location
 
                 // Controlling the pixel pick-up with the dpad and buttons (individual)
                 if (gamepad2.left_trigger>0) {
@@ -126,9 +162,70 @@ public class coachMapped extends LinearOpMode {
                 else {
                     robot.setPickupPower(0, 0);
                 }
+/*
+                switch (pickupState) {
+                    case PickupStart:
+                        // Waiting for some input
+                        if (gamepad1.x) {
+                            // x is pressed, start extending
+                            liftMotor.setTargetPosition(LIFT_HIGH);
+                            liftState = LiftState.LIFT_EXTEND;
+                        }
+                        break;
+                    case LIFT_EXTEND:
+                        // check if the lift has finished extending,
+                        // otherwise do nothing.
+                        if (Math.abs(liftMotor.getCurrentPosition() - LIFT_HIGH) < 10) {
+                            // our threshold is within
+                            // 10 encoder ticks of our target.
+                            // this is pretty arbitrary, and would have to be
+                            // tweaked for each robot.
+
+                            // set the lift dump to dump
+                            liftDump.setTargetPosition(DUMP_DEPOSIT);
+
+                            liftTimer.reset();
+                            liftState = LiftState.LIFT_DUMP;
+                        }
+                        break;
+                    case LIFT_DUMP:
+                        if (liftTimer.seconds() >= DUMP_TIME) {
+                            // The robot waited long enough, time to start
+                            // retracting the lift
+                            liftDump.setTargetPosition(DUMP_IDLE);
+                            liftMotor.setTargetPosition(LIFT_LOW);
+                            liftState = LiftState.LIFT_RETRACT;
+                        }
+                        break;
+                    case LIFT_RETRACT:
+                        if (Math.abs(liftMotor.getCurrentPosition() - LIFT_LOW) < 10) {
+                            liftState = LiftState.LIFT_START;
+                        }
+                        break;
+                    default:
+                        // should never be reached, as liftState should never be null
+                        liftState = LiftState.LIFT_START;
+                }
+
+                // small optimization, instead of repeating ourselves in each
+                // lift state case besides LIFT_START for the cancel action,
+                // it's just handled here
+                if (gamepad1.y && liftState != LiftState.LIFT_START) {
+                    liftState = LiftState.LIFT_START;
+                }
+
+                // mecanum drive code goes here
+                // But since none of the stuff in the switch case stops
+                // the robot, this will always run!
+                updateDrive(gamepad1, gamepad2);
+*/
                 //Drone launch
                 if (gamepad2.options)
                     robot.setDronePosition(droneLaunch);
+
+                // Retrieve Rotational Angles and Velocities
+                YawPitchRollAngles orientation = robot.imu.getRobotYawPitchRollAngles();
+                AngularVelocity angularVelocity = robot.imu.getRobotAngularVelocity(AngleUnit.DEGREES);
 
 // Adding telemetry readouts
                 telemetry.addData(">", "Robot Running");
@@ -138,63 +235,14 @@ public class coachMapped extends LinearOpMode {
                 telemetry.addData("turn", turn);
                 telemetry.addData("Y Encoder",y);
                 telemetry.addData("X Encoder",x);
+                telemetry.addData("PickUp Position", robot.pickUp.getCurrentPosition());
                 telemetry.addData("Arm Power", armPower);
                 telemetry.addData("Arm Position", robot.rightArm.getCurrentPosition());
                 telemetry.addData("Arm Target", robot.rightArm.getTargetPosition());
                 telemetry.addData("Drone", servpos);
 
-/* check the status of the x button on either gamepad.
-                bCurrState = gamepad1.x;
-
-                // check for button state transitions.
-                if (bCurrState && (bCurrState != bPrevState)) {
-
-                    // button is transitioning to a pressed state. So Toggle LED
-                    bLedOn = !bLedOn;
-                    colorSensor.enableLed(bLedOn);
-                }
-
-                // update previous state variable.
-                bPrevState = bCurrState;
-*/
-                // convert the RGB values to HSV values.
-                /*Color.RGBToHSV(colorSensor.red() * 8, colorSensor.green() * 8, colorSensor.blue() * 8, hsvValues);
-
-                // send the info back to driver station using telemetry function.
-                telemetry.addData("Clear", colorSensor.alpha());
-                telemetry.addData("Red  ", colorSensor.red());
-                telemetry.addData("Green", colorSensor.green());
-                telemetry.addData("Blue ", colorSensor.blue());
-                telemetry.addData("Hue", hsvValues[0]);
-
-                telemetry.addData("FDS", distFront.getDeviceName());
-                telemetry.addData("range", String.format("%.01f cm", distFront.getDistance(DistanceUnit.CM)));
-                telemetry.addData("range", String.format("%.01f in", distFront.getDistance(DistanceUnit.INCH)));
-
-                telemetry.addData("RDS", distRear.getDeviceName());
-                telemetry.addData("range", String.format("%.01f cm", distRear.getDistance(DistanceUnit.CM)));
-                telemetry.addData("range", String.format("%.01f in", distRear.getDistance(DistanceUnit.INCH)));
-
-                // Rev2mDistanceSensor specific methods.
-                telemetry.addData("ID", String.format("%x", sensorTimeOfFlight.getModelID()));
-                telemetry.addData("did time out", Boolean.toString(sensorTimeOfFlight.didTimeoutOccur()));
-*/
                 telemetry.update();
 
-                // Use gamepad buttons to move arm up (Y) and down (A)
-            /*if (gamepad1.y)
-                leftArm.setPower(ARM_UP_POWER);
-            else if (gamepad1.a)
-                leftArm.setPower(ARM_DOWN_POWER);
-            else
-                leftArm.setPower(0.0);
-            */
-                // Send telemetry message to signify robot running;
-               /* telemetry.addData("claw", "Offset = %.2f", clawOffset);
-                telemetry.addData("left", "%.2f", left);
-                telemetry.addData("right", "%.2f", right);
-                telemetry.update();
-*/
                 // Pace this loop so jaw action is reasonable speed.
                 sleep(50);
 
