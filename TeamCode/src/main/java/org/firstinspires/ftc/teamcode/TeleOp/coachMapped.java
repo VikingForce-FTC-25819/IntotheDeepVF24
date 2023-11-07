@@ -108,7 +108,7 @@ public class coachMapped extends LinearOpMode {
 
             while (opModeIsActive()) {
                 driveY = -gamepad1.left_stick_y;
-                strafe = gamepad1.left_stick_x * -1.1;
+                strafe = gamepad1.left_stick_x * 1.1;
                 turn = gamepad1.right_stick_x;
                 LWPowerPU = gamepad2.left_trigger;
                 RWPowerPU = gamepad2.right_trigger;
