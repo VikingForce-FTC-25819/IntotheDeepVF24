@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -18,6 +19,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngularVelocity;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.Core.vvHardware;
+import org.firstinspires.ftc.teamcode.util.Encoder;
 
 /**
  * Mr. Price's teleOp for test and explanation - this one uses a Hardware Class structure
@@ -44,6 +46,7 @@ public class coachMapped extends LinearOpMode {
     public ColorSensor colorSensor;
     public DistanceSensor distFront;
     public DistanceSensor distRear;
+
 @Override
     public void runOpMode() throws InterruptedException {
         double driveY = 0;
@@ -108,15 +111,15 @@ public class coachMapped extends LinearOpMode {
 
             while (opModeIsActive()) {
                 driveY = -gamepad1.left_stick_y;
-                strafe = gamepad1.left_stick_x * 1.1;
+                strafe = gamepad1.left_stick_x * 1;
                 turn = gamepad1.right_stick_x;
-                LWPowerPU = gamepad2.left_trigger;
+                LWPowerPU = -gamepad2.left_trigger;
                 RWPowerPU = gamepad2.right_trigger;
                 armPower = -gamepad2.left_stick_y;
                 //pickUpPwr = -gamepad2.right_stick_y * 0.5;
 
-                y = robot.rightFront.getCurrentPosition();
-                x = -robot.leftFront.getCurrentPosition(); //parallel, forward encoder distance is 0
+                y = robot.parallelEncoder.getCurrentPosition();
+                x = robot.perpendicularEncoder.getCurrentPosition(); //parallel, forward encoder distance is 0
 
                 if (gamepad1.right_bumper) {
                     // button is transitioning to a pressed state. So increment drivePower by 0.1
@@ -139,9 +142,11 @@ public class coachMapped extends LinearOpMode {
                     robot.movePickUp(45, 0.7);
                 else if (gamepad2.right_bumper)
                     robot.movePickUp(-90,0.4);
+               // else if (gamepad1.right_stick_button)
+                   // robot.movePickUp(0,0.5);
                 else
-                    robot.movePickUp(0,0.2);
-
+                    robot.movePickUp(0,0.5);
+/*
                 //Controlling the arm to three specific positions - backdrop, drive, pickup
                 if (gamepad2.dpad_up)
                     robot.armPos(160, 0.95); //Backdrop location
@@ -149,16 +154,16 @@ public class coachMapped extends LinearOpMode {
                     robot.armPos(0,0.2); //Pickup location
                 else if (gamepad2.dpad_right)
                     robot.armPos(45,0.9); //Drive location
-
+*/
                 // Controlling the pixel pick-up with the dpad and buttons (individual)
                 if (gamepad2.left_trigger>0) {
                     robot.setPickupPower(LWPowerPU, 0);
                 } else if (gamepad2.right_trigger>0) {
-                    robot.setPickupPower(0, -RWPowerPU);
+                    robot.setPickupPower(0, RWPowerPU);
                 } else if (gamepad2.y)
-                    robot.setPickupPower(0, 0.2);
+                    robot.setPickupPower(0, -0.2);
                 else if (gamepad2.x)
-                    robot.setPickupPower(-0.2, 0);
+                    robot.setPickupPower(0.2, 0);
                 else {
                     robot.setPickupPower(0, 0);
                 }

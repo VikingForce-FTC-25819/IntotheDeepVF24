@@ -70,8 +70,10 @@ public class vvHardware {
     public CRServo rightWheel;
     public CRServo leftWheel;
     public Servo drone;
-    public IMU imu;
 
+    public IMU imu;
+    public DcMotor parallelEncoder;
+    public DcMotor perpendicularEncoder;
     public ColorSensor colorSensor;
     public DistanceSensor distFront;
     public DistanceSensor distRear;
@@ -105,6 +107,10 @@ public class vvHardware {
         leftArm = myOpMode.hardwareMap.get(DcMotor.class, "armL");
         rightArm = myOpMode.hardwareMap.get(DcMotor.class, "armR");
         pickUp = myOpMode.hardwareMap.get(DcMotor.class, "pickUp");
+
+        //Shadow the motors with encoder-odometry
+        parallelEncoder = rightFront;
+        perpendicularEncoder = leftFront;
 
         // Define Servos
         rightWheel = myOpMode.hardwareMap.crservo.get("RSW");
