@@ -1,25 +1,16 @@
 
 package org.firstinspires.ftc.teamcode.TeleOp;
 
-import android.graphics.Color;
-
-import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AngularVelocity;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.Core.vvHardware;
-import org.firstinspires.ftc.teamcode.util.Encoder;
 
 /**
  * Mr. Price's teleOp for test and explanation - this one uses a Hardware Class structure
@@ -28,9 +19,9 @@ import org.firstinspires.ftc.teamcode.util.Encoder;
  * Also need the telemetry to read all sensor values
  */
 
-@TeleOp(name="coachMap", group="1-TeleOp")
+@TeleOp(name="1TeleOp", group="1-TeleOp")
 
-public class coachMapped extends LinearOpMode {
+public class teleOp extends LinearOpMode {
 
     //vvHardware class external pull
     vvHardware   robot       = new vvHardware(this);
@@ -61,6 +52,7 @@ public class coachMapped extends LinearOpMode {
         double drivePower = 0.5; //global drive power level
         double armPower = 0;
         double liftPower = 0;
+        int liftLoc = 0;
         double armEPower = 0;
         double pickUpPwr = 0;
         double droneSet = 0.25;
@@ -117,8 +109,8 @@ public class coachMapped extends LinearOpMode {
                 LWPowerPU = -gamepad2.left_trigger;
                 RWPowerPU = gamepad2.right_trigger;
                 armPower = -gamepad2.left_stick_y;
-                //pickUpPwr = -gamepad2.right_stick_y * 0.5;
-                liftPower = -gamepad1.right_stick_y;
+                pickUpPwr = -gamepad2.right_stick_y * 0.5;
+                //liftPower = -gamepad1.right_stick_y;
 
                 y = robot.parallelEncoder.getCurrentPosition();
                 x = robot.perpendicularEncoder.getCurrentPosition(); //parallel, forward encoder distance is 0
@@ -137,10 +129,15 @@ public class coachMapped extends LinearOpMode {
 
                 robot.moveArm(armPower);
 
-                robot.moveLift(liftPower);
+                robot.pwrPickUp(pickUpPwr);
+
+                if (gamepad1.dpad_up)
+                    robot.moveLiftEnc(1250);
+                else if (gamepad1.dpad_down)
+                    robot.moveLiftEnc(0);
 
                 servpos = robot.drone.getPosition();
-
+/*
                 //Controlling the pickup location
                 if (gamepad2.left_bumper)
                     robot.movePickUp(45, 0.7);

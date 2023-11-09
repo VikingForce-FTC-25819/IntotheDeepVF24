@@ -35,6 +35,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -67,6 +68,7 @@ public class vvHardware {
     public DcMotor leftArm;
     public DcMotor rightArm;
     public DcMotor pickUp;
+    public DcMotor lift;
     public CRServo rightWheel;
     public CRServo leftWheel;
     public Servo drone;
@@ -107,6 +109,7 @@ public class vvHardware {
         leftArm = myOpMode.hardwareMap.get(DcMotor.class, "armL");
         rightArm = myOpMode.hardwareMap.get(DcMotor.class, "armR");
         pickUp = myOpMode.hardwareMap.get(DcMotor.class, "pickUp");
+        lift = myOpMode.hardwareMap.get(DcMotorEx.class, "lift");
 
         //Shadow the motors with encoder-odometry
         parallelEncoder = rightFront;
@@ -147,21 +150,26 @@ public class vvHardware {
         leftRear.setDirection(DcMotor.Direction.REVERSE);
         rightArm.setDirection(DcMotorSimple.Direction.FORWARD);
         leftArm.setDirection(DcMotor.Direction.REVERSE);
+        lift.setDirection(DcMotor.Direction.REVERSE);
 
         rightArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         pickUp.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         pickUp.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
         rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         leftArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         pickUp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         myOpMode.telemetry.addData(">", "Hardware Initialized");
         myOpMode.telemetry.addData("Drone Servo", drone.getPosition());
@@ -239,7 +247,9 @@ public class vvHardware {
         pickUp.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         pickUp.setPower(pickUpPwr);
     }
-
+    public void pwrPickUp(double pickUpPwr) {
+        pickUp.setPower(pickUpPwr);
+    }
     /**
      * Set the pickup servo powers
      *
@@ -260,4 +270,21 @@ public class vvHardware {
         drone.setPosition(droneSet);
     }
 
+    /**
+     * Pass the requested lift power to the appropriate hardware drive motor
+     *
+     * @param liftPower driving power (-1.0 to 1.0)
+     */
+    public void moveLift(double liftPower) {
+        lift.setPower(liftPower); }
+    /**
+     * Pass the requested lift position to the appropriate hardware drive motor
+     * 1250 ticks will clear the bar
+     * @param liftLoc driving power (-1.0 to 1.0)
+     */
+    public void moveLiftEnc(int liftLoc) {
+        lift.setTargetPosition(liftLoc);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        lift.setPower(0.95);
+    }
 }
