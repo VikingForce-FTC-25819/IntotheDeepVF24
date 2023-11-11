@@ -109,7 +109,7 @@ public class teleOp extends LinearOpMode {
                 LWPowerPU = -gamepad2.left_trigger;
                 RWPowerPU = gamepad2.right_trigger;
                 armPower = -gamepad2.left_stick_y;
-                pickUpPwr = -gamepad2.right_stick_y * 0.5;
+                pickUpPwr = -gamepad2.right_stick_y * 0.75;
                 //liftPower = -gamepad1.right_stick_y;
 
                 y = robot.parallelEncoder.getCurrentPosition();

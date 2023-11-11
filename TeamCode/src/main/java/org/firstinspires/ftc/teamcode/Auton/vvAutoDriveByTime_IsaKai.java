@@ -35,6 +35,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.Core.vvHardware;
+
 /*
  * This OpMode illustrates the concept of driving a path based on time.
  *
@@ -47,65 +49,57 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  *
  */
 
-@Autonomous(name="Robot: Auto Drive By Time", group="Auton")
-
+@Autonomous(name="Auto Drive By Time", group="Auton")
+@Disabled
 public class vvAutoDriveByTime_IsaKai extends LinearOpMode {
 
     /* Declare OpMode members. */
-    private DcMotor         leftUp   = null;
-    private DcMotor         rightUp= null;
-    private DcMotor         leftDown = null;
-    private DcMotor         rightDown = null;
-    
-    private ElapsedTime     runtime = new ElapsedTime();
+    vvHardware robot = new vvHardware(this);
+
+    private ElapsedTime runtime = new ElapsedTime();
 
 
-    static final double     FORWARD_SPEED = 0.3;
-    static final double     TURN_SPEED    = 0.5; 
+    static final double FORWARD_SPEED = 0.3;
+    static final double TURN_SPEED = 0.5;
 
     @Override
     public void runOpMode() {
 
         // Initialize the drive system variables.
 
-        leftUp  = hardwareMap.get(DcMotor.class, "FLM");
-        rightUp = hardwareMap.get(DcMotor.class, "FRM");
-        leftDown = hardwareMap.get(DcMotor.class,"RLM");
-        rightDown = hardwareMap.get(DcMotor.class,"RRM");
-
-        // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
-        // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
-        // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
-        leftUp.setDirection(DcMotor.Direction.REVERSE);
-        rightUp.setDirection(DcMotor.Direction.FORWARD);
-        leftDown.setDirection(DcMotor.Direction.REVERSE);
-        rightDown.setDirection(DcMotor.Direction.FORWARD);
+        robot.init();
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Ready to run");    //
         telemetry.update();
-    
+
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        // Step through each leg of the path, ensuring that the Auto mode has not been stopped along the way
+        //Step 0; Move pickup up
+
+        robot.movePickUp(25, 0.5);
+
+        runtime.reset();
+        while (opModeIsActive() && (runtime.seconds() < 1.0)) {
+            telemetry.addData("Path", "Leg 0: %4.1f S Elapsed", runtime.seconds());
+            telemetry.update();
+        }
 
         // Step 1:  Drive forward for 3 seconds
-        leftUp.setPower(FORWARD_SPEED);
-        rightUp.setPower(FORWARD_SPEED);
-        leftDown.setPower(FORWARD_SPEED);
-        rightDown.setPower(FORWARD_SPEED);
+
+        robot.driveRobot(1, FORWARD_SPEED, 0, 0);
+
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 3.0)) {
+        while (opModeIsActive() && (runtime.seconds() < 2.0)) {
             telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
-            }
+        }
 
         // Step 2:  Spin right for 1.3 seconds
-        leftUp.setPower(TURN_SPEED);
-        rightUp.setPower(-TURN_SPEED);
-        leftDown.setPower(TURN_SPEED);
-        rightDown.setPower(-TURN_SPEED);
+
+        robot.driveRobot(0.3, 0, 0, TURN_SPEED);
+
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() < 1.3)) {
             telemetry.addData("Path", "Leg 2: %4.1f S Elapsed", runtime.seconds());
@@ -113,24 +107,45 @@ public class vvAutoDriveByTime_IsaKai extends LinearOpMode {
         }
 
         // Step 3:  Drive Backward for 1 Second
-        leftUp.setPower(-FORWARD_SPEED);
-        rightUp.setPower(-FORWARD_SPEED);
-        leftDown.setPower(-FORWARD_SPEED);
-        rightDown.setPower(-FORWARD_SPEED);
-        runtime.reset();
+
+       // robot.driveRobot(1, -FORWARD_SPEED, 0, 0);
+
+        //runtime.reset();
         while (opModeIsActive() && (runtime.seconds() < 1.0)) {
             telemetry.addData("Path", "Leg 3: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
 
         // Step 4:  Stop
-        leftUp.setPower(0.3);
-        rightUp.setPower(0.3);
-        leftDown.setPower(0.3);
-        rightDown.setPower(0.3);
+        robot.driveRobot(0, 0, 0, 0);
+
+        while (opModeIsActive() && (runtime.seconds() < 1.0)) {
+            telemetry.addData("Path", "Leg 4: %4.1f S Elapsed", runtime.seconds());
+            telemetry.update();
+
+            // Step 5: Drop the pickup
+
+            robot.movePickUp(0, 0.3);
+
+            runtime.reset();
+        while (opModeIsActive() && (runtime.seconds() < 1.0)) {
+            telemetry.addData("Path", "Leg 5: %4.1f S Elapsed", runtime.seconds());
+            telemetry.update();
+
+            // Step 6: Extract pixel from the pickup
+
+            robot.setPickupPower(0.5, 0);
+
+            runtime.reset();
+        while (opModeIsActive() && (runtime.seconds() < 3.0)) {
+            telemetry.addData("Path", "Leg 6: %4.1f S Elapsed", runtime.seconds());
+            telemetry.update();
+        }
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
         sleep(1000);
+            }
+        }
     }
 }

@@ -1,36 +1,27 @@
 
 package org.firstinspires.ftc.teamcode.TeleOp;
 
-import android.graphics.Color;
-
-import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AngularVelocity;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.Core.vvHardware;
-import org.firstinspires.ftc.teamcode.util.Encoder;
 
 /**
- * Mr. Price's teleOp for test and explanation - this one uses a Hardware Class structure
+ * Mr. Price's teleOp testing for use of switches in teleop
  *
  * Need to confirm the drive system and add the drone servo to have a full test case
  * Also need the telemetry to read all sensor values
  */
 
-@TeleOp(name="coachMap", group="1-TeleOp")
+@TeleOp(name="swTeleOp", group="Concept")
 
-public class coachMapped extends LinearOpMode {
+public class teleOpSwitched extends LinearOpMode {
 
     //vvHardware class external pull
     vvHardware   robot       = new vvHardware(this);
@@ -39,10 +30,23 @@ public class coachMapped extends LinearOpMode {
     // (This is one thing enums are designed to do)
     public enum PickupState {
         PickupStart,
-        PickupDrive,
+        PickupPick,
         PickupPlaceLow,
         PickupPlaceHigh
     };
+    public enum PickupWheels {
+        PickupLin,
+        PickupLout,
+        PickupRin,
+        PickRout,
+        PickupIdle
+    }
+    public enum ArmPosition {
+        ArmIdle,
+        ArmLow,
+        ArmHigh,
+        ArmLift
+    }
     public ColorSensor colorSensor;
     public DistanceSensor distFront;
     public DistanceSensor distRear;
@@ -61,8 +65,9 @@ public class coachMapped extends LinearOpMode {
         double drivePower = 0.5; //global drive power level
         double armPower = 0;
         double liftPower = 0;
-        double armEPower = 0;
-        double pickUpPwr = 0;
+        int liftLoc = 0;
+        double armEPower = 0.9;
+        double pickUpPwr = 0.9;
         double droneSet = 0.25;
         double droneLaunch = 0;
         double servpos = 0;
@@ -70,22 +75,25 @@ public class coachMapped extends LinearOpMode {
         // The pickupState variable is declared out here
         // so its value persists between loop() calls
         PickupState pickupState = PickupState.PickupStart;
-
-        // used with the dump servo, this will get covered in a bit
+        PickupWheels pickupWheels = PickupWheels.PickupIdle;
+        ArmPosition armPosition = ArmPosition.ArmIdle;
+        // used with the arm timing
         ElapsedTime pickupTimer = new ElapsedTime();
+        ElapsedTime armTimer = new ElapsedTime();
 
-        final int pickupIdle; // the idle position for the pickup motor
-        final int pickupHigh; // the placing position for the pickup motor in the high position
-        final int pickupLow; // the placing position for the pickup motor in the low/forward position
+        final int pickupIdle = -10; // the idle position for the pickup motor
+        final int pickupPick = -28; // the pickup position
+        final int pickupHigh= 0; // the placing position for the pickup motor in the high position
+        final int pickupLow = -45; // the placing position for the pickup motor in the low/forward position
 
         // the amount of time the pickup takes to activate in seconds
         final double pickupTime;
         // the amount of time the arm takes to raise in seconds
-        final double armTime;
-
-        final int armLow; // the low encoder position for the arm
-        final int armHigh; // the high-overhead encoder position for the arm
-
+        final double armTime = 2;
+        final int armIdle = 0;
+        final int armLow = 20; // the low encoder position for the arm, front place
+        final int armHigh = 160; // the high-overhead encoder position for the arm
+        final int armLift = 200; //lift location for arm
 
         // initialize all the hardware, using the hardware class. See how clean and simple this is?
         robot.init();
@@ -117,11 +125,11 @@ public class coachMapped extends LinearOpMode {
                 LWPowerPU = -gamepad2.left_trigger;
                 RWPowerPU = gamepad2.right_trigger;
                 armPower = -gamepad2.left_stick_y;
-                //pickUpPwr = -gamepad2.right_stick_y * 0.5;
+                pickUpPwr = 0.7;
                 //liftPower = -gamepad1.right_stick_y;
 
-                y = -robot.parallelEncoder.getCurrentPosition(); //need to reverse
-                x = robot.perpendicularEncoder.getCurrentPosition();
+                y = robot.parallelEncoder.getCurrentPosition();
+                x = robot.perpendicularEncoder.getCurrentPosition(); //parallel, forward encoder distance is 0
 
                 if (gamepad1.right_bumper) {
                     // button is transitioning to a pressed state. So increment drivePower by 0.1
@@ -134,10 +142,88 @@ public class coachMapped extends LinearOpMode {
 
                 // Methods called for motion
                 robot.driveRobot(drivePower, driveY, strafe, turn);
+                // Controlling the amr location
+                if (gamepad2.dpad_right)
+                    robot.armPos(armLow,armEPower);
+                else if (gamepad2.dpad_up)
+                    robot.armPos(armHigh,1);
+                else if (gamepad2.dpad_down)
+                    robot.armPos(armLift,1);
+                else
+                    robot.armPos(armIdle,armEPower);
+/*
+                switch (armPosition) {
+                    case ArmIdle:
+                        if (gamepad2.dpad_left)
+                            robot.armPos(armIdle,armEPower);
+                    break;
+                    case ArmLow:
+                        if (gamepad2.dpad_right)
+                            robot.armPos(armLow,armEPower);
+                    break;
+                    case ArmHigh:
+                        if (gamepad2.dpad_up) {
+                            armTimer.reset();
+                            if(Math.abs(robot.leftArm.getCurrentPosition() - armHigh)<10)
+                                robot.armPos(armHigh,1);
+                        }
+                    break;
+                    case ArmLift:
+                        if (gamepad2.dpad_down)
+                            robot.armPos(armLift,1);
+                    break;
+                    //default:
+                      //  armPosition = ArmPosition.ArmIdle;
+                }
 
-                robot.moveArm(armPower);
+                //robot.moveArm(armPower);
 
-                //robot.moveLift(liftPower);
+                switch (pickupState) {
+                    case PickupStart:
+                        if (gamepad2.right_stick_y < 0.1 && gamepad2.right_stick_y > -0.1 && (gamepad2.right_bumper = false))
+                            robot.movePickUp(pickupIdle,pickUpPwr);
+                    break;
+                    case PickupPick:
+                        if (gamepad2.right_bumper)
+                            robot.movePickUp(pickupPick,pickUpPwr);
+                    break;
+                    case PickupPlaceLow:
+                        if (gamepad2.right_stick_y < -0.1)
+                            robot.movePickUp(pickupLow,Math.max(-gamepad2.right_stick_y,pickUpPwr));
+                    break;
+                    case PickupPlaceHigh:
+                        if (gamepad2.right_stick_y > 0.1)
+                            robot.movePickUp(pickupHigh,Math.max(gamepad2.right_stick_y,pickUpPwr));
+                    break;
+                    //default:
+                      //  pickupState = PickupState.PickupPick;
+                }
+                //robot.pwrPickUp(pickUpPwr);
+
+                switch (pickupWheels) { // Controlling the pixel pick-up with the dpad and buttons (individual)
+                    case PickupLin:
+                        if (gamepad2.left_trigger>0)
+                            robot.setPickupPower(LWPowerPU, 0);
+                    break;
+                    case PickupLout:
+                        if (gamepad2.x)
+                            robot.setPickupPower(0.3, 0);
+                    break;
+                    case PickupRin:
+                        if (gamepad2.right_trigger>0)
+                            robot.setPickupPower(0, RWPowerPU);
+                    break;
+                    case PickRout:
+                        if (gamepad2.y)
+                            robot.setPickupPower(0, -0.3);
+                    break;
+                    case PickupIdle:
+                            robot.setPickupPower(0, 0);
+                    break;
+                    //default:
+                      //  pickupWheels = PickupWheels.PickupIdle;
+                }
+*/
                 if (gamepad1.dpad_up)
                     robot.moveLiftEnc(1250);
                 else if (gamepad1.dpad_down)
@@ -147,13 +233,28 @@ public class coachMapped extends LinearOpMode {
 
                 //Controlling the pickup location
                 if (gamepad2.left_bumper)
-                    robot.movePickUp(0, 0.5);
-                else if (gamepad2.right_bumper)
-                    robot.movePickUp(-90,0.4);
-               // else if (gamepad1.right_stick_button)
-                   // robot.movePickUp(0,0.5);
+                    robot.movePickUp(pickupPick, 0.7);
+                else if (gamepad2.right_stick_y < -0.1)
+                    robot.movePickUp(pickupLow,Math.max(-gamepad2.right_stick_y,pickUpPwr));
+                else if (gamepad2.right_stick_y > 0.1)
+                    robot.movePickUp(pickupHigh,Math.max(gamepad2.right_stick_y,pickUpPwr));
                 else
-                    robot.movePickUp(-25,0.5);
+                    robot.movePickUp(pickupIdle,0.5);
+
+                // Controlling the pixel pick-up with the dpad and buttons (individual)
+                if (gamepad2.left_trigger>0) {
+                    robot.setPickupPower(LWPowerPU, 0);
+                }
+                else if (gamepad2.x) {
+                    robot.setPickupPower(0.3, 0);
+                }
+
+                if (gamepad2.right_trigger>0) {
+                    robot.setPickupPower(0, RWPowerPU);
+                }
+                else if (gamepad2.y) {
+                    robot.setPickupPower(0, -0.3);
+                }
 /*
                 //Controlling the arm to three specific positions - backdrop, drive, pickup
                 if (gamepad2.dpad_up)
@@ -163,75 +264,7 @@ public class coachMapped extends LinearOpMode {
                 else if (gamepad2.dpad_right)
                     robot.armPos(45,0.9); //Drive location
 */
-                // Controlling the pixel pick-up with the dpad and buttons (individual)
-                if (gamepad2.left_trigger>0) {
-                    robot.setPickupPower(LWPowerPU, 0);
-                } else if (gamepad2.right_trigger>0) {
-                    robot.setPickupPower(0, RWPowerPU);
-                } else if (gamepad2.y)
-                    robot.setPickupPower(0, -0.3);
-                else if (gamepad2.x)
-                    robot.setPickupPower(0.3, 0);
-                else {
-                    robot.setPickupPower(0, 0);
-                }
-/*
-                switch (pickupState) {
-                    case PickupStart:
-                        // Waiting for some input
-                        if (gamepad1.x) {
-                            // x is pressed, start extending
-                            liftMotor.setTargetPosition(LIFT_HIGH);
-                            liftState = LiftState.LIFT_EXTEND;
-                        }
-                        break;
-                    case LIFT_EXTEND:
-                        // check if the lift has finished extending,
-                        // otherwise do nothing.
-                        if (Math.abs(liftMotor.getCurrentPosition() - LIFT_HIGH) < 10) {
-                            // our threshold is within
-                            // 10 encoder ticks of our target.
-                            // this is pretty arbitrary, and would have to be
-                            // tweaked for each robot.
 
-                            // set the lift dump to dump
-                            liftDump.setTargetPosition(DUMP_DEPOSIT);
-
-                            liftTimer.reset();
-                            liftState = LiftState.LIFT_DUMP;
-                        }
-                        break;
-                    case LIFT_DUMP:
-                        if (liftTimer.seconds() >= DUMP_TIME) {
-                            // The robot waited long enough, time to start
-                            // retracting the lift
-                            liftDump.setTargetPosition(DUMP_IDLE);
-                            liftMotor.setTargetPosition(LIFT_LOW);
-                            liftState = LiftState.LIFT_RETRACT;
-                        }
-                        break;
-                    case LIFT_RETRACT:
-                        if (Math.abs(liftMotor.getCurrentPosition() - LIFT_LOW) < 10) {
-                            liftState = LiftState.LIFT_START;
-                        }
-                        break;
-                    default:
-                        // should never be reached, as liftState should never be null
-                        liftState = LiftState.LIFT_START;
-                }
-
-                // small optimization, instead of repeating ourselves in each
-                // lift state case besides LIFT_START for the cancel action,
-                // it's just handled here
-                if (gamepad1.y && liftState != LiftState.LIFT_START) {
-                    liftState = LiftState.LIFT_START;
-                }
-
-                // mecanum drive code goes here
-                // But since none of the stuff in the switch case stops
-                // the robot, this will always run!
-                updateDrive(gamepad1, gamepad2);
-*/
                 //Drone launch
                 if (gamepad2.options)
                     robot.setDronePosition(droneLaunch);

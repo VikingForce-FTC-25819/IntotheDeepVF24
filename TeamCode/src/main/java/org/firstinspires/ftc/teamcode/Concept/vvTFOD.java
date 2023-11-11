@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode.Concept;
 
 import android.util.Size;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -51,6 +52,7 @@ import java.util.List;
 
 public class vvTFOD extends LinearOpMode {
 
+    //private LinearOpMode myOpMode = null;
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
 
     // TFOD_MODEL_ASSET points to a model file stored in the project Asset location,
@@ -74,7 +76,8 @@ public class vvTFOD extends LinearOpMode {
      */
     private VisionPortal visionPortal;
 
-    @Override
+    //public vvTFOD(LinearOpMode opmode) { myOpMode = opmode;}
+    //@Override
     public void runOpMode() {
 
         initTfod();
@@ -114,7 +117,7 @@ public class vvTFOD extends LinearOpMode {
     /**
      * Initialize the TensorFlow Object Detection processor.
      */
-    private void initTfod() {
+    public void initTfod() {
 
         // Create the TensorFlow processor by using a builder.
         tfod = new TfodProcessor.Builder()

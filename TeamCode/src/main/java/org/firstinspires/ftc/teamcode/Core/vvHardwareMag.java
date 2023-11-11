@@ -41,12 +41,7 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 
-/*
- * This file defines a Java Class that performs all the setup and configuration for a sample robot's hardware (motors and sensors).
- * It assumes four motors (left_front, right_front, left_back, right_back)
- * Sensors three (2M distance x2, color)
- *
- * This one file/class can be used by ALL of your OpModes.
+/*Magnus hardware class
  *
  * Where possible, the actual hardware objects are "abstracted" (or hidden) so the OpMode code just makes calls into the class,
  * rather than accessing the internal hardware directly. This is why the objects are declared "private".
@@ -54,7 +49,7 @@ import com.qualcomm.robotcore.hardware.Servo;
  */
 
 @Disabled
-public class vvHardware {
+public class vvHardwareMag {
 
 
     /* Declare OpMode members. */
@@ -89,7 +84,7 @@ public class vvHardware {
     public static final double droneSet = 0.25;
 
     // Define a constructor that allows the OpMode to pass a reference to itself.
-    public vvHardware(LinearOpMode opmode) {
+    public vvHardwareMag(LinearOpMode opmode) {
         myOpMode = opmode;
     }
 
@@ -106,23 +101,23 @@ public class vvHardware {
         rightFront = myOpMode.hardwareMap.get(DcMotor.class, "FRM");
         rightRear = myOpMode.hardwareMap.get(DcMotor.class, "RRM");
         leftRear = myOpMode.hardwareMap.get(DcMotor.class, "RLM");
-        leftArm = myOpMode.hardwareMap.get(DcMotor.class, "armL");
-        rightArm = myOpMode.hardwareMap.get(DcMotor.class, "armR");
-        pickUp = myOpMode.hardwareMap.get(DcMotor.class, "pickUp");
-        lift = myOpMode.hardwareMap.get(DcMotorEx.class, "lift");
+        //leftArm = myOpMode.hardwareMap.get(DcMotor.class, "armL");
+        //rightArm = myOpMode.hardwareMap.get(DcMotor.class, "armR");
+        //pickUp = myOpMode.hardwareMap.get(DcMotor.class, "pickUp");
+        //lift = myOpMode.hardwareMap.get(DcMotorEx.class, "lift");
 
         //Shadow the motors with encoder-odometry
         parallelEncoder = leftFront;
         perpendicularEncoder = rightFront;
 
         // Define Servos
-        rightWheel = myOpMode.hardwareMap.crservo.get("RSW");
-        leftWheel = myOpMode.hardwareMap.crservo.get("LSW");
-        drone = myOpMode.hardwareMap.get(Servo.class,"drone");
+        //rightWheel = myOpMode.hardwareMap.crservo.get("RSW");
+        //leftWheel = myOpMode.hardwareMap.crservo.get("LSW");
+        //drone = myOpMode.hardwareMap.get(Servo.class,"drone");
 
-        drone.scaleRange(0,1);
-        drone.setDirection(Servo.Direction.REVERSE);
-        drone.setPosition(droneSet);
+        //drone.scaleRange(0,1);
+        //drone.setDirection(Servo.Direction.REVERSE);
+        //drone.setPosition(droneSet);
 
         //define and initialize sensors
         //colorSensor = myOpMode.hardwareMap.get(ColorSensor.class, "CLR");
@@ -130,8 +125,8 @@ public class vvHardware {
         // Retrieve the IMU from the hardware map
         imu = myOpMode.hardwareMap.get(IMU.class, "imu");
         // Adjust the orientation parameters to match your robot
-        RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
-        RevHubOrientationOnRobot.UsbFacingDirection  usbDirection  = RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
+        RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.RIGHT;
+        RevHubOrientationOnRobot.UsbFacingDirection  usbDirection  = RevHubOrientationOnRobot.UsbFacingDirection.UP;
         // Without this, the REV Hub's orientation is assumed to be logo up / USB forward
         RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(logoDirection, usbDirection);
 
@@ -148,31 +143,31 @@ public class vvHardware {
         rightFront.setDirection(DcMotor.Direction.FORWARD);
         rightRear.setDirection(DcMotor.Direction.FORWARD);
         leftRear.setDirection(DcMotor.Direction.REVERSE);
-        rightArm.setDirection(DcMotorSimple.Direction.REVERSE);
-        leftArm.setDirection(DcMotor.Direction.FORWARD);
-        lift.setDirection(DcMotor.Direction.REVERSE);
-
+        //rightArm.setDirection(DcMotorSimple.Direction.FORWARD);
+        //leftArm.setDirection(DcMotor.Direction.REVERSE);
+        //lift.setDirection(DcMotor.Direction.REVERSE);
+/*
         rightArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         pickUp.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
+*/
         rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        pickUp.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //rightArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //leftArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //pickUp.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        leftArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        pickUp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //leftArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //rightArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //pickUp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         myOpMode.telemetry.addData(">", "Hardware Initialized");
-        myOpMode.telemetry.addData("Drone Servo", drone.getPosition());
+        //myOpMode.telemetry.addData("Drone Servo", drone.getPosition());
         myOpMode.telemetry.update();
     }
     /**
@@ -224,14 +219,8 @@ public class vvHardware {
      * @param armPower driving power (-1.0 to 1.0)
      */
     public void moveArm(double armPower) {
-        if (leftArm.getCurrentPosition() >80 && leftArm.getCurrentPosition()<140) {
-            leftArm.setPower(armPower * 0.5);
-            rightArm.setPower(armPower * 0.5);
-        }
-        else {
-            leftArm.setPower(armPower);
-            rightArm.setPower(armPower);
-        }
+        leftArm.setPower(armPower);
+        rightArm.setPower(armPower);
     }
 
     /**
