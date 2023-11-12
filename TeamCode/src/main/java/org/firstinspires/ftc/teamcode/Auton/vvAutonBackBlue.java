@@ -50,7 +50,7 @@ import java.util.Objects;
  * Start the robot on the furthest tile edge from the truss (left side)
  *
  */
-@Autonomous(name = "vvAutonStageBlue", group = "1 - Blue Auton")
+@Autonomous(name = "vvAutonBackBlue", group = "1 - Blue Auton")
 
 public class vvAutonBackBlue extends LinearOpMode {
     vvHardware robot = new vvHardware(this);
@@ -114,7 +114,7 @@ public class vvAutonBackBlue extends LinearOpMode {
                     autonDriveTop();
                 if (Objects.equals(spikeLoc, "RIGHT"))
                     autonDriveRight();
-                else
+                if (Objects.equals(spikeLoc, "UNKNOWN"))
                     autonDriveLeft(); //This will change based upon side
             break;
             }

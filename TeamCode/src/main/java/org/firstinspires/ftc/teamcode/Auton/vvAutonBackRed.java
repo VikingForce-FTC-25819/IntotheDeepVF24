@@ -114,8 +114,8 @@ public class vvAutonBackRed extends LinearOpMode {
                     autonDriveTop();
                 if (Objects.equals(spikeLoc, "RIGHT"))
                     autonDriveRight();
-                else
-                    autonDriveRight(); //This will change based upon side
+                if (Objects.equals(spikeLoc, "UNKNOWN"))
+                    autonDriveLeft(); //This will change based upon side
             break;
             }
         }
@@ -287,7 +287,7 @@ public class vvAutonBackRed extends LinearOpMode {
             robot.driveRobot(1, FORWARD_SPEED, 0, 0);
 
             runtime.reset();
-            while (opModeIsActive() && (runtime.seconds() < 1.9)) {
+            while (opModeIsActive() && (runtime.seconds() < 1.7)) {
                 telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
                 telemetry.update();
             }
@@ -350,12 +350,12 @@ public class vvAutonBackRed extends LinearOpMode {
                 telemetry.update();
             }
 
-            // Step 8:  Strafe to the backdrop for 2 seconds
+            // Step 8:  Strafe to the backdrop for 2.5 seconds
 
-            robot.driveRobot(1.1, 0,-FORWARD_SPEED, 0);
+            robot.driveRobot(1.1, 0,FORWARD_SPEED, 0);
 
             runtime.reset();
-            while (opModeIsActive() && (runtime.seconds() < 2.0)) {
+            while (opModeIsActive() && (runtime.seconds() < 2.5)) {
                 telemetry.addData("Path", "Leg 8: %4.1f S Elapsed", runtime.seconds());
                 telemetry.update();
             }
@@ -389,7 +389,7 @@ public class vvAutonBackRed extends LinearOpMode {
             robot.driveRobot(1, FORWARD_SPEED, 0, 0);
 
             runtime.reset();
-            while (opModeIsActive() && (runtime.seconds() < 1.7)) {
+            while (opModeIsActive() && (runtime.seconds() < 1.5)) {
                 telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
                 telemetry.update();
             }
@@ -466,7 +466,7 @@ public class vvAutonBackRed extends LinearOpMode {
             robot.driveRobot(1.1, 0, FORWARD_SPEED, 0);
 
             runtime.reset();
-            while (opModeIsActive() && (runtime.seconds() < 2.0)) {
+            while (opModeIsActive() && (runtime.seconds() < 2.5)) {
                 telemetry.addData("Path", "Leg 9: %4.1f S Elapsed", runtime.seconds());
                 telemetry.update();
             }
@@ -499,7 +499,7 @@ public class vvAutonBackRed extends LinearOpMode {
             robot.driveRobot(1, FORWARD_SPEED, 0, 0);
 
             runtime.reset();
-            while (opModeIsActive() && (runtime.seconds() < 1.7)) {
+            while (opModeIsActive() && (runtime.seconds() < 1.5)) {
                 telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
                 telemetry.update();
             }
@@ -576,7 +576,7 @@ public class vvAutonBackRed extends LinearOpMode {
             robot.driveRobot(1.1, 0, FORWARD_SPEED, 0);
 
             runtime.reset();
-            while (opModeIsActive() && (runtime.seconds() < 2.0)) {
+            while (opModeIsActive() && (runtime.seconds() < 2.5)) {
                 telemetry.addData("Path", "Leg 9: %4.1f S Elapsed", runtime.seconds());
                 telemetry.update();
             }

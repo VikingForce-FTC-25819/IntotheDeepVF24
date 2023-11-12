@@ -116,7 +116,7 @@ public class vvAutonStageRed extends LinearOpMode {
                     autonDriveTop();
                 if (Objects.equals(spikeLoc, "RIGHT"))
                     autonDriveRight();
-                else
+                if (Objects.equals(spikeLoc, "UNKNOWN"))
                     autonDriveLeft(); //This will change based upon side
             break;
             }
