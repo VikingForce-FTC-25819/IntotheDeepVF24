@@ -56,21 +56,21 @@ public class vvHardwareMag {
     private LinearOpMode myOpMode = null;   // gain access to methods in the calling OpMode.
 
     // Define Motor and Servo objects  (Make them private so they can't be accessed externally)
-    public DcMotor leftFront;
-    public DcMotor rightFront;
-    public DcMotor rightRear;
-    public DcMotor leftRear;
-    public DcMotor leftArm;
-    public DcMotor rightArm;
-    public DcMotor pickUp;
+    public DcMotorEx leftFront;
+    public DcMotorEx rightFront;
+    public DcMotorEx rightRear;
+    public DcMotorEx leftRear;
+    public DcMotorEx leftArm;
+    public DcMotorEx rightArm;
+    public DcMotorEx pickUp;
     public DcMotor lift;
     public CRServo rightWheel;
     public CRServo leftWheel;
     public Servo drone;
 
     public IMU imu;
-    public DcMotor parallelEncoder;
-    public DcMotor perpendicularEncoder;
+    public DcMotorEx parallelEncoder;
+    public DcMotorEx perpendicularEncoder;
     public ColorSensor colorSensor;
     public DistanceSensor distFront;
     public DistanceSensor distRear;
@@ -97,10 +97,10 @@ public class vvHardwareMag {
     public void init() {
 
         // Define and Initialize Motors (note: need to use reference to actual OpMode).
-        leftFront = myOpMode.hardwareMap.get(DcMotor.class, "FLM");
-        rightFront = myOpMode.hardwareMap.get(DcMotor.class, "FRM");
-        rightRear = myOpMode.hardwareMap.get(DcMotor.class, "RRM");
-        leftRear = myOpMode.hardwareMap.get(DcMotor.class, "RLM");
+        leftFront = myOpMode.hardwareMap.get(DcMotorEx.class, "FLM");
+        rightFront = myOpMode.hardwareMap.get(DcMotorEx.class, "FRM");
+        rightRear = myOpMode.hardwareMap.get(DcMotorEx.class, "RRM");
+        leftRear = myOpMode.hardwareMap.get(DcMotorEx.class, "RLM");
         //leftArm = myOpMode.hardwareMap.get(DcMotor.class, "armL");
         //rightArm = myOpMode.hardwareMap.get(DcMotor.class, "armR");
         //pickUp = myOpMode.hardwareMap.get(DcMotor.class, "pickUp");

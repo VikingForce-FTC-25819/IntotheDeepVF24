@@ -69,7 +69,13 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     private TrajectoryFollower follower;
 
-    private DcMotorEx leftFront, leftRear, rightRear, rightFront;
+    private DcMotorEx leftFront;
+    private DcMotorEx leftRear;
+    private DcMotorEx rightRear;
+    private DcMotorEx rightFront;
+
+    public DcMotorEx parallelEncoder;
+    public DcMotorEx perpendicularEncoder;
     private List<DcMotorEx> motors;
 
     private IMU imu;
@@ -108,6 +114,10 @@ public class SampleMecanumDrive extends MecanumDrive {
         leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
         rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
+
+        //Shadow the motors with encoder-odometry
+        parallelEncoder = leftFront;
+        perpendicularEncoder = rightFront;
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 

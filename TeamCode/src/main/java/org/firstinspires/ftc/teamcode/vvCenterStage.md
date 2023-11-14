@@ -12,3 +12,7 @@ Using 'robot.' can call any hardware from that class in the active class for reu
  - Auton, Concept, Core, & TeleOp
  - Core is for any classes we intent to call for methods and actions
  - Concept will be any troubleshooting or learning classes
+
+14Nov23 Adjusted to a right claw, taller arm gear ratio, and new start position (arm up with pickup collapsed)
+- Classes impacted, vvHardware, new TeleOp for testing
+- Added Field Centric method to vvHardware

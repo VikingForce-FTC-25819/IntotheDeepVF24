@@ -52,8 +52,8 @@ public class coachMapped extends LinearOpMode {
         double driveY = 0;
         double strafe = 0;
         double turn = 0;
-        int x = 0;
-        int y = 0;
+        int encX = 0;
+        int encY = 0;
         double RWPower = 0;
         double LWPower = 0;
         double RWPowerPU = 0;
@@ -61,8 +61,8 @@ public class coachMapped extends LinearOpMode {
         double drivePower = 0.5; //global drive power level
         double armPower = 0;
         double liftPower = 0;
-        double armEPower = 0;
-        double pickUpPwr = 0;
+        double armEPower = 0.9;
+        double pickUpPwr = 0.9;
         double droneSet = 0.25;
         double droneLaunch = 0;
         double servpos = 0;
@@ -74,9 +74,9 @@ public class coachMapped extends LinearOpMode {
         // used with the dump servo, this will get covered in a bit
         ElapsedTime pickupTimer = new ElapsedTime();
 
-        final int pickupIdle; // the idle position for the pickup motor
-        final int pickupHigh; // the placing position for the pickup motor in the high position
-        final int pickupLow; // the placing position for the pickup motor in the low/forward position
+        final int pickupIdle = 120; // the idle position for the pickup motor
+        final int pickupHigh = 148; // the placing position for the pickup motor in the high position
+        final int pickupLow = 5; // the placing position for the pickup motor in the low/forward position
 
         // the amount of time the pickup takes to activate in seconds
         final double pickupTime;
@@ -120,8 +120,8 @@ public class coachMapped extends LinearOpMode {
                 //pickUpPwr = -gamepad2.right_stick_y * 0.5;
                 //liftPower = -gamepad1.right_stick_y;
 
-                y = -robot.parallelEncoder.getCurrentPosition(); //need to reverse
-                x = robot.perpendicularEncoder.getCurrentPosition();
+                encY = -robot.parallelEncoder.getCurrentPosition(); //need to reverse
+                encX = robot.perpendicularEncoder.getCurrentPosition();
 
                 if (gamepad1.right_bumper) {
                     // button is transitioning to a pressed state. So increment drivePower by 0.1
@@ -147,13 +147,13 @@ public class coachMapped extends LinearOpMode {
 
                 //Controlling the pickup location
                 if (gamepad2.left_bumper)
-                    robot.movePickUp(0, 0.5);
+                    robot.movePickUp(pickupLow, pickUpPwr);
                 else if (gamepad2.right_bumper)
-                    robot.movePickUp(-90,0.4);
+                    robot.movePickUp(pickupHigh,pickUpPwr);
                // else if (gamepad1.right_stick_button)
                    // robot.movePickUp(0,0.5);
                 else
-                    robot.movePickUp(-25,0.5);
+                    robot.movePickUp(pickupIdle,pickUpPwr);
 /*
                 //Controlling the arm to three specific positions - backdrop, drive, pickup
                 if (gamepad2.dpad_up)
@@ -163,18 +163,19 @@ public class coachMapped extends LinearOpMode {
                 else if (gamepad2.dpad_right)
                     robot.armPos(45,0.9); //Drive location
 */
-                // Controlling the pixel pick-up with the dpad and buttons (individual)
+                // Controlling the pixel pick-up with the trigger and buttons (individual)
                 if (gamepad2.left_trigger>0) {
                     robot.setPickupPower(LWPowerPU, 0);
-                } else if (gamepad2.right_trigger>0) {
-                    robot.setPickupPower(0, RWPowerPU);
-                } else if (gamepad2.y)
-                    robot.setPickupPower(0, -0.3);
+                }
                 else if (gamepad2.x)
-                    robot.setPickupPower(0.3, 0);
+                    robot.setPickupPower(0.9, 0);
                 else {
                     robot.setPickupPower(0, 0);
                 }
+                if (gamepad2.right_trigger>0) {
+                    robot.setRightClawPosition(0.5);
+                } else if (gamepad2.y)
+                    robot.setRightClawPosition(0);
 /*
                 switch (pickupState) {
                     case PickupStart:
@@ -246,13 +247,14 @@ public class coachMapped extends LinearOpMode {
                 telemetry.addData("Y", driveY);
                 telemetry.addData("strafe", strafe);
                 telemetry.addData("turn", turn);
-                telemetry.addData("Y Encoder",y);
-                telemetry.addData("X Encoder",x);
+                telemetry.addData("Y Encoder",encY);
+                telemetry.addData("X Encoder",encX);
                 telemetry.addData("Yaw (Z)", "%.2f Deg. (Heading)", orientation.getYaw(AngleUnit.DEGREES));
                 telemetry.addData("PickUp Position", robot.pickUp.getCurrentPosition());
                 telemetry.addData("Arm Power", armPower);
                 telemetry.addData("Arm Position", robot.rightArm.getCurrentPosition());
                 telemetry.addData("Arm Target", robot.rightArm.getTargetPosition());
+                telemetry.addData("Claw Position", robot.rightClaw.getPosition());
                 telemetry.addData("Drone", servpos);
                 telemetry.addData("Lift Position", robot.lift.getCurrentPosition());
 
