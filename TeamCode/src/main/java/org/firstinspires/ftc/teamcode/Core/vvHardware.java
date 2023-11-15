@@ -86,11 +86,11 @@ public class vvHardware {
 
 
     // Define Drive constants.  Make them public so they CAN be used by the calling OpMode
-    public static final double clawOpen       =  0.5 ;
-    public static final double clawClose      =  0.0 ;
+    public static final double clawOpen       =  0 ;
+    public static final double clawClose      =  1 ;
     public static final double ARM_UP_POWER    =  0.45 ;
     public static final double ARM_DOWN_POWER  = -0.45 ;
-    public static final double droneSet = 0.25;
+    public static final double droneSet = 1;
 
     // Define a constructor that allows the OpMode to pass a reference to itself.
     public vvHardware(LinearOpMode opmode) {
@@ -125,11 +125,11 @@ public class vvHardware {
         leftWheel = myOpMode.hardwareMap.crservo.get("LSW");
         drone = myOpMode.hardwareMap.get(Servo.class,"drone");
 
-        rightClaw.scaleRange(0,1);
+        rightClaw.scaleRange(0.2,0.7);
         rightClaw.setDirection(Servo.Direction.FORWARD);
         rightClaw.setPosition(clawOpen);
 
-        drone.scaleRange(0,1);
+        drone.scaleRange(0,0.25);
         drone.setDirection(Servo.Direction.REVERSE);
         drone.setPosition(droneSet);
 
@@ -318,6 +318,9 @@ public class vvHardware {
      *
      * @param droneSet
      */
+
+
+
     public void setDronePosition(double droneSet) {
         drone.setPosition(droneSet);
     }

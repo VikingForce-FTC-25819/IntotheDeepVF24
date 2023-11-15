@@ -62,6 +62,19 @@ public class vvAutonStageRed extends LinearOpMode {
     static final double FORWARD_SPEED = 0.3;
     static final double TURN_SPEED = 0.5;
 
+    final int pickupIdle = 0; // the idle position for the pickup motor
+    final int pickupHigh = 24; // the placing position for the pickup motor in the high position
+    final int pickupLow = 5; // the placing position for the pickup motor in the low/forward position
+
+    // the amount of time the pickup takes to activate in seconds
+    final double pickupTime = 1;
+    // the amount of time the arm takes to raise in seconds
+    final double armTime = 1;
+
+    final int armIdle = 0;
+    final int armLow = 160; // the low encoder position for the arm
+    final int armHigh = 401; // the high-overhead encoder position for the arm
+
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
 
     // TFOD_MODEL_ASSET points to a model file stored in the project Asset location,

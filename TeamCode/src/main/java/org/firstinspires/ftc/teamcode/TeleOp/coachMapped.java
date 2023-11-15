@@ -74,17 +74,18 @@ public class coachMapped extends LinearOpMode {
         // used with the dump servo, this will get covered in a bit
         ElapsedTime pickupTimer = new ElapsedTime();
 
-        final int pickupIdle = 120; // the idle position for the pickup motor
-        final int pickupHigh = 148; // the placing position for the pickup motor in the high position
-        final int pickupLow = 5; // the placing position for the pickup motor in the low/forward position
+        final int pickupIdle = 0; // the idle position for the pickup motor 109
+        final int pickupHigh = 24; // the placing position for the pickup motor in the high position 148
+        final int pickupLow = 0; // the placing position for the pickup motor in the low/forward position 5
 
         // the amount of time the pickup takes to activate in seconds
         final double pickupTime;
         // the amount of time the arm takes to raise in seconds
         final double armTime;
 
-        final int armLow; // the low encoder position for the arm
-        final int armHigh; // the high-overhead encoder position for the arm
+        final int armIdle = 0; // -84
+        final int armLow = 160; // the low encoder position for the arm -23
+        final int armHigh = 401; // the high-overhead encoder position for the arm 329
 
 
         // initialize all the hardware, using the hardware class. See how clean and simple this is?
@@ -135,7 +136,7 @@ public class coachMapped extends LinearOpMode {
                 // Methods called for motion
                 robot.driveRobot(drivePower, driveY, strafe, turn);
 
-                robot.moveArm(armPower);
+                //robot.moveArm(armPower);
 
                 //robot.moveLift(liftPower);
                 if (gamepad1.dpad_up)
@@ -146,93 +147,39 @@ public class coachMapped extends LinearOpMode {
                 servpos = robot.drone.getPosition();
 
                 //Controlling the pickup location
-                if (gamepad2.left_bumper)
-                    robot.movePickUp(pickupLow, pickUpPwr);
-                else if (gamepad2.right_bumper)
+                if (gamepad2.x)
+                    robot.movePickUp(pickupIdle, pickUpPwr);
+                else if (gamepad2.b)
                     robot.movePickUp(pickupHigh,pickUpPwr);
-               // else if (gamepad1.right_stick_button)
-                   // robot.movePickUp(0,0.5);
-                else
-                    robot.movePickUp(pickupIdle,pickUpPwr);
-/*
+                else if (gamepad2.a)
+                    robot.movePickUp(pickupLow,pickUpPwr);
+                /* else
+                    robot.movePickUp(pickupIdle,pickUpPwr); */
+
                 //Controlling the arm to three specific positions - backdrop, drive, pickup
                 if (gamepad2.dpad_up)
-                    robot.armPos(160, 0.95); //Backdrop location
+                    robot.armPos(armHigh, armEPower); //Backdrop location
                 else if (gamepad2.dpad_down)
-                    robot.armPos(0,0.2); //Pickup location
+                    robot.armPos(armIdle,armEPower); //Pickup location
                 else if (gamepad2.dpad_right)
-                    robot.armPos(45,0.9); //Drive location
-*/
+                    robot.armPos(armLow,armEPower); //Drive location
+                //else
+                  //  robot.armPos(armIdle,0);
+
                 // Controlling the pixel pick-up with the trigger and buttons (individual)
                 if (gamepad2.left_trigger>0) {
                     robot.setPickupPower(LWPowerPU, 0);
                 }
-                else if (gamepad2.x)
+                else if (gamepad2.left_bumper)
                     robot.setPickupPower(0.9, 0);
                 else {
                     robot.setPickupPower(0, 0);
                 }
                 if (gamepad2.right_trigger>0) {
-                    robot.setRightClawPosition(0.5);
-                } else if (gamepad2.y)
-                    robot.setRightClawPosition(0);
-/*
-                switch (pickupState) {
-                    case PickupStart:
-                        // Waiting for some input
-                        if (gamepad1.x) {
-                            // x is pressed, start extending
-                            liftMotor.setTargetPosition(LIFT_HIGH);
-                            liftState = LiftState.LIFT_EXTEND;
-                        }
-                        break;
-                    case LIFT_EXTEND:
-                        // check if the lift has finished extending,
-                        // otherwise do nothing.
-                        if (Math.abs(liftMotor.getCurrentPosition() - LIFT_HIGH) < 10) {
-                            // our threshold is within
-                            // 10 encoder ticks of our target.
-                            // this is pretty arbitrary, and would have to be
-                            // tweaked for each robot.
+                    robot.setRightClawPosition(vvHardware.clawClose);
+                } else if (gamepad2.right_bumper)
+                    robot.setRightClawPosition(vvHardware.clawOpen);
 
-                            // set the lift dump to dump
-                            liftDump.setTargetPosition(DUMP_DEPOSIT);
-
-                            liftTimer.reset();
-                            liftState = LiftState.LIFT_DUMP;
-                        }
-                        break;
-                    case LIFT_DUMP:
-                        if (liftTimer.seconds() >= DUMP_TIME) {
-                            // The robot waited long enough, time to start
-                            // retracting the lift
-                            liftDump.setTargetPosition(DUMP_IDLE);
-                            liftMotor.setTargetPosition(LIFT_LOW);
-                            liftState = LiftState.LIFT_RETRACT;
-                        }
-                        break;
-                    case LIFT_RETRACT:
-                        if (Math.abs(liftMotor.getCurrentPosition() - LIFT_LOW) < 10) {
-                            liftState = LiftState.LIFT_START;
-                        }
-                        break;
-                    default:
-                        // should never be reached, as liftState should never be null
-                        liftState = LiftState.LIFT_START;
-                }
-
-                // small optimization, instead of repeating ourselves in each
-                // lift state case besides LIFT_START for the cancel action,
-                // it's just handled here
-                if (gamepad1.y && liftState != LiftState.LIFT_START) {
-                    liftState = LiftState.LIFT_START;
-                }
-
-                // mecanum drive code goes here
-                // But since none of the stuff in the switch case stops
-                // the robot, this will always run!
-                updateDrive(gamepad1, gamepad2);
-*/
                 //Drone launch
                 if (gamepad2.options)
                     robot.setDronePosition(droneLaunch);
