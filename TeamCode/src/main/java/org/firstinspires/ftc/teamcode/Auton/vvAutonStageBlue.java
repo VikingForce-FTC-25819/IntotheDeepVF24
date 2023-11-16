@@ -60,6 +60,19 @@ public class vvAutonStageBlue extends LinearOpMode {
     static final double FORWARD_SPEED = 0.3;
     static final double TURN_SPEED = 0.5;
 
+    final int pickupIdle = -32; // the idle position for the pickup motor
+    final int pickupHigh = 0; // the placing position for the pickup motor in the high position
+    final int pickupLow = -22; // the placing position for the pickup motor in the low/forward position
+
+    // the amount of time the pickup takes to activate in seconds
+    final double pickupTime = 1;
+    // the amount of time the arm takes to raise in seconds
+    final double armTime = 1;
+
+    final int armIdle = 0;
+    final int armLow = 160; // the low encoder position for the arm
+    final int armHigh = 401; // the high-overhead encoder position for the arm
+
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
 
     // TFOD_MODEL_ASSET points to a model file stored in the project Asset location,
@@ -114,7 +127,7 @@ public class vvAutonStageBlue extends LinearOpMode {
                     autonDriveTop();
                 if (Objects.equals(spikeLoc, "RIGHT"))
                     autonDriveRight();
-                if (Objects.equals(spikeLoc, "UNKNOWN"))
+                if ((Objects.equals(spikeLoc, "UNKNOWN")|| Objects.equals(spikeLoc,"NOTFOUND")))
                     autonDriveLeft(); //This will change based upon side
             break;
             }
@@ -274,7 +287,7 @@ public class vvAutonStageBlue extends LinearOpMode {
 
             //Step 0; Move pickup up
 
-            robot.movePickUp(-15, 0.5);
+            robot.movePickUp(pickupHigh, 0.5);
 
             runtime.reset();
             while (opModeIsActive() && (runtime.seconds() < 1.0)) {
@@ -282,12 +295,12 @@ public class vvAutonStageBlue extends LinearOpMode {
                 telemetry.update();
             }
 
-            // Step 1:  Drive forward for 3 seconds
+            // Step 1:  Drive forward for 2 seconds
 
             robot.driveRobot(1, FORWARD_SPEED, 0, 0);
 
             runtime.reset();
-            while (opModeIsActive() && (runtime.seconds() < 1.9)) {
+            while (opModeIsActive() && (runtime.seconds() < 2)) {
                 telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
                 telemetry.update();
             }
@@ -302,15 +315,15 @@ public class vvAutonStageBlue extends LinearOpMode {
                 telemetry.update();
             }
 
-            // Step 3:  Drive Backward for 1 Second
+            // Step 3:  Drive Backward for 0.6 Second
 
-            // robot.driveRobot(1, -FORWARD_SPEED, 0, 0);
+             robot.driveRobot(1, -FORWARD_SPEED, 0, 0);
 
-            //runtime.reset();
-            //while (opModeIsActive() && (runtime.seconds() < 1.0)) {
-            //  telemetry.addData("Path", "Leg 3: %4.1f S Elapsed", runtime.seconds());
-            //  telemetry.update();
-            //}
+            runtime.reset();
+            while (opModeIsActive() && (runtime.seconds() < 0.4)) {
+              telemetry.addData("Path", "Leg 3: %4.1f S Elapsed", runtime.seconds());
+              telemetry.update();
+            }
 
             // Step 4:  Stop
             robot.driveRobot(0, 0, 0, 0);
@@ -321,7 +334,7 @@ public class vvAutonStageBlue extends LinearOpMode {
             }
             // Step 5: Drop the pickup
 
-            robot.movePickUp(-25, 0.5);
+            robot.movePickUp(pickupIdle, 0.3);
 
             runtime.reset();
             while (opModeIsActive() && (runtime.seconds() < 2.0)) {
@@ -330,11 +343,20 @@ public class vvAutonStageBlue extends LinearOpMode {
             }
             // Step 6: Extract pixel from the pickup
 
-            robot.setPickupPower(0.5, 0);
+            robot.setRightClawPosition(vvHardware.clawOpen);
 
             runtime.reset();
             while (opModeIsActive() && (runtime.seconds() < 3.0)) {
                 telemetry.addData("Path", "Leg 6: %4.1f S Elapsed", runtime.seconds());
+                telemetry.update();
+            }
+            //Step 7 push the pixel for 0.2 seconds forward:)
+
+            robot.driveRobot(1, FORWARD_SPEED, 0, 0);
+
+            runtime.reset();
+            while (opModeIsActive() && (runtime.seconds() < 0.25)) {
+                telemetry.addData("Path", "Leg 7: %4.1f S Elapsed", runtime.seconds());
                 telemetry.update();
             }
 
@@ -355,7 +377,7 @@ public class vvAutonStageBlue extends LinearOpMode {
 
             // Step 0; Move pickup up
 
-            robot.movePickUp(-15, 0.5);
+            robot.movePickUp(pickupHigh, 0.5);
 
             runtime.reset();
             while (opModeIsActive() && (runtime.seconds() < 1.0)) {
@@ -363,71 +385,88 @@ public class vvAutonStageBlue extends LinearOpMode {
                 telemetry.update();
             }
 
-            // Step 1:  Drive forward for 3 seconds
+            // Step 1:  Drive forward for 2 seconds
 
             robot.driveRobot(1, FORWARD_SPEED, 0, 0);
 
             runtime.reset();
-            while (opModeIsActive() && (runtime.seconds() < 1.7)) {
+            while (opModeIsActive() && (runtime.seconds() < 2)) {
                 telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
                 telemetry.update();
             }
 
-            // Step 2:  Spin left for 2 seconds
+            // Step 2:  Spin left for 3 seconds
 
-            robot.driveRobot(0.3, 0, 0, -TURN_SPEED);
+            robot.driveRobot(1, 0, 0, -TURN_SPEED);
 
             runtime.reset();
-            while (opModeIsActive() && (runtime.seconds() < 2)) {
-                telemetry.addData("Path", "Leg 2: %4.1f S Elapsed", runtime.seconds());
+            while (opModeIsActive() && (runtime.seconds() < 3)) {
+                telemetry.addData("Path", "Leg : %4.1f S Elapsed", runtime.seconds());
                 telemetry.update();
             }
 
-            /* Step 3:  Drive Backward for 1 Second
+            //Step 3:  Drive Forward for 1 Second
+
+            robot.driveRobot(1, FORWARD_SPEED, 0, 0);
+
+            runtime.reset();
+            while (opModeIsActive() && (runtime.seconds() < 0.4)) {
+                telemetry.addData("Path", "Leg 3: %4.1f S Elapsed", runtime.seconds());
+                telemetry.update();
+            }
+            //Step 4:  Drive Backward for 1 Second
 
             robot.driveRobot(1, -FORWARD_SPEED, 0, 0);
 
             runtime.reset();
-            while (opModeIsActive() && (runtime.seconds() < 1.0)) {
+            while (opModeIsActive() && (runtime.seconds() < 0.4)) {
                 telemetry.addData("Path", "Leg 3: %4.1f S Elapsed", runtime.seconds());
                 telemetry.update();
-            }*/
-
-            // Step 4:  Stop
+            }
+            // Step 5:  Stop
             robot.driveRobot(0, 0, 0, 0);
 
             while (opModeIsActive() && (runtime.seconds() < 1.0)) {
                 telemetry.addData("Path", "Leg 4: %4.1f S Elapsed", runtime.seconds());
                 telemetry.update();
             }
-            // Step 5: Drop the pickup
+            // Step 6: Drop the pickup
 
-            robot.movePickUp(-25, 0.5);
+            robot.movePickUp(pickupIdle, 0.3);
 
             runtime.reset();
             while (opModeIsActive() && (runtime.seconds() < 1.0)) {
                 telemetry.addData("Path", "Leg 5: %4.1f S Elapsed", runtime.seconds());
                 telemetry.update();
             }
-            // Step 6: Extract pixel from the pickup
+            // Step 7: Extract pixel from the pickup
 
-            robot.setPickupPower(0.5, 0);
+            robot.setRightClawPosition(vvHardware.clawOpen);
 
             runtime.reset();
             while (opModeIsActive() && (runtime.seconds() < 3.0)) {
                 telemetry.addData("Path", "Leg 6: %4.1f S Elapsed", runtime.seconds());
                 telemetry.update();
             }
+            //Step 8:  Drive Forward for 1 Second
 
-            robot.setPickupPower(0,0);
+            robot.driveRobot(1, FORWARD_SPEED, 0, 0);
+
+            runtime.reset();
+            while (opModeIsActive() && (runtime.seconds() < 0.25)) {
+                telemetry.addData("Path", "Leg 8: %4.1f S Elapsed", runtime.seconds());
+                telemetry.update();
+            }
+
             robot.driveRobot(0, 0, 0, 0);
 
             telemetry.addData("Path", "Complete");
             telemetry.update();
             sleep(1000);
-        break;
+
+            break;
+            }
         }
-    }
 
     private void autonDriveRight() {
         // Wait for the game to start (driver presses PLAY)
@@ -455,7 +494,7 @@ public class vvAutonStageBlue extends LinearOpMode {
 
             // Step 2:  Spin right for 2 seconds
 
-            robot.driveRobot(0.5, 0, 0, TURN_SPEED);
+            robot.driveRobot(1, 0, 0, TURN_SPEED);
 
             runtime.reset();
             while (opModeIsActive() && (runtime.seconds() < 2)) {
@@ -463,49 +502,66 @@ public class vvAutonStageBlue extends LinearOpMode {
                 telemetry.update();
             }
 
-            /* Step 3:  Drive Backward for 1 Second
+            // Step 3:  Drive Forward for 1 Second
 
-            robot.driveRobot(1, -FORWARD_SPEED, 0, 0);
+            robot.driveRobot(1, FORWARD_SPEED, 0, 0);
 
             runtime.reset();
             while (opModeIsActive() && (runtime.seconds() < 1.0)) {
                 telemetry.addData("Path", "Leg 3: %4.1f S Elapsed", runtime.seconds());
                 telemetry.update();
-            }*/
-
-            // Step 4:  Stop
-            robot.driveRobot(0, 0, 0, 0);
-
-            while (opModeIsActive() && (runtime.seconds() < 1.0)) {
-                telemetry.addData("Path", "Leg 4: %4.1f S Elapsed", runtime.seconds());
-                telemetry.update();
             }
-            // Step 5: Drop the pickup
+            //Step 4:  Drive Backward for 1 Second
 
-            robot.movePickUp(0, 0.3);
+            robot.driveRobot(1, -FORWARD_SPEED, 0, 0);
 
             runtime.reset();
+            while (opModeIsActive() && (runtime.seconds() < 0.4)) {
+                telemetry.addData("Path", "Leg 3: %4.1f S Elapsed", runtime.seconds());
+                telemetry.update();
+            }
+
+            // Step 5:  Stop
+            robot.driveRobot(0, 0, 0, 0);
+
             while (opModeIsActive() && (runtime.seconds() < 1.0)) {
                 telemetry.addData("Path", "Leg 5: %4.1f S Elapsed", runtime.seconds());
                 telemetry.update();
             }
-            // Step 6: Extract pixel from the pickup
+            // Step 6: Drop the pickup
 
-            robot.setPickupPower(0.5, 0);
+            robot.movePickUp(pickupIdle, 0.3);
 
             runtime.reset();
-            while (opModeIsActive() && (runtime.seconds() < 3.0)) {
+            while (opModeIsActive() && (runtime.seconds() < 1.0)) {
                 telemetry.addData("Path", "Leg 6: %4.1f S Elapsed", runtime.seconds());
                 telemetry.update();
             }
+            // Step 7: Extract pixel from the pickup
 
-            robot.setPickupPower(0,0);
+            robot.setRightClawPosition(vvHardware.clawOpen);
+
+            runtime.reset();
+            while (opModeIsActive() && (runtime.seconds() < 3.0)) {
+                telemetry.addData("Path", "Leg 7: %4.1f S Elapsed", runtime.seconds());
+                telemetry.update();
+            }
+            //Step 8:  Drive Forward for 1 Second
+
+            robot.driveRobot(1, FORWARD_SPEED, 0, 0);
+
+            runtime.reset();
+            while (opModeIsActive() && (runtime.seconds() < 0.25)) {
+                telemetry.addData("Path", "Leg 8: %4.1f S Elapsed", runtime.seconds());
+                telemetry.update();
+            }
+
             robot.driveRobot(0, 0, 0, 0);
 
             telemetry.addData("Path", "Complete");
             telemetry.update();
             sleep(1000);
-        break;
+            break;
         }
     }
 }   // end class
