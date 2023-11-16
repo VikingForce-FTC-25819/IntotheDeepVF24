@@ -1,36 +1,27 @@
 
 package org.firstinspires.ftc.teamcode.TeleOp;
 
-import android.graphics.Color;
-
-import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AngularVelocity;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.Core.vvHardware;
-import org.firstinspires.ftc.teamcode.util.Encoder;
 
 /**
- * Mr. Price's teleOp for test and explanation - this one uses a Hardware Class structure
+ * Copy of coachMapped except pickup positions are paired with the arm positions
  *
  * Need to confirm the drive system and add the drone servo to have a full test case
  * Also need the telemetry to read all sensor values
  */
 
-@TeleOp(name="coachMap", group="1-TeleOp")
+@TeleOp(name="teleOpPosition", group="1-TeleOp")
 
-public class coachMapped extends LinearOpMode {
+public class teleOpPositions extends LinearOpMode {
 
     //vvHardware class external pull
     vvHardware   robot       = new vvHardware(this);
@@ -158,12 +149,15 @@ public class coachMapped extends LinearOpMode {
                   //  robot.movePickUp(pickupIdle,pickUpPwr);
 
                 //Controlling the arm to three specific positions - backdrop, drive, pickup
-                if (gamepad2.dpad_up)
+                if (gamepad2.dpad_up) {
                     robot.armPos(armHigh, armEPower); //Backdrop location
-                else if (gamepad2.dpad_down)
+                    robot.movePickUp(pickupHigh,pickUpPwr);}
+                else if (gamepad2.dpad_down){
                     robot.armPos(armIdle,armEPower); //Pickup location
-                else if (gamepad2.dpad_right)
+                    robot.movePickUp(pickupIdle, pickUpPwr);}
+                else if (gamepad2.dpad_right){
                     robot.armPos(armLow,armEPower); //Drive location
+                    robot.movePickUp(pickupLow,pickUpPwr);}
                 else if (gamepad2.dpad_left)
                    robot.armPos(armHang,armEPower);
 

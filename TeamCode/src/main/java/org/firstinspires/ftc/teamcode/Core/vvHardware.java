@@ -91,11 +91,12 @@ public class vvHardware {
     public static final double clawOpen       =  0 ;
     public static final double ARM_UP_POWER    =  0.45 ;
     public static final double ARM_DOWN_POWER  = -0.45 ;
-    public static final double droneSet = 1;
+    public static final double droneSet = 0.25;
 
-    final int autonPickupIdle = 0; // the idle position for the pickup motor 109
-    final int autonPickupHigh = 24; // the placing position for the pickup motor in the high position 148
-    final int autonPickupLow = 0; // the placing position for the pickup motor in the low/forward position 5
+    // All variables below are used for auton methods
+    final int autonPickupIdle = -26; // the idle position for the pickup motor 109
+    final int autonPickupHigh = -10; // the placing position for the pickup motor in the high position 148
+    final int autonPickupLow = -10; // the placing position for the pickup motor in the low/forward position 5
 
     // the amount of time the pickup takes to activate in seconds
     final double pickupTime = 1;
@@ -108,6 +109,17 @@ public class vvHardware {
 
     static final double FORWARD_SPEED = 0.3;
     static final double TURN_SPEED = 0.5;
+    public static double WHEEL_DIAMETER = 1.88976; // in
+    public static final double TICKS_PER_REV = 2000;
+    public double encTicksToInches = TICKS_PER_REV/(WHEEL_DIAMETER*Math.PI);
+    static final double s1Side = 15;
+    static final double s1Top = 21;
+    static final double s2Left = 45; //degrees
+    static final double s3Reverse = 4;
+    static final double s3Forward = 4;
+    static final double s5 = 6;
+    static final double s6Left = 45;
+    static final double s7 = 24;
 
     // Define a constructor that allows the OpMode to pass a reference to itself.
     public vvHardware(LinearOpMode opmode) {
@@ -133,8 +145,8 @@ public class vvHardware {
         lift = myOpMode.hardwareMap.get(DcMotorEx.class, "lift");
 
         //Shadow the motors with encoder-odometry
-        parallelEncoder = leftFront;
-        perpendicularEncoder = rightFront;
+        perpendicularEncoder = leftFront;
+        parallelEncoder = rightFront; //Will need to use an opposite sign for right
 
         // Define Servos
         //rightWheel = myOpMode.hardwareMap.crservo.get("RSW");
@@ -146,7 +158,7 @@ public class vvHardware {
         rightClaw.setDirection(Servo.Direction.FORWARD);
         rightClaw.setPosition(clawClose);
 
-        drone.scaleRange(0,0.25);
+        drone.scaleRange(0,1);
         drone.setDirection(Servo.Direction.REVERSE);
         drone.setPosition(droneSet);
 
@@ -371,12 +383,12 @@ public class vvHardware {
                 myOpMode.telemetry.update();
             }
 
-            // Step 1:  Drive forward for 2 seconds
+            // Step 1:  Drive forward for 2 seconds or on ticks
 
             driveRobot(1, FORWARD_SPEED, 0, 0);
 
             runtime.reset();
-            while (myOpMode.opModeIsActive() && (runtime.seconds() < 2)) {
+            while (myOpMode.opModeIsActive() && ((runtime.seconds() < 2)||(parallelEncoder.getCurrentPosition()<(s1Top*encTicksToInches)))) {
                 myOpMode.telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
                 myOpMode.telemetry.update();
             }
@@ -384,9 +396,10 @@ public class vvHardware {
             // Step 2:  Spin right for 1.3 seconds
 
             driveRobot(0.3, 0, 0, 0); //No Turn
+            final double s1Finish = parallelEncoder.getCurrentPosition();
 
             runtime.reset();
-            while (myOpMode.opModeIsActive() && (runtime.seconds() < 1.3)) {
+            while (myOpMode.opModeIsActive() && (runtime.seconds() < 1)) {
                 myOpMode.telemetry.addData("Path", "Leg 2: %4.1f S Elapsed", runtime.seconds());
                 myOpMode.telemetry.update();
             }
@@ -396,13 +409,14 @@ public class vvHardware {
             driveRobot(1, -FORWARD_SPEED, 0, 0);
 
             runtime.reset();
-            while (myOpMode.opModeIsActive() && (runtime.seconds() < 0.4)) {
+            while (myOpMode.opModeIsActive() && ((runtime.seconds() < 0.6)||(parallelEncoder.getCurrentPosition()>(s1Finish-(s3Reverse*encTicksToInches))))) {
                 myOpMode.telemetry.addData("Path", "Leg 3: %4.1f S Elapsed", runtime.seconds());
                 myOpMode.telemetry.update();
             }
 
             // Step 4:  Stop
             driveRobot(0, 0, 0, 0);
+            final double s3Finish = parallelEncoder.getCurrentPosition();
 
             while (myOpMode.opModeIsActive() && (runtime.seconds() < 1.0)) {
                 myOpMode.telemetry.addData("Path", "Leg 4: %4.1f S Elapsed", runtime.seconds());
@@ -410,7 +424,7 @@ public class vvHardware {
             }
             // Step 5: Drop the pickup
 
-            movePickUp(autonPickupIdle, 0.3);
+            movePickUp(autonPickupIdle, 0.5);
 
             runtime.reset();
             while (myOpMode.opModeIsActive() && (runtime.seconds() < 2.0)) {
@@ -431,7 +445,7 @@ public class vvHardware {
             driveRobot(1, FORWARD_SPEED, 0, 0);
 
             runtime.reset();
-            while (myOpMode.opModeIsActive() && (runtime.seconds() < 0.25)) {
+            while (myOpMode.opModeIsActive() && ((runtime.seconds() < 0.25)||(parallelEncoder.getCurrentPosition()<(s3Finish+(s5*encTicksToInches))))) {
                 myOpMode.telemetry.addData("Path", "Leg 7: %4.1f S Elapsed", runtime.seconds());
                 myOpMode.telemetry.update();
             }
@@ -447,9 +461,11 @@ public class vvHardware {
         }
     }
 
-    private void autonStageLeft() {
+    public void autonStageLeft() {
         // Wait for the game to start (driver presses PLAY)
         while (myOpMode.opModeIsActive()) {
+
+            double heading = -imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
 
             // Step 0; Move pickup up
 
@@ -466,7 +482,7 @@ public class vvHardware {
             driveRobot(1, FORWARD_SPEED, 0, 0);
 
             runtime.reset();
-            while (myOpMode.opModeIsActive() && (runtime.seconds() < 2)) {
+            while (myOpMode.opModeIsActive() && ((runtime.seconds() < 1.7)||(parallelEncoder.getCurrentPosition()<(s1Side*encTicksToInches)))) {
                 myOpMode.telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
                 myOpMode.telemetry.update();
             }
@@ -475,8 +491,10 @@ public class vvHardware {
 
             driveRobot(1, 0, 0, -TURN_SPEED);
 
+            final double s1Finish = parallelEncoder.getCurrentPosition();
+
             runtime.reset();
-            while (myOpMode.opModeIsActive() && (runtime.seconds() < 3)) {
+            while (myOpMode.opModeIsActive() && ((runtime.seconds() < 0.5)||(heading < -s2Left))) {
                 myOpMode.telemetry.addData("Path", "Leg : %4.1f S Elapsed", runtime.seconds());
                 myOpMode.telemetry.update();
             }
@@ -486,7 +504,7 @@ public class vvHardware {
             driveRobot(1, FORWARD_SPEED, 0, 0);
 
             runtime.reset();
-            while (myOpMode.opModeIsActive() && (runtime.seconds() < 0.4)) {
+            while (myOpMode.opModeIsActive() && ((runtime.seconds() < 0.4)||(parallelEncoder.getCurrentPosition()<(s1Finish+(s3Forward*encTicksToInches))))) {
                 myOpMode.telemetry.addData("Path", "Leg 3: %4.1f S Elapsed", runtime.seconds());
                 myOpMode.telemetry.update();
             }
@@ -529,7 +547,7 @@ public class vvHardware {
             driveRobot(1, FORWARD_SPEED, 0, 0);
 
             runtime.reset();
-            while (myOpMode.opModeIsActive() && (runtime.seconds() < 0.25)) {
+            while (myOpMode.opModeIsActive() && (runtime.seconds() < 0.6)) {
                 myOpMode.telemetry.addData("Path", "Leg 8: %4.1f S Elapsed", runtime.seconds());
                 myOpMode.telemetry.update();
             }
@@ -544,7 +562,7 @@ public class vvHardware {
         }
     }
 
-    private void autonStageRight() {
+    public void autonStageRight() {
         // Wait for the game to start (driver presses PLAY)
         while (myOpMode.opModeIsActive()) {
 
@@ -573,7 +591,7 @@ public class vvHardware {
             driveRobot(1, 0, 0, TURN_SPEED);
 
             runtime.reset();
-            while (myOpMode.opModeIsActive() && (runtime.seconds() < 2)) {
+            while (myOpMode.opModeIsActive() && (runtime.seconds() < 0.5)) {
                 myOpMode.telemetry.addData("Path", "Leg 2: %4.1f S Elapsed", runtime.seconds());
                 myOpMode.telemetry.update();
             }
@@ -583,7 +601,7 @@ public class vvHardware {
             driveRobot(1, FORWARD_SPEED, 0, 0);
 
             runtime.reset();
-            while (myOpMode.opModeIsActive() && (runtime.seconds() < 1.0)) {
+            while (myOpMode.opModeIsActive() && (runtime.seconds() < 0.4)) {
                 myOpMode.telemetry.addData("Path", "Leg 3: %4.1f S Elapsed", runtime.seconds());
                 myOpMode.telemetry.update();
             }
@@ -592,7 +610,7 @@ public class vvHardware {
             driveRobot(1, -FORWARD_SPEED, 0, 0);
 
             runtime.reset();
-            while (myOpMode.opModeIsActive() && (runtime.seconds() < 0.4)) {
+            while (myOpMode.opModeIsActive() && (runtime.seconds() < 0.6)) {
                 myOpMode.telemetry.addData("Path", "Leg 3: %4.1f S Elapsed", runtime.seconds());
                 myOpMode.telemetry.update();
             }

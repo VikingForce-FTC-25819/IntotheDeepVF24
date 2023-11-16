@@ -109,13 +109,13 @@ public class vvAutonBackBlue extends LinearOpMode {
                 sleep(200);
 
                 if (Objects.equals(spikeLoc, "LEFT"))
-                    autonDriveLeft();
+                    robot.autonStageLeft();
                 if (Objects.equals(spikeLoc, "CENTER"))
-                    autonDriveTop();
+                    robot.autonStageTop();
                 if (Objects.equals(spikeLoc, "RIGHT"))
-                    autonDriveRight();
+                    robot.autonStageRight();
                 if (Objects.equals(spikeLoc, "UNKNOWN"))
-                    autonDriveLeft(); //This will change based upon side
+                    robot.autonStageLeft(); //This will change based upon side
             break;
             }
         }

@@ -122,13 +122,13 @@ public class vvAutonStageBlue extends LinearOpMode {
                 sleep(200);
 
                 if (Objects.equals(spikeLoc, "LEFT"))
-                    autonDriveLeft();
+                    robot.autonStageLeft();
                 if (Objects.equals(spikeLoc, "CENTER"))
-                    autonDriveTop();
+                    robot.autonStageTop();
                 if (Objects.equals(spikeLoc, "RIGHT"))
-                    autonDriveRight();
+                    robot.autonStageRight();
                 if ((Objects.equals(spikeLoc, "UNKNOWN")|| Objects.equals(spikeLoc,"NOTFOUND")))
-                    autonDriveLeft(); //This will change based upon side
+                    robot.autonStageLeft(); //This will change based upon side
             break;
             }
         }
@@ -154,7 +154,7 @@ public class vvAutonStageBlue extends LinearOpMode {
             telemetry.addData("- Size", "%.0f x %.0f", recognition.getWidth(), recognition.getHeight());
 
 
-            if (recognition.getLabel() == "RedProp" || recognition.getLabel() == "BlueProp") {
+            if (recognition.getLabel() == "RedProp" || recognition.getLabel() == "BlueProp" || recognition.getLabel() == "Pixel") {
 
                 double x = (recognition.getLeft() + recognition.getRight()) / 2;
                 double y = (recognition.getTop() + recognition.getBottom()) / 2;
@@ -281,9 +281,9 @@ public class vvAutonStageBlue extends LinearOpMode {
 
     }   // end method telemetryTfod()
 
-    private void autonDriveTop() {
+   // private void autonDriveTop() {
         // Wait for the game to start (driver presses PLAY)
-        while (opModeIsActive()) {
+       /* while (opModeIsActive()) {
 
             //Step 0; Move pickup up
 
@@ -562,6 +562,6 @@ public class vvAutonStageBlue extends LinearOpMode {
             telemetry.update();
             sleep(1000);
             break;
-        }
-    }
-}   // end class
+
+        */
+        } // end class

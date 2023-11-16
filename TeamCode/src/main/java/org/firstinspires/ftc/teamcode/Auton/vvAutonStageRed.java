@@ -124,13 +124,13 @@ public class vvAutonStageRed extends LinearOpMode {
                 sleep(200);
 
                 if (Objects.equals(spikeLoc, "LEFT"))
-                    autonDriveLeft();
+                    robot.autonStageLeft();
                 if (Objects.equals(spikeLoc, "CENTER"))
-                    autonDriveTop();
+                    robot.autonStageTop();
                 if (Objects.equals(spikeLoc, "RIGHT"))
-                    autonDriveRight();
+                    robot.autonStageRight();
                 if (Objects.equals(spikeLoc, "UNKNOWN"))
-                    autonDriveLeft(); //This will change based upon side
+                    robot.autonStageLeft(); //This will change based upon side
             break;
             }
         }
@@ -370,7 +370,7 @@ public class vvAutonStageRed extends LinearOpMode {
 
             // Step 0; Move pickup up
 
-            robot.movePickUp(-15, 0.5);
+            robot.movePickUp(pickupHigh, 0.5);
 
             runtime.reset();
             while (opModeIsActive() && (runtime.seconds() < 1.0)) {
@@ -393,12 +393,12 @@ public class vvAutonStageRed extends LinearOpMode {
             robot.driveRobot(0.3, 0, 0, -TURN_SPEED);
 
             runtime.reset();
-            while (opModeIsActive() && (runtime.seconds() < 2)) {
+            while (opModeIsActive() && (runtime.seconds() < 4)) {
                 telemetry.addData("Path", "Leg 2: %4.1f S Elapsed", runtime.seconds());
                 telemetry.update();
             }
 
-            /* Step 3:  Drive Backward for 1 Second
+            // Step 3:  Drive Backward for 1 Second
 
             robot.driveRobot(1, -FORWARD_SPEED, 0, 0);
 
@@ -406,7 +406,7 @@ public class vvAutonStageRed extends LinearOpMode {
             while (opModeIsActive() && (runtime.seconds() < 1.0)) {
                 telemetry.addData("Path", "Leg 3: %4.1f S Elapsed", runtime.seconds());
                 telemetry.update();
-            }*/
+            }
 
             // Step 4:  Stop
             robot.driveRobot(0, 0, 0, 0);
