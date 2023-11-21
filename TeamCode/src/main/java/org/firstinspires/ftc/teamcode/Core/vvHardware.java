@@ -114,12 +114,12 @@ public class vvHardware {
     public double encTicksToInches = TICKS_PER_REV/(WHEEL_DIAMETER*Math.PI);
     static final double s1Side = 15;
     static final double s1Top = 20;
-    static final double s2Left = 45; //degrees
+    static final double s2Turn = 45; //degrees
     static final double s3Reverse = 4;
     static final double s3Forward = 4;
     static final double s5 = 6;
-    static final double s6Left = 45;
-    static final double s7 = 24;
+    static final double s9Turn = 45; //Turn towards backdrop
+    static final double s11 = 24; //Distance to backdrop
 
     // Define a constructor that allows the OpMode to pass a reference to itself.
     public vvHardware(LinearOpMode opmode) {
@@ -431,22 +431,26 @@ public class vvHardware {
                 myOpMode.telemetry.addData("Path", "Leg 5: %4.1f S Elapsed", runtime.seconds());
                 myOpMode.telemetry.update();
             }
-            // Step 6: Extract pixel from the pickup
 
-            setRightClawPosition(vvHardware.clawOpen);
-
-            runtime.reset();
-            while (myOpMode.opModeIsActive() && (runtime.seconds() < 3.0)) {
-                myOpMode.telemetry.addData("Path", "Leg 6: %4.1f S Elapsed", runtime.seconds());
-                myOpMode.telemetry.update();
-            }
-            //Step 7 push the pixel for 0.2 seconds forward:)
+            //Step 6: drive forward to the spike mark
 
             driveRobot(1, FORWARD_SPEED, 0, 0);
 
             runtime.reset();
             while (myOpMode.opModeIsActive() && ((runtime.seconds() < 0.25)||(parallelEncoder.getCurrentPosition()<(s3Finish+(s5*encTicksToInches))))) {
                 myOpMode.telemetry.addData("Path", "Leg 7: %4.1f S Elapsed", runtime.seconds());
+                myOpMode.telemetry.update();
+            }
+
+            // Step 7: Extract pixel from the pickup
+
+            driveRobot(0, 0, 0, 0);
+            rightWheel.setPower(-0.9);
+            //setRightClawPosition(vvHardware.clawOpen);
+
+            runtime.reset();
+            while (myOpMode.opModeIsActive() && (runtime.seconds() < 2.0)) {
+                myOpMode.telemetry.addData("Path", "Leg 6: %4.1f S Elapsed", runtime.seconds());
                 myOpMode.telemetry.update();
             }
 
@@ -494,7 +498,7 @@ public class vvHardware {
             final double s1Finish = parallelEncoder.getCurrentPosition();
 
             runtime.reset();
-            while (myOpMode.opModeIsActive() && ((runtime.seconds() < 0.5)||(heading < -s2Left))) {
+            while (myOpMode.opModeIsActive() && ((runtime.seconds() < 0.4)||(heading < -s2Turn))) {
                 myOpMode.telemetry.addData("Path", "Leg : %4.1f S Elapsed", runtime.seconds());
                 myOpMode.telemetry.update();
             }
@@ -526,29 +530,33 @@ public class vvHardware {
             }
             // Step 6: Drop the pickup
 
-            movePickUp(autonPickupIdle, 0.3);
+            movePickUp(autonPickupIdle, 0.5);
 
             runtime.reset();
             while (myOpMode.opModeIsActive() && (runtime.seconds() < 1.0)) {
                 myOpMode.telemetry.addData("Path", "Leg 5: %4.1f S Elapsed", runtime.seconds());
                 myOpMode.telemetry.update();
             }
-            // Step 7: Extract pixel from the pickup
 
-            setRightClawPosition(vvHardware.clawOpen);
-
-            runtime.reset();
-            while (myOpMode.opModeIsActive() && (runtime.seconds() < 3.0)) {
-                myOpMode.telemetry.addData("Path", "Leg 6: %4.1f S Elapsed", runtime.seconds());
-                myOpMode.telemetry.update();
-            }
-            //Step 8:  Drive Forward for 1 Second
+            //Step 7:  Drive Forward for 1 Second
 
             driveRobot(1, FORWARD_SPEED, 0, 0);
 
             runtime.reset();
             while (myOpMode.opModeIsActive() && (runtime.seconds() < 0.6)) {
                 myOpMode.telemetry.addData("Path", "Leg 8: %4.1f S Elapsed", runtime.seconds());
+                myOpMode.telemetry.update();
+            }
+
+            // Step 8: Extract pixel from the pickup
+
+            driveRobot(0, 0, 0, 0);
+            rightWheel.setPower(-0.9);
+            //setRightClawPosition(vvHardware.clawOpen);
+
+            runtime.reset();
+            while (myOpMode.opModeIsActive() && (runtime.seconds() < 2.0)) {
+                myOpMode.telemetry.addData("Path", "Leg 6: %4.1f S Elapsed", runtime.seconds());
                 myOpMode.telemetry.update();
             }
 
@@ -565,6 +573,8 @@ public class vvHardware {
     public void autonStageRight() {
         // Wait for the game to start (driver presses PLAY)
         while (myOpMode.opModeIsActive()) {
+
+            double heading = -imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
 
             //Step 0; Move pickup up
 
@@ -591,7 +601,7 @@ public class vvHardware {
             driveRobot(1, 0, 0, TURN_SPEED);
 
             runtime.reset();
-            while (myOpMode.opModeIsActive() && (runtime.seconds() < 0.5)) {
+            while (myOpMode.opModeIsActive() && ((runtime.seconds() < 0.4)||(heading > s2Turn))) {
                 myOpMode.telemetry.addData("Path", "Leg 2: %4.1f S Elapsed", runtime.seconds());
                 myOpMode.telemetry.update();
             }
@@ -624,23 +634,15 @@ public class vvHardware {
             }
             // Step 6: Drop the pickup
 
-            movePickUp(autonPickupIdle, 0.3);
+            movePickUp(autonPickupIdle, 0.5);
 
             runtime.reset();
             while (myOpMode.opModeIsActive() && (runtime.seconds() < 1.0)) {
                 myOpMode.telemetry.addData("Path", "Leg 6: %4.1f S Elapsed", runtime.seconds());
                 myOpMode.telemetry.update();
             }
-            // Step 7: Extract pixel from the pickup
 
-            setRightClawPosition(vvHardware.clawOpen);
-
-            runtime.reset();
-            while (myOpMode.opModeIsActive() && (runtime.seconds() < 3.0)) {
-                myOpMode.telemetry.addData("Path", "Leg 7: %4.1f S Elapsed", runtime.seconds());
-                myOpMode.telemetry.update();
-            }
-            //Step 8:  Drive Forward for 1 Second
+            //Step 7:  Drive Forward for 1 Second
 
             driveRobot(1, FORWARD_SPEED, 0, 0);
 
@@ -650,12 +652,31 @@ public class vvHardware {
                 myOpMode.telemetry.update();
             }
 
+            // Step 7: Extract pixel from the pickup
+
+            driveRobot(0, 0, 0, 0);
+            rightWheel.setPower(-0.9);
+            //setRightClawPosition(vvHardware.clawOpen);
+
+            runtime.reset();
+            while (myOpMode.opModeIsActive() && (runtime.seconds() < 2.0)) {
+                myOpMode.telemetry.addData("Path", "Leg 6: %4.1f S Elapsed", runtime.seconds());
+                myOpMode.telemetry.update();
+            }
+
             driveRobot(0, 0, 0, 0);
 
             myOpMode.telemetry.addData("Path", "Complete");
             myOpMode.telemetry.update();
             myOpMode.sleep(1000);
             break;
+        }
+    }
+    public void autonBack () {
+        // Wait for the game to start (driver presses PLAY)
+        while (myOpMode.opModeIsActive()) {
+
+        //Step 9: Turn towards the backdrop
         }
     }
 }

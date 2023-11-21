@@ -162,18 +162,7 @@ public class teleOpPositions extends LinearOpMode {
                    robot.armPos(armHang,armEPower);
 
                 // Controlling the pixel pick-up with the trigger and buttons (individual)
-                if (gamepad2.left_trigger>0) {
-                    robot.setPickupPower(LWPowerPU, 0);
-                } else if (gamepad2.right_trigger>0) {
-                    robot.setPickupPower(0, RWPowerPU);
-                } else if (gamepad2.right_bumper)
-                    robot.setPickupPower(0, -0.9);
-                else if (gamepad2.left_bumper)
-                    robot.setPickupPower(0.9, 0);
-                else {
-                    robot.setPickupPower(0, 0);
-                }
-                /*if (gamepad2.left_trigger>0) The RHWheel did not perform with this code set?
+                if (gamepad2.left_trigger>0)
                     robot.leftWheel.setPower(LWPowerPU);
                 else if (gamepad2.left_bumper)
                     robot.leftWheel.setPower(1);
@@ -181,11 +170,11 @@ public class teleOpPositions extends LinearOpMode {
                     robot.leftWheel.setPower(0);
 
                 if (gamepad2.right_trigger>0)
-                    robot.setPickupPower(0, RWPowerPU);
+                    robot.rightWheel.setPower(RWPowerPU);
                 else if (gamepad2.right_bumper)
-                    robot.setPickupPower(0, -1);
+                    robot.rightWheel.setPower(-1);
                 else
-                    robot.setPickupPower(0, 0); */
+                    robot.rightWheel.setPower(0);
 
                 //if (gamepad2.right_trigger>0) {
                   //  robot.setRightClawPosition(vvHardware.clawClose);
