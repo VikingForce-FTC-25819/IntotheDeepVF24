@@ -49,7 +49,7 @@ public class teleOpPositions extends LinearOpMode {
         double LWPower = 0;
         double RWPowerPU = 0;
         double LWPowerPU = 0;
-        double drivePower = 0.5; //global drive power level
+        double drivePower = 0.7; //global drive power level
         double armPower = 0;
         double liftPower = 0;
         double armEPower = 0.8;
@@ -65,9 +65,9 @@ public class teleOpPositions extends LinearOpMode {
         // used with the dump servo, this will get covered in a bit
         ElapsedTime pickupTimer = new ElapsedTime();
 
-        final int pickupIdle = 0; // the idle position for the pickup motor 109
+        final int pickupIdle = 1; // the idle position for the pickup motor 109
         final int pickupHigh = 28; // the placing position for the pickup motor in the high position 148
-        final int pickupLow = 15; // the placing position for the pickup motor in the low/forward position 5
+        final int pickupLow = 5; // the placing position for the pickup motor in the low/forward position 5
 
         // the amount of time the pickup takes to activate in seconds
         final double pickupTime;
@@ -75,7 +75,7 @@ public class teleOpPositions extends LinearOpMode {
         final double armTime;
 
         final int armIdle = 0; // -84
-        final int armLow = 160; // the low encoder position for the arm -23
+        final int armLow = 100; // the low encoder position for the arm -23
         final int armHigh = 401; // the high-overhead encoder position for the arm 329
         final int armHang = 470;
 
@@ -164,16 +164,33 @@ public class teleOpPositions extends LinearOpMode {
                 // Controlling the pixel pick-up with the trigger and buttons (individual)
                 if (gamepad2.left_trigger>0) {
                     robot.setPickupPower(LWPowerPU, 0);
-                }
+                } else if (gamepad2.right_trigger>0) {
+                    robot.setPickupPower(0, RWPowerPU);
+                } else if (gamepad2.right_bumper)
+                    robot.setPickupPower(0, -0.9);
                 else if (gamepad2.left_bumper)
                     robot.setPickupPower(0.9, 0);
                 else {
                     robot.setPickupPower(0, 0);
                 }
-                if (gamepad2.right_trigger>0) {
-                    robot.setRightClawPosition(vvHardware.clawClose);
-                } else if (gamepad2.right_bumper)
-                    robot.setRightClawPosition(vvHardware.clawOpen);
+                /*if (gamepad2.left_trigger>0) The RHWheel did not perform with this code set?
+                    robot.leftWheel.setPower(LWPowerPU);
+                else if (gamepad2.left_bumper)
+                    robot.leftWheel.setPower(1);
+                else
+                    robot.leftWheel.setPower(0);
+
+                if (gamepad2.right_trigger>0)
+                    robot.setPickupPower(0, RWPowerPU);
+                else if (gamepad2.right_bumper)
+                    robot.setPickupPower(0, -1);
+                else
+                    robot.setPickupPower(0, 0); */
+
+                //if (gamepad2.right_trigger>0) {
+                  //  robot.setRightClawPosition(vvHardware.clawClose);
+                //} else if (gamepad2.right_bumper)
+                  //  robot.setRightClawPosition(vvHardware.clawOpen);
 
                 //Drone launch
                 if (gamepad2.options)
@@ -186,24 +203,24 @@ public class teleOpPositions extends LinearOpMode {
 // Adding telemetry readouts
                 telemetry.addData(">", "Robot Running");
                 telemetry.addData("Drive Power", drivePower);
-                telemetry.addData("Y", driveY);
-                telemetry.addData("strafe", strafe);
-                telemetry.addData("turn", turn);
+                //telemetry.addData("Y", driveY);
+                //telemetry.addData("strafe", strafe);
+                //telemetry.addData("turn", turn);
                 telemetry.addData("Y Encoder",encY);
                 telemetry.addData("X Encoder",encX);
                 telemetry.addData("Yaw (Z)", "%.2f Deg. (Heading)", orientation.getYaw(AngleUnit.DEGREES));
                 telemetry.addData("PickUp Position", robot.pickUp.getCurrentPosition());
-                telemetry.addData("Arm Power", armPower);
+                //telemetry.addData("Arm Power", armPower);
                 telemetry.addData("Arm Position", robot.rightArm.getCurrentPosition());
                 telemetry.addData("Arm Target", robot.rightArm.getTargetPosition());
-                telemetry.addData("Claw Position", robot.rightClaw.getPosition());
+                //telemetry.addData("Claw Position", robot.rightClaw.getPosition());
                 telemetry.addData("Drone", servpos);
                 telemetry.addData("Lift Position", robot.lift.getCurrentPosition());
 
                 telemetry.update();
 
-                // Pace this loop so jaw action is reasonable speed.
-                sleep(50);
+                // Pace this loop
+                sleep(20);
 
             }
         }

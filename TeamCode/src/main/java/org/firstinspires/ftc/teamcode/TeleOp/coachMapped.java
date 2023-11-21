@@ -29,7 +29,7 @@ import org.firstinspires.ftc.teamcode.util.Encoder;
  */
 
 @TeleOp(name="coachMap", group="1-TeleOp")
-
+@Disabled
 public class coachMapped extends LinearOpMode {
 
     //vvHardware class external pull

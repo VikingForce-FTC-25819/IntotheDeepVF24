@@ -104,7 +104,7 @@ public class vvHardware {
     final double armTime = 3;
 
     final public int armIdle = 0; // -84
-    final public int armLow = 160; // the low encoder position for the arm -23
+    final public int armLow = 100; // the low encoder position for the arm -23
     final public int armHigh = 401; // the high-overhead encoder position for the arm 329
 
     static final double FORWARD_SPEED = 0.3;
@@ -113,7 +113,7 @@ public class vvHardware {
     public static final double TICKS_PER_REV = 2000;
     public double encTicksToInches = TICKS_PER_REV/(WHEEL_DIAMETER*Math.PI);
     static final double s1Side = 15;
-    static final double s1Top = 21;
+    static final double s1Top = 20;
     static final double s2Left = 45; //degrees
     static final double s3Reverse = 4;
     static final double s3Forward = 4;
@@ -149,14 +149,14 @@ public class vvHardware {
         parallelEncoder = rightFront; //Will need to use an opposite sign for right
 
         // Define Servos
-        //rightWheel = myOpMode.hardwareMap.crservo.get("RSW");
-        rightClaw = myOpMode.hardwareMap.get(Servo.class,"RSW");
+        rightWheel = myOpMode.hardwareMap.crservo.get("RSW");
+        //rightClaw = myOpMode.hardwareMap.get(Servo.class,"RSW");
         leftWheel = myOpMode.hardwareMap.crservo.get("LSW");
         drone = myOpMode.hardwareMap.get(Servo.class,"drone");
 
-        rightClaw.scaleRange(0.2,0.7);
-        rightClaw.setDirection(Servo.Direction.FORWARD);
-        rightClaw.setPosition(clawClose);
+        //rightClaw.scaleRange(0.2,0.7);
+        //rightClaw.setDirection(Servo.Direction.FORWARD);
+        //rightClaw.setPosition(clawClose);
 
         drone.scaleRange(0,1);
         drone.setDirection(Servo.Direction.REVERSE);
@@ -331,7 +331,7 @@ public class vvHardware {
      */
     public void setPickupPower(double LWPower, double RWPower) {
         leftWheel.setPower(LWPower);
-        //rightWheel.setPower(RWPower);
+        rightWheel.setPower(RWPower);
     }
 
     /**
@@ -388,7 +388,7 @@ public class vvHardware {
             driveRobot(1, FORWARD_SPEED, 0, 0);
 
             runtime.reset();
-            while (myOpMode.opModeIsActive() && ((runtime.seconds() < 2)||(parallelEncoder.getCurrentPosition()<(s1Top*encTicksToInches)))) {
+            while (myOpMode.opModeIsActive() && ((runtime.seconds() < 1.8)||(parallelEncoder.getCurrentPosition()<(s1Top*encTicksToInches)))) {
                 myOpMode.telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
                 myOpMode.telemetry.update();
             }
