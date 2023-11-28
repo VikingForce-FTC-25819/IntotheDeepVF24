@@ -4,6 +4,7 @@ package org.firstinspires.ftc.teamcode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -139,15 +140,17 @@ public class teleOpPositions extends LinearOpMode {
                 servpos = robot.drone.getPosition();
 
                 //Controlling the pickup location
-                if (gamepad2.x)
+                if (gamepad2.a)
                     robot.movePickUp(pickupIdle, pickUpPwr);
-                else if (gamepad2.b)
+                else if (gamepad2.y)
                     robot.movePickUp(pickupHigh,pickUpPwr);
-                else if (gamepad2.a)
+                else if (gamepad2.b)
                     robot.movePickUp(pickupLow,pickUpPwr);
-                //else if (gamepad2.y)
-                  //  robot.movePickUp(pickupIdle,pickUpPwr);
-
+                else if (gamepad2.back && (robot.leftArm.getTargetPosition() < 60)) { //allow a reset of the pickup in case we start raised
+                    robot.pickUp.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    sleep(20);
+                    robot.pickUp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                }
                 //Controlling the arm to three specific positions - backdrop, drive, pickup
                 if (gamepad2.dpad_up) {
                     robot.armPos(armHigh, armEPower); //Backdrop location

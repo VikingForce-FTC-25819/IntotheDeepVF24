@@ -129,7 +129,7 @@ public class vvAutonStageRed extends LinearOpMode {
                     robot.autonStageTop();
                 if (Objects.equals(spikeLoc, "RIGHT"))
                     robot.autonStageRight();
-                if (Objects.equals(spikeLoc, "UNKNOWN"))
+                if ((Objects.equals(spikeLoc, "UNKNOWN") || Objects.equals(spikeLoc,"NOTFOUND")))
                     robot.autonStageLeft(); //This will change based upon side
             break;
             }

@@ -74,8 +74,9 @@ public class SampleMecanumDrive extends MecanumDrive {
     private DcMotorEx rightRear;
     private DcMotorEx rightFront;
 
-    public DcMotorEx parallelEncoder;
-    public DcMotorEx perpendicularEncoder;
+    //public DcMotorEx parallelEncoder;
+
+    //public DcMotorEx perpendicularEncoder;
     private List<DcMotorEx> motors;
 
     private IMU imu;
@@ -103,7 +104,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         // Adjust the orientation parameters to match your robot
         RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.LEFT;
         RevHubOrientationOnRobot.UsbFacingDirection  usbDirection  = RevHubOrientationOnRobot.UsbFacingDirection.UP;
-        // Without this, the REV Hub's orientation is assumed to be logo up / USB forward
+        // Indra is Logo UP and USB FRONT, Magnus is Logo LEFT USB UP
         RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(logoDirection, usbDirection);
         //IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
           //      DriveConstants.LOGO_FACING_DIR, DriveConstants.USB_FACING_DIR));
@@ -116,8 +117,8 @@ public class SampleMecanumDrive extends MecanumDrive {
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
 
         //Shadow the motors with encoder-odometry
-        parallelEncoder = leftFront;
-        perpendicularEncoder = rightFront;
+        //parallelEncoder = leftFront;
+        //perpendicularEncoder = rightFront;
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 

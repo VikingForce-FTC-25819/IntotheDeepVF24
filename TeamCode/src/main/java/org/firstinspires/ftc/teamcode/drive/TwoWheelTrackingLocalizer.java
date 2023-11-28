@@ -47,8 +47,8 @@ public class TwoWheelTrackingLocalizer extends TwoTrackingWheelLocalizer {
     // Parallel/Perpendicular to the forward axis
     // Parallel wheel is parallel to the forward axis
     // Perpendicular is perpendicular to the forward axis
-    //private Encoder parallelEncoder;
-    //private Encoder perpendicularEncoder;
+    private Encoder parallelEncoder;
+    private Encoder perpendicularEncoder;
     //public int parallelEncoder;
     //public int perpendicularEncoder;
 
@@ -63,10 +63,14 @@ public class TwoWheelTrackingLocalizer extends TwoTrackingWheelLocalizer {
 
         this.drive = drive;
 
-        //parallelEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "par"));
-        //perpendicularEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "per"));
+        parallelEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "leftFront"));
+        perpendicularEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "rightFront"));
 
         // TODO: reverse any encoders using Encoder.setDirection(Encoder.Direction.REVERSE)
+
+        //Magnus is reversed
+        //parallelEncoder.setDirection(Encoder.Direction.REVERSE);
+        //perpendicularEncoder.setDirection(Encoder.Direction.REVERSE);
     }
 
     public static double encoderTicksToInches(double ticks) {
@@ -87,8 +91,8 @@ public class TwoWheelTrackingLocalizer extends TwoTrackingWheelLocalizer {
     @Override
     public List<Double> getWheelPositions() {
         return Arrays.asList(
-                encoderTicksToInches(drive.parallelEncoder.getCurrentPosition()),
-                encoderTicksToInches(drive.perpendicularEncoder.getCurrentPosition())
+                encoderTicksToInches(parallelEncoder.getCurrentPosition()),
+                encoderTicksToInches(perpendicularEncoder.getCurrentPosition())
         );
     }
 
@@ -100,8 +104,8 @@ public class TwoWheelTrackingLocalizer extends TwoTrackingWheelLocalizer {
         //  compensation method
 
         return Arrays.asList(
-                encoderTicksToInches(drive.parallelEncoder.getVelocity()),
-                encoderTicksToInches(drive.perpendicularEncoder.getVelocity())
+                encoderTicksToInches(parallelEncoder.getCorrectedVelocity()),
+                encoderTicksToInches(perpendicularEncoder.getCorrectedVelocity())
         );
     }
 }

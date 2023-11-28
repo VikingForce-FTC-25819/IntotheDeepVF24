@@ -129,6 +129,8 @@ public class vvAutonTuning extends LinearOpMode {
                     robot.autonStageTop();
                 if (gamepad1.dpad_right)
                     robot.autonStageRight();
+                if (gamepad1.y)
+                    robot.autonTopBack();
 
                 driveY = -gamepad1.left_stick_y;
                 strafe = gamepad1.left_stick_x * 1;
