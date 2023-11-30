@@ -1097,6 +1097,7 @@ public class vvHardware {
             break;
         }
     }
+
     public void autonLeftBack() {
 
 // Wait for the game to start (driver presses PLAY)
@@ -1287,4 +1288,6 @@ public class vvHardware {
             break;
         }
     }
-}
+
+
+    public void autonTopStage() {
