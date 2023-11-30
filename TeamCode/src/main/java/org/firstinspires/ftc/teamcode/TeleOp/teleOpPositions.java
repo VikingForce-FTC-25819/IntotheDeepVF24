@@ -114,8 +114,8 @@ public class teleOpPositions extends LinearOpMode {
                 //pickUpPwr = -gamepad2.right_stick_y * 0.5;
                 //liftPower = -gamepad1.right_stick_y;
 
-                encY = -robot.parallelEncoder.getCurrentPosition(); //need to reverse
-                encX = robot.perpendicularEncoder.getCurrentPosition();
+                encY = robot.perpendicularEncoder.getCurrentPosition(); //need to reverse
+                encX = -robot.parallelEncoder.getCurrentPosition();
 
                 if (gamepad1.right_bumper) {
                     // button is transitioning to a pressed state. So increment drivePower by 0.1

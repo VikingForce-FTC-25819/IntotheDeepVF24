@@ -45,9 +45,9 @@ public class DriveConstants {
      * angular distances although most angular parameters are wrapped in Math.toRadians() for
      * convenience. Make sure to exclude any gear ratio included in MOTOR_CONFIG from GEAR_RATIO.
      */
-    public static double WHEEL_RADIUS = 1.88976; // in 1.88976
+    public static double WHEEL_RADIUS = 0.94488; // in 1.88976
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (motor) speed
-    public static double TRACK_WIDTH = 12.34; // in
+    public static double TRACK_WIDTH = 9.1; // in
 
     /*
      * These are the feedforward parameters used to model the drive motor behavior. If you are using
@@ -55,9 +55,9 @@ public class DriveConstants {
      * motor encoders or have elected not to use them for velocity control, these values should be
      * empirically tuned.
      */
-    public static double kV = 0.03; //1 / rpmToVelocity(MAX_RPM);
-    public static double kA = 0.0007; //0.00047
-    public static double kStatic = 0.25541; //0.26113
+    public static double kV = 0.019; //1 / rpmToVelocity(MAX_RPM);
+    public static double kA = 0.0002; //.0007; //0.00047
+    public static double kStatic = 0.0025; //.25541; //0.26113
     //Testing on 28Nov kV = 0.01121/0.01905/0.25162, kStatic = 0.35475 (R^2 = 0.00), kA = 0.00054 (R^2 = 0.00)
 
     /*
@@ -88,8 +88,8 @@ public class DriveConstants {
      * You are free to raise this on your own if you would like. It is best determined through experimentation.
      
      */
-    public static double MAX_VEL = 3 ; //26.295
-    public static double MAX_ACCEL = 1.5 ; //52.48180821614297
+    public static double MAX_VEL = 15 ; //26.295
+    public static double MAX_ACCEL = 26 ; //52.48180821614297
     public static double MAX_ANG_VEL = Math.toRadians(141.64);
     public static double MAX_ANG_ACCEL = Math.toRadians(184.02607784577722);
 
