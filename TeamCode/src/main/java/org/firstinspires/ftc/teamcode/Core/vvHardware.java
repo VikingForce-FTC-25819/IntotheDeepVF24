@@ -907,7 +907,7 @@ public class vvHardware {
             break;
         }
     }
-    public void autonRightBack () {
+    public void autonBackRight () {
 
 // Wait for the game to start (driver presses PLAY)
         while (myOpMode.opModeIsActive()) {
@@ -1098,7 +1098,7 @@ public class vvHardware {
         }
     }
 
-    public void autonLeftBack() {
+    public void autonBackLeft() {
 
 // Wait for the game to start (driver presses PLAY)
         while (myOpMode.opModeIsActive()) {
@@ -1288,6 +1288,4 @@ public class vvHardware {
             break;
         }
     }
-
-
-    public void autonTopStage() {
+}
