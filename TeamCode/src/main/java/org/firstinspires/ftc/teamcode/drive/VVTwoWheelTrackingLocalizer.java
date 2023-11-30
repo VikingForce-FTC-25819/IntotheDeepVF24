@@ -34,9 +34,9 @@ import java.util.List;
  *    \--------------/
  *
  */
-public class TwoWheelTrackingLocalizer extends TwoTrackingWheelLocalizer {
+public class VVTwoWheelTrackingLocalizer extends TwoTrackingWheelLocalizer {
     public static double TICKS_PER_REV = 2000;
-    public static double WHEEL_RADIUS = 0.94488; // in - 48mm
+    public static double WHEEL_RADIUS = 0.472441; // in - 48mm dia
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
 
     public static double PARALLEL_X = -6; // X is the up and down direction
@@ -53,18 +53,18 @@ public class TwoWheelTrackingLocalizer extends TwoTrackingWheelLocalizer {
     //public int parallelEncoder;
     //public int perpendicularEncoder;
 
-    private SampleMecanumDrive drive;
+    private vvRoadRunnerDrive vvdrive;
 
-    public TwoWheelTrackingLocalizer(HardwareMap hardwareMap, SampleMecanumDrive drive) {
+    public VVTwoWheelTrackingLocalizer(HardwareMap hardwareMap, vvRoadRunnerDrive vvdrive) {
         super(Arrays.asList(
             new Pose2d(PARALLEL_X, PARALLEL_Y, 0),
             new Pose2d(PERPENDICULAR_X, PERPENDICULAR_Y, Math.toRadians(90))
         ));
 
-        this.drive = drive;
+        this.vvdrive = vvdrive;
 
-        parallelEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "leftFront"));
-        perpendicularEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "rightFront"));
+        parallelEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "FLM"));
+        perpendicularEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "FRM"));
 
         // TODO: reverse any encoders using Encoder.setDirection(Encoder.Direction.REVERSE)
 
@@ -79,12 +79,12 @@ public class TwoWheelTrackingLocalizer extends TwoTrackingWheelLocalizer {
 
     @Override
     public double getHeading() {
-        return drive.getRawExternalHeading();
+        return vvdrive.getRawExternalHeading();
     }
 
     @Override
     public Double getHeadingVelocity() {
-        return drive.getExternalHeadingVelocity();
+        return vvdrive.getExternalHeadingVelocity();
     }
 
     @NonNull

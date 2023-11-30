@@ -66,7 +66,7 @@ public class teleOpPositions extends LinearOpMode {
         // used with the dump servo, this will get covered in a bit
         ElapsedTime pickupTimer = new ElapsedTime();
 
-        final int pickupIdle = 1; // the idle position for the pickup motor 109
+        final int pickupIdle = 0; // the idle position for the pickup motor 109
         final int pickupHigh = 28; // the placing position for the pickup motor in the high position 148
         final int pickupLow = 5; // the placing position for the pickup motor in the low/forward position 5
 
@@ -76,7 +76,7 @@ public class teleOpPositions extends LinearOpMode {
         final double armTime;
 
         final int armIdle = 0; // -84
-        final int armLow = 100; // the low encoder position for the arm -23
+        final int armLow = 110; // the low encoder position for the arm -23
         final int armHigh = 401; // the high-overhead encoder position for the arm 329
         final int armHang = 470;
 
@@ -146,6 +146,8 @@ public class teleOpPositions extends LinearOpMode {
                     robot.movePickUp(pickupHigh,pickUpPwr);
                 else if (gamepad2.b)
                     robot.movePickUp(pickupLow,pickUpPwr);
+                else if (gamepad2.x)
+                    robot.movePickUp(14, pickUpPwr);
                 else if (gamepad2.back && (robot.leftArm.getTargetPosition() < 60)) { //allow a reset of the pickup in case we start raised
                     robot.pickUp.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     sleep(20);
