@@ -314,14 +314,14 @@ public class vvHardware {
         driveRobot(1, 0, FORWARD_SPEED, 0);
 
         runtime.reset();
-        while (myOpMode.opModeIsActive() && ((runtime.seconds() < dTime)||(perpendicularEncoder.getCurrentPosition()>(distance*encTicksPerInches))));
+        while (myOpMode.opModeIsActive() && ((runtime.seconds() < dTime)||(-perpendicularEncoder.getCurrentPosition()>(distance*encTicksPerInches))));
         driveRobot(0, 0, 0, 0);
     }
     public void driveLeft(double dTime, double distance) {
         driveRobot(1, 0, -FORWARD_SPEED, 0);
 
         runtime.reset();
-        while (myOpMode.opModeIsActive() && ((runtime.seconds() < dTime)||(perpendicularEncoder.getCurrentPosition()<(distance*encTicksPerInches))));
+        while (myOpMode.opModeIsActive() && ((runtime.seconds() < dTime)||(-perpendicularEncoder.getCurrentPosition()<(distance*encTicksPerInches))));
         driveRobot(0, 0, 0, 0);
     }
     public void turnRight(double dTime, double desHeading) {
@@ -449,7 +449,7 @@ public class vvHardware {
             driveRobot(1, FORWARD_SPEED, 0, 0);
 
             runtime.reset();
-            while (myOpMode.opModeIsActive() && ((runtime.seconds() < 1.7)||(parallelEncoder.getCurrentPosition()<(s1Top*encTicksPerInches)))) {
+            while (myOpMode.opModeIsActive() && ((runtime.seconds() < 1.7)||(-parallelEncoder.getCurrentPosition()>(s1Top*encTicksPerInches)))) {
                 myOpMode.telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
                 myOpMode.telemetry.update();
             }
@@ -457,7 +457,7 @@ public class vvHardware {
             // Step 2:  Spin right for 1.3 seconds
 
             driveRobot(0.3, 0, 0, 0); //No Turn
-            final double s1Finish = parallelEncoder.getCurrentPosition();
+            final double s1Finish = -parallelEncoder.getCurrentPosition();
 
             runtime.reset();
             while (myOpMode.opModeIsActive() && (runtime.seconds() < 1)) {
@@ -477,7 +477,7 @@ public class vvHardware {
 
             // Step 4:  Stop
             driveRobot(0, 0, 0, 0);
-            final double s3Finish = parallelEncoder.getCurrentPosition();
+            final double s3Finish = -parallelEncoder.getCurrentPosition();
 
             while (myOpMode.opModeIsActive() && (runtime.seconds() < 1.0)) {
                 myOpMode.telemetry.addData("Path", "Leg 4: %4.1f S Elapsed", runtime.seconds());
@@ -778,15 +778,15 @@ public class vvHardware {
             driveRobot(1, FORWARD_SPEED, 0, 0);
 
             runtime.reset();
-            while (myOpMode.opModeIsActive() && ((runtime.seconds() < 1.9)||(parallelEncoder.getCurrentPosition()<(s1Top*encTicksPerInches)))) {
+            while (myOpMode.opModeIsActive() && ((runtime.seconds() < 1.9)||(-parallelEncoder.getCurrentPosition()>(s1Top*encTicksPerInches)))) {
                 myOpMode.telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
                 myOpMode.telemetry.update();
             }
-
+//|| (-parallelEncoder.getCurrentPosition()>(s1Top*encTicksPerInches)))
             // Step 2:  Spin right for 1.3 seconds
 
-            driveRobot(0.3, 0, 0, 0); //No Turn
-            final double s1Finish = parallelEncoder.getCurrentPosition();
+            driveRobot(0, 0, 0, 0); //No Turn
+            final double s1Finish = -parallelEncoder.getCurrentPosition();
 
             runtime.reset();
             while (myOpMode.opModeIsActive() && (runtime.seconds() < 1)) {
@@ -799,14 +799,14 @@ public class vvHardware {
             driveRobot(1, -FORWARD_SPEED, 0, 0);
 
             runtime.reset();
-            while (myOpMode.opModeIsActive() && ((runtime.seconds() < 0.6)||(parallelEncoder.getCurrentPosition()>(s1Finish-(s3Reverse*encTicksPerInches))))) {
+            while (myOpMode.opModeIsActive() && ((runtime.seconds() < 0.6)||(-parallelEncoder.getCurrentPosition()<(s1Finish-(s3Reverse*encTicksPerInches))))) {
                 myOpMode.telemetry.addData("Path", "Leg 3: %4.1f S Elapsed", runtime.seconds());
                 myOpMode.telemetry.update();
             }
 
             // Step 4:  Stop
             driveRobot(0, 0, 0, 0);
-            final double s3Finish = parallelEncoder.getCurrentPosition();
+            final double s3Finish = -parallelEncoder.getCurrentPosition();
 
             while (myOpMode.opModeIsActive() && (runtime.seconds() < 1.0)) {
                 myOpMode.telemetry.addData("Path", "Leg 4: %4.1f S Elapsed", runtime.seconds());
@@ -836,12 +836,12 @@ public class vvHardware {
 
             //Step 6: drive forward to the spike mark
 
-            final double s6Finish = parallelEncoder.getCurrentPosition();
+            final double s6Finish = -parallelEncoder.getCurrentPosition();
 
             driveRobot(1, 0.7*FORWARD_SPEED, 0, 0);
 
             runtime.reset();
-            while (myOpMode.opModeIsActive() && ((runtime.seconds() < 0.25)||(parallelEncoder.getCurrentPosition()<(s3Finish+(s5*encTicksPerInches))))) {
+            while (myOpMode.opModeIsActive() && ((runtime.seconds() < 0.25)||(-parallelEncoder.getCurrentPosition()>(s3Finish+(s5*encTicksPerInches))))) {
                 myOpMode.telemetry.addData("Path", "Leg 7: %4.1f S Elapsed", runtime.seconds());
                 myOpMode.telemetry.update();
             }
@@ -888,7 +888,7 @@ public class vvHardware {
             }
             // Step 10 arm up
             driveRobot(1, 0, 0, 0);
-            final double s10Finish = parallelEncoder.getCurrentPosition();
+            final double s10Finish = -parallelEncoder.getCurrentPosition();
             armPos(armLow,0.5);
             if(Math.abs(leftArm.getCurrentPosition() - armLow)<10)
                 movePickUp(autonPickupIdle,0.5);
@@ -912,7 +912,7 @@ public class vvHardware {
             //Step 11.5 strafe to the backdrop center
             driveRobot(0,0,0,0);
             myOpMode.sleep(100);
-            final double s11Finish = perpendicularEncoder.getCurrentPosition();
+            final double s11Finish = -perpendicularEncoder.getCurrentPosition();
             driveRobot(1, 0, FORWARD_SPEED, 0);
 
             runtime.reset();
@@ -923,7 +923,7 @@ public class vvHardware {
             //Step 12: push the pixel out
 
             driveRobot(0, 0, 0, 0);
-            final double s12Finish = perpendicularEncoder.getCurrentPosition();
+            final double s12Finish = -perpendicularEncoder.getCurrentPosition();
             leftWheel.setPower(0.9);
             //setRightClawPosition(vvHardware.clawOpen);
 

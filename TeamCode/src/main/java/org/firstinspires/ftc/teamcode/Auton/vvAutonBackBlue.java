@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode.Auton;
 
 import android.util.Size;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -39,6 +40,9 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDir
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.Core.vvHardware;
+import org.firstinspires.ftc.teamcode.Core.vvHardwareRR;
+import org.firstinspires.ftc.teamcode.Core.vvRoadRunnerDrive;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 
@@ -53,12 +57,25 @@ import java.util.Objects;
 @Autonomous(name = "vvAutonBackBlue", group = "1 - Blue Auton")
 
 public class vvAutonBackBlue extends LinearOpMode {
-    vvHardware robot = new vvHardware(this);
+    vvHardwareRR robot = new vvHardwareRR(this);
 
     private ElapsedTime runtime = new ElapsedTime();
 
     static final double FORWARD_SPEED = 0.3;
     static final double TURN_SPEED = 0.5;
+    // the amount of time the pickup takes to activate in seconds
+    final double pickupTime = 1;
+    // the amount of time the arm takes to raise in seconds
+    final double armTime = 2;
+    final int armIdle = 0;
+    final int armLow = 160; // the low encoder position for the arm, front place
+    final int armHigh = 401; // the high-overhead encoder position for the arm
+    final int armStart = 25;
+    double armEPower = 0.8;
+    double pickUpPwr = 0.7;
+    final int autonPickupIdle = -30; // the idle position for the pickup motor 109
+    final int autonPickupHigh = -5; // the placing position for the pickup motor in the high position 148
+    final int autonPickupLow = -27; // the placing position for the pickup motor in the low/forward position 5
 
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
 
@@ -90,10 +107,127 @@ public class vvAutonBackBlue extends LinearOpMode {
         robot.init();
         initTfod();
         String spikeLoc;
+
+        vvRoadRunnerDrive vvdrive = new vvRoadRunnerDrive(hardwareMap);
+
+        // Send telemetry message to signify robot waiting;
+        telemetry.addData(">", "Robot Ready.  Press Play.");
+        telemetry.update();
+
+        // We want to start the bot at x: 14, y: -60, heading: 90 degrees
+        Pose2d startPose = new Pose2d(14, -60, Math.toRadians(90));
+
+        vvdrive.setPoseEstimate(startPose);
+
+        TrajectorySequence purpleDropTop = vvdrive.trajectorySequenceBuilder(startPose)
+                .forward(40)
+                .UNSTABLE_addTemporalMarkerOffset(-1,()-> robot.movePickUp(autonPickupLow,pickUpPwr))
+                .back(10)
+                .UNSTABLE_addTemporalMarkerOffset(-1,()-> robot.armPos(armIdle+5,armEPower))
+                .waitSeconds(1)
+                .build();
+        TrajectorySequence purpleDropLeft = vvdrive.trajectorySequenceBuilder(startPose)
+                .forward(30)
+                .UNSTABLE_addTemporalMarkerOffset(-1,()-> robot.movePickUp(autonPickupLow,pickUpPwr))
+                .turn(Math.toRadians(50))
+                .UNSTABLE_addTemporalMarkerOffset(-0.5,()-> robot.armPos(armIdle+5,armEPower))
+                .forward(9)
+                .waitSeconds(1)
+                .back(3)
+                .build();
+        TrajectorySequence purpleDropRight = vvdrive.trajectorySequenceBuilder(startPose)
+                .forward(40)
+                .UNSTABLE_addTemporalMarkerOffset(-1,()-> robot.movePickUp(autonPickupLow,pickUpPwr))
+                .turn(Math.toRadians(-45))
+                .UNSTABLE_addTemporalMarkerOffset(-0.5,()-> robot.armPos(armIdle+5,armEPower))
+                .back(4)
+                .waitSeconds(1)
+                .build();
+        TrajectorySequence yellowBackDropTopBlue = vvdrive.trajectorySequenceBuilder(purpleDropTop.end())
+                .turn(Math.toRadians(90))
+                .forward(48)
+                .UNSTABLE_addDisplacementMarkerOffset(-30,() -> robot.armPos(armLow, armEPower))
+                .strafeRight(6)
+                .UNSTABLE_addTemporalMarkerOffset(-0.5,() -> robot.movePickUp(autonPickupLow, pickUpPwr))
+                .forward(4)
+                .build();
+        TrajectorySequence yellowBackDropRightBlue = vvdrive.trajectorySequenceBuilder(purpleDropRight.end())
+                .turn(Math.toRadians(135))
+                .forward(48)
+                .UNSTABLE_addDisplacementMarkerOffset(-30,() -> robot.armPos(armLow, armEPower))
+                .strafeRight(12)
+                .UNSTABLE_addTemporalMarkerOffset(-0.5,() -> robot.movePickUp(autonPickupLow, pickUpPwr))
+                .forward(4)
+                .build();
+        TrajectorySequence yellowBackDropLeftBlue = vvdrive.trajectorySequenceBuilder(purpleDropLeft.end())
+                .turn(Math.toRadians(45))
+                .strafeLeft(6)
+                .forward(48)
+                .UNSTABLE_addDisplacementMarkerOffset(-30,() -> robot.armPos(armLow, armEPower))
+                .strafeRight(4)
+                .UNSTABLE_addTemporalMarkerOffset(-0.5,() -> robot.movePickUp(autonPickupLow, pickUpPwr))
+                .forward(4)
+                .build();
+        TrajectorySequence yellowBackDropTopRed = vvdrive.trajectorySequenceBuilder(purpleDropTop.end())
+                .turn(Math.toRadians(-90))
+                .forward(48)
+                .UNSTABLE_addDisplacementMarkerOffset(-30,() -> robot.armPos(armLow, armEPower))
+                .strafeRight(6)
+                .UNSTABLE_addTemporalMarkerOffset(-0.5,() -> robot.movePickUp(autonPickupLow, pickUpPwr))
+                .forward(4)
+                .build();
+        TrajectorySequence yellowBackDropRightRed = vvdrive.trajectorySequenceBuilder(purpleDropRight.end())
+                .turn(Math.toRadians(45))
+                .strafeLeft(6)
+                .forward(48)
+                .UNSTABLE_addDisplacementMarkerOffset(-30,() -> robot.armPos(armLow, armEPower))
+                .strafeRight(8)
+                .UNSTABLE_addTemporalMarkerOffset(-0.5,() -> robot.movePickUp(autonPickupLow, pickUpPwr))
+                .forward(4)
+                .build();
+        TrajectorySequence yellowBackDropLeftRed = vvdrive.trajectorySequenceBuilder(purpleDropLeft.end())
+                .turn(Math.toRadians(135))
+                .forward(48)
+                .UNSTABLE_addDisplacementMarkerOffset(-30,() -> robot.armPos(armLow, armEPower))
+                .strafeRight(6)
+                .UNSTABLE_addTemporalMarkerOffset(-0.5,() -> robot.movePickUp(autonPickupLow, pickUpPwr))
+                .forward(4)
+                .build();
+        TrajectorySequence blueTopEnd = vvdrive.trajectorySequenceBuilder(yellowBackDropTopBlue.end())
+                .strafeLeft(30)
+                .UNSTABLE_addTemporalMarkerOffset(-0.8,() -> robot.movePickUp(autonPickupIdle, pickUpPwr))
+                .UNSTABLE_addTemporalMarkerOffset(-0.2, () -> robot.armPos(armIdle, armEPower))
+                .build();
+        TrajectorySequence blueRightEnd = vvdrive.trajectorySequenceBuilder(yellowBackDropRightBlue.end())
+                .strafeLeft(36)
+                .UNSTABLE_addTemporalMarkerOffset(-0.8,() -> robot.movePickUp(autonPickupIdle, pickUpPwr))
+                .UNSTABLE_addTemporalMarkerOffset(-0.2, () -> robot.armPos(armIdle, armEPower))
+                .build();
+        TrajectorySequence blueLeftEnd = vvdrive.trajectorySequenceBuilder(yellowBackDropLeftBlue.end())
+                .strafeLeft(24)
+                .UNSTABLE_addTemporalMarkerOffset(-0.8,() -> robot.movePickUp(autonPickupIdle, pickUpPwr))
+                .UNSTABLE_addTemporalMarkerOffset(-0.2, () -> robot.armPos(armIdle, armEPower))
+                .build();
+        TrajectorySequence redTopEnd = vvdrive.trajectorySequenceBuilder(yellowBackDropTopRed.end())
+                .strafeRight(24)
+                .UNSTABLE_addTemporalMarkerOffset(-0.8,() -> robot.movePickUp(autonPickupIdle, pickUpPwr))
+                .UNSTABLE_addTemporalMarkerOffset(-0.2, () -> robot.armPos(armIdle, armEPower))
+                .build();
+        TrajectorySequence redRightEnd = vvdrive.trajectorySequenceBuilder(yellowBackDropRightRed.end())
+                .strafeRight(30)
+                .UNSTABLE_addTemporalMarkerOffset(-0.8,() -> robot.movePickUp(autonPickupIdle, pickUpPwr))
+                .UNSTABLE_addTemporalMarkerOffset(-0.2, () -> robot.armPos(armIdle, armEPower))
+                .build();
+        TrajectorySequence redLeftEnd = vvdrive.trajectorySequenceBuilder(yellowBackDropLeftRed.end())
+                .strafeRight(36)
+                .UNSTABLE_addTemporalMarkerOffset(-0.8,() -> robot.movePickUp(autonPickupIdle, pickUpPwr))
+                .UNSTABLE_addTemporalMarkerOffset(-0.2, () -> robot.armPos(armIdle, armEPower))
+                .build();
         // Wait for the DS start button to be touched.
         telemetry.addData("DS preview on/off", "3 dots, Camera Stream");
         telemetry.addData(">", "Touch Play to start OpMode");
         telemetry.update();
+
         waitForStart();
 
         if (opModeIsActive()) {
@@ -108,15 +242,100 @@ public class vvAutonBackBlue extends LinearOpMode {
                 // Share the CPU.
                 sleep(200);
 
-                if (Objects.equals(spikeLoc, "LEFT"))
-                    robot.autonStageLeft();
-                if (Objects.equals(spikeLoc, "CENTER"))
-                    robot.autonStageTop();
-                if (Objects.equals(spikeLoc, "RIGHT"))
-                    robot.autonStageRight();
-                if (Objects.equals(spikeLoc, "UNKNOWN"))
-                    robot.autonStageLeft(); //This will change based upon side
-            break;
+                Pose2d poseEstimate = vvdrive.getPoseEstimate();
+                vvdrive.update();
+
+                if (Objects.equals(spikeLoc, "LEFT")) {
+                    robot.movePickUp(5, pickUpPwr);
+                    sleep(500);
+                    robot.armPos(armStart, armEPower);
+                    sleep(500);
+                    vvdrive.followTrajectorySequence(purpleDropLeft);
+                    telemetry.addData("Parallel Position: ", poseEstimate.getX());
+                    telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
+                    telemetry.update();
+                    robot.rightWheel.setPower(-0.9);
+                    sleep(1000);
+                    robot.rightWheel.setPower(0);
+                    vvdrive.followTrajectorySequence(yellowBackDropLeftBlue);
+                    robot.leftWheel.setPower(0.9);
+                    sleep(1000);
+                    robot.leftWheel.setPower(0);
+                    vvdrive.followTrajectorySequence(blueLeftEnd);
+                    telemetry.addData("Parallel Position: ", poseEstimate.getX());
+                    telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
+                    telemetry.update();
+                }
+                if (Objects.equals(spikeLoc, "CENTER")) {
+                    robot.movePickUp(5, pickUpPwr);
+                    sleep(500);
+                    robot.armPos(armStart, armEPower);
+                    sleep(500);
+                    vvdrive.followTrajectorySequence(purpleDropTop);
+                    telemetry.addData("Parallel Position: ", poseEstimate.getX());
+                    telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
+                    telemetry.update();
+                    robot.rightWheel.setPower(-0.9);
+                    sleep(1000);
+                    robot.rightWheel.setPower(0);
+                    vvdrive.followTrajectorySequence(yellowBackDropTopBlue);
+                    telemetry.addData("Parallel Position: ", poseEstimate.getX());
+                    telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
+                    telemetry.update();
+                    robot.leftWheel.setPower(0.9);
+                    sleep(1000);
+                    robot.leftWheel.setPower(0);
+                    vvdrive.followTrajectorySequence(blueTopEnd);
+                    telemetry.addData("Parallel Position: ", poseEstimate.getX());
+                    telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
+                    telemetry.update();
+                }
+                if (Objects.equals(spikeLoc, "RIGHT")){
+                    robot.movePickUp(5, pickUpPwr);
+                    sleep(500);
+                    robot.armPos(armStart, armEPower);
+                    sleep(500);
+                    vvdrive.followTrajectorySequence(purpleDropRight);
+                    telemetry.addData("Parallel Position: ", poseEstimate.getX());
+                    telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
+                    telemetry.update();
+                    robot.rightWheel.setPower(-0.9);
+                    sleep(1000);
+                    robot.rightWheel.setPower(0);
+                    vvdrive.followTrajectorySequence(yellowBackDropRightBlue);
+                    robot.leftWheel.setPower(0.9);
+                    sleep(1000);
+                    robot.leftWheel.setPower(0);
+                    vvdrive.followTrajectorySequence(blueRightEnd);
+                    telemetry.addData("Parallel Position: ", poseEstimate.getX());
+                    telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
+                    telemetry.update();
+                }
+                if (Objects.equals(spikeLoc, "UNKNOWN")){//Left is the default
+                    robot.movePickUp(5, pickUpPwr);
+                    sleep(500);
+                    robot.armPos(armStart, armEPower);
+                    sleep(500);
+                    vvdrive.followTrajectorySequence(purpleDropTop);
+                    telemetry.addData("Parallel Position: ", poseEstimate.getX());
+                    telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
+                    telemetry.update();
+                    robot.rightWheel.setPower(-0.9);
+                    sleep(1000);
+                    robot.rightWheel.setPower(0);
+                    vvdrive.followTrajectorySequence(yellowBackDropTopBlue);
+                    telemetry.addData("Parallel Position: ", poseEstimate.getX());
+                    telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
+                    telemetry.update();
+                    robot.leftWheel.setPower(0.9);
+                    sleep(1000);
+                    robot.leftWheel.setPower(0);
+                    vvdrive.followTrajectorySequence(blueTopEnd);
+                    telemetry.addData("Parallel Position: ", poseEstimate.getX());
+                    telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
+                    telemetry.update();
+                }
+                break;
             }
         }
 
@@ -267,7 +486,8 @@ public class vvAutonBackBlue extends LinearOpMode {
         }   // end for() loop
 
     }   // end method telemetryTfod()
-
+}
+/*
     private void autonDriveTop() {
         // Wait for the game to start (driver presses PLAY)
         while (opModeIsActive()) {
@@ -412,7 +632,7 @@ public class vvAutonBackBlue extends LinearOpMode {
             while (opModeIsActive() && (runtime.seconds() < 1.0)) {
                 telemetry.addData("Path", "Leg 3: %4.1f S Elapsed", runtime.seconds());
                 telemetry.update();
-            }*/
+            }
 
             // Step 4:  Stop
             robot.driveRobot(0, 0, 0, 0);
@@ -522,7 +742,7 @@ public class vvAutonBackBlue extends LinearOpMode {
             while (opModeIsActive() && (runtime.seconds() < 1.0)) {
                 telemetry.addData("Path", "Leg 3: %4.1f S Elapsed", runtime.seconds());
                 telemetry.update();
-            }*/
+            }
 
             // Step 4:  Stop
             robot.driveRobot(0, 0, 0, 0);
@@ -589,4 +809,4 @@ public class vvAutonBackBlue extends LinearOpMode {
         break;
         }
     }
-}   // end class
+} */  // end class

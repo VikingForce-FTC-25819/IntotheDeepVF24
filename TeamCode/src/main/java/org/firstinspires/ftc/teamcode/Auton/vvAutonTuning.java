@@ -82,6 +82,7 @@ public class vvAutonTuning extends LinearOpMode {
         // used with the arm timing
         ElapsedTime pickupTimer = new ElapsedTime();
         ElapsedTime armTimer = new ElapsedTime();
+        ElapsedTime runtime = new ElapsedTime();
 
         final int pickupIdle = 0; // the idle position for the pickup motor
         final int pickupPick = 0; // the pickup position
@@ -131,6 +132,8 @@ public class vvAutonTuning extends LinearOpMode {
                     robot.autonStageRight();
                 if (gamepad1.y)
                     robot.autonBackTop();
+                if(gamepad1.a)
+                    robot.autonBackTop2();
 
                 driveY = -gamepad1.left_stick_y;
                 strafe = gamepad1.left_stick_x * 1;

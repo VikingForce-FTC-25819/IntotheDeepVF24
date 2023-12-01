@@ -239,6 +239,7 @@ public class vvHardwareRR {
      */
     public void extractPurple(double RWTime) {
         rightWheel.setPower(-0.9);
+
         runtime.reset();
         while (myOpMode.opModeIsActive() && (runtime.seconds() < RWTime)) {
             rightWheel.setPower(0);

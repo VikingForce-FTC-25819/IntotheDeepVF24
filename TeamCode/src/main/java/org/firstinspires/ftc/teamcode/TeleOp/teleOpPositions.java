@@ -114,7 +114,7 @@ public class teleOpPositions extends LinearOpMode {
                 //pickUpPwr = -gamepad2.right_stick_y * 0.5;
                 //liftPower = -gamepad1.right_stick_y;
 
-                encY = robot.perpendicularEncoder.getCurrentPosition(); //need to reverse
+                encY = -robot.perpendicularEncoder.getCurrentPosition(); //need to reverse
                 encX = -robot.parallelEncoder.getCurrentPosition();
 
                 if (gamepad1.right_bumper) {
