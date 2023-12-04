@@ -74,7 +74,7 @@ public class vvAutonBackRed extends LinearOpMode {
     double pickUpPwr = 0.7;
     final int autonPickupIdle = -30; // the idle position for the pickup motor 109
     final int autonPickupHigh = -5; // the placing position for the pickup motor in the high position 148
-    final int autonPickupLow = -25; // the placing position for the pickup motor in the low/forward position 5
+    final int autonPickupLow = -27; // the placing position for the pickup motor in the low/forward position 5
 
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
 
@@ -396,9 +396,9 @@ public class vvAutonBackRed extends LinearOpMode {
                 telemetry.addData("- Position", "%.0f / %.0f", x, y);
 
                 if (propHeight > 70 && propHeight < 170 && propWidth > 70 && propWidth < 170) {
-                    if (x < 49) {
+                    if (x < 119) {
                         teamPropPosition = "LEFT";
-                    } else if (x >= 50 && x < 460) {
+                    } else if (x >= 120 && x < 400) {
                         teamPropPosition = "CENTER";
                     } else {
                         teamPropPosition = "RIGHT";

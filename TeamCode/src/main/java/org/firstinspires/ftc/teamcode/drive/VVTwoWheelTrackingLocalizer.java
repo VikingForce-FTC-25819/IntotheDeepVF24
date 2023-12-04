@@ -36,14 +36,16 @@ import java.util.List;
  */
 public class VVTwoWheelTrackingLocalizer extends TwoTrackingWheelLocalizer {
     public static double TICKS_PER_REV = 2000;
-    public static double WHEEL_RADIUS = 0.472441; // in - 48mm dia
+    public static double WHEEL_RADIUS = 0.944882; // in - 48mm dia
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
 
-    public static double PARALLEL_X = -6; // X is the up and down direction
-    public static double PARALLEL_Y = 6; // Y is the strafe direction
+    public static double PARALLEL_X = -5.25; // X is the up and down direction
+    public static double PARALLEL_Y = 3.5; // Y is the strafe direction
 
-    public static double PERPENDICULAR_X = -7;
-    public static double PERPENDICULAR_Y = 0;
+    public static double PERPENDICULAR_X = -5.25;
+    public static double PERPENDICULAR_Y = 0.25;
+    public static double X_MULTIPLIER = 1;
+    public static double Y_MULTIPLIER = 1;
 
     // Parallel/Perpendicular to the forward axis
     // Parallel wheel is parallel to the forward axis
@@ -63,14 +65,14 @@ public class VVTwoWheelTrackingLocalizer extends TwoTrackingWheelLocalizer {
 
         this.vvdrive = vvdrive;
 
-        parallelEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "FLM"));
-        perpendicularEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "FRM"));
+        parallelEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "FRM"));
+        perpendicularEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "FLM"));
 
         // TODO: reverse any encoders using Encoder.setDirection(Encoder.Direction.REVERSE)
 
-        //Magnus is reversed
-        //parallelEncoder.setDirection(Encoder.Direction.REVERSE);
-        //perpendicularEncoder.setDirection(Encoder.Direction.REVERSE);
+        //Magnus is perpendicular is reversed
+        parallelEncoder.setDirection(Encoder.Direction.REVERSE);
+        perpendicularEncoder.setDirection(Encoder.Direction.FORWARD);
     }
 
     public static double encoderTicksToInches(double ticks) {
@@ -91,8 +93,8 @@ public class VVTwoWheelTrackingLocalizer extends TwoTrackingWheelLocalizer {
     @Override
     public List<Double> getWheelPositions() {
         return Arrays.asList(
-                encoderTicksToInches(parallelEncoder.getCurrentPosition()),
-                encoderTicksToInches(perpendicularEncoder.getCurrentPosition())
+                encoderTicksToInches(parallelEncoder.getCurrentPosition())*X_MULTIPLIER,
+                encoderTicksToInches(perpendicularEncoder.getCurrentPosition())*Y_MULTIPLIER
         );
     }
 
@@ -104,8 +106,8 @@ public class VVTwoWheelTrackingLocalizer extends TwoTrackingWheelLocalizer {
         //  compensation method
 
         return Arrays.asList(
-                encoderTicksToInches(parallelEncoder.getCorrectedVelocity()),
-                encoderTicksToInches(perpendicularEncoder.getCorrectedVelocity())
+                encoderTicksToInches(parallelEncoder.getCorrectedVelocity())*X_MULTIPLIER,
+                encoderTicksToInches(perpendicularEncoder.getCorrectedVelocity())*Y_MULTIPLIER
         );
     }
 }

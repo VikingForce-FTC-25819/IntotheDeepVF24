@@ -83,45 +83,27 @@ public class vvHardwareRR {
     private ElapsedTime runtime = new ElapsedTime();
 
     // Define Drive constants.  Make them public so they CAN be used by the calling OpMode
-    public static final double clawClose      =  1 ;
-    public static final double clawOpen       =  0 ;
-    public static final double ARM_UP_POWER    =  0.45 ;
-    public static final double ARM_DOWN_POWER  = -0.45 ;
+
     public static final double droneSet = 0.25;
 
     // All variables below are used for auton methods
-    final int autonPickupIdle = -30; // the idle position for the pickup motor 109
-    final int autonPickupHigh = -5; // the placing position for the pickup motor in the high position 148
-    final int autonPickupLow = -27; // the placing position for the pickup motor in the low/forward position 5
+    public static final int autonPickupIdle = -30; // the idle position for the pickup motor 109
+    public static final int autonPickupHigh = -5; // the placing position for the pickup motor in the high position 148
+    public static final int autonPickupLow = -27; // the placing position for the pickup motor in the low/forward position 5
 
+    public static final double pickUpPwr = 0.7;
 
+    public static final double armEPower = 0.8;
+    final double pickupTime = 1; // the amount of time the pickup takes to activate in seconds
+    final double armTime = 3; // the amount of time the arm takes to raise in seconds
 
-    // the amount of time the pickup takes to activate in seconds
-    final double pickupTime = 1;
-    // the amount of time the arm takes to raise in seconds
-    final double armTime = 3;
+    public static final int armIdle = 0; // -84
 
-    final public int armIdle = 0; // -84
-    final public int armLow = 100; // the low encoder position for the arm -23
-    final public int armHigh = 401; // the high-overhead encoder position for the arm 329
-    final public int armStart = 10;
-    final public int autonArmIdle = 5;
+    public static final int armLow = 110; // the low encoder position for the arm -23
 
-    static final double FORWARD_SPEED = 0.3;
-    static final double TURN_SPEED = 0.5;
-    public static double WHEEL_DIAMETER = 1.88976; // in
-    public static final double TICKS_PER_REV = 2000;
-    public double encTicksToInches = TICKS_PER_REV/(WHEEL_DIAMETER*Math.PI);
-    static final double s1Side = 15;
-    static final double s1Top = 20;
-    static final double s2Turn = 45; //degrees
-    static final double s3Reverse = 4;
-    static final double s3Forward = 4;
+    public static final int armHigh = 395; // the high-overhead encoder position for the arm 329
+    public static final int armStart = 25;
 
-    static final double s5 = 3.5;
-    static final double s9Turn = 90; //Turn towards backdrop
-    static final double s11 = 24; //Strafing distance to backdrop
-    static final double s12 = 6; //Final distance to backdrop for placement
     // Define a constructor that allows the OpMode to pass a reference to itself.
     public vvHardwareRR(LinearOpMode opmode) {
         myOpMode = opmode;
@@ -143,7 +125,6 @@ public class vvHardwareRR {
 
         // Define Servos
         rightWheel = myOpMode.hardwareMap.crservo.get("RSW");
-        //rightClaw = myOpMode.hardwareMap.get(Servo.class,"RSW");
         leftWheel = myOpMode.hardwareMap.crservo.get("LSW");
         drone = myOpMode.hardwareMap.get(Servo.class,"drone");
 
@@ -190,14 +171,6 @@ public class vvHardwareRR {
     public void moveArm(double armPower) {
         leftArm.setPower(armPower);
         rightArm.setPower(armPower);
-        /*if (leftArm.getCurrentPosition() >80 && leftArm.getCurrentPosition()<140) {
-            leftArm.setPower(armPower * 0.5);
-            rightArm.setPower(armPower * 0.5);
-        }
-        else {
-            leftArm.setPower(armPower);
-            rightArm.setPower(armPower);
-        }*/
     }
     /**
      * Pass the requested arm position and power to the arm drive motors
@@ -232,50 +205,10 @@ public class vvHardwareRR {
         rightWheel.setPower(RWPower);
     }
 
-    /**
-     * Extract the purple pixel
-     *
-     * @param RWTime
-     */
-    public void extractPurple(double RWTime) {
-        rightWheel.setPower(-0.9);
-
-        runtime.reset();
-        while (myOpMode.opModeIsActive() && (runtime.seconds() < RWTime)) {
-            rightWheel.setPower(0);
-        }
-    }
-
-    /**
-     * Set the claw servo to close
-     *
-     * @param clawClose
-     */
-    public void setRightClawPosition(double clawClose) {
-        rightClaw.setPosition(clawClose);
-    }
-    /**
-     * Set the drone servo
-     *
-     * @param droneSet
-     */
-
     public void setDronePosition(double droneSet) {
         drone.setPosition(droneSet);
     }
 
-    /**
-     * Pass the requested lift power to the appropriate hardware drive motor
-     *
-     * @param liftPower driving power (-1.0 to 1.0)
-     */
-    public void moveLift(double liftPower) {
-        lift.setPower(liftPower); }
-    /**
-     * Pass the requested lift position to the appropriate hardware drive motor
-     * 1250 ticks will clear the bar
-     * @param liftLoc driving power (-1.0 to 1.0)
-     */
     public void moveLiftEnc(int liftLoc) {
         lift.setTargetPosition(liftLoc);
         lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);

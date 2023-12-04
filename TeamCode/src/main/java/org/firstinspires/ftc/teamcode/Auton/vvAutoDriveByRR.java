@@ -91,7 +91,9 @@ public class vvAutoDriveByRR extends LinearOpMode {
         telemetry.addLine("Running...");
         telemetry.update();
         vvdrive.followTrajectorySequence(purpleDropTop);
-        robot.extractPurple(1);
+        robot.rightWheel.setPower(-0.9);
+        sleep(1000);
+        robot.rightWheel.setPower(0);
         sleep(1000);
         robot.armPos(armLow,armEPower); //Drive location
         robot.movePickUp(autonPickupLow,pickUpPwr);

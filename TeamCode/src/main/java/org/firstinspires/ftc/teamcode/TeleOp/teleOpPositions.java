@@ -77,7 +77,7 @@ public class teleOpPositions extends LinearOpMode {
 
         final int armIdle = 0; // -84
         final int armLow = 110; // the low encoder position for the arm -23
-        final int armHigh = 401; // the high-overhead encoder position for the arm 329
+        final int armHigh = 395; // the high-overhead encoder position for the arm 329
         final int armHang = 470;
 
 

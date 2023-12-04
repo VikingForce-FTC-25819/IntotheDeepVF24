@@ -75,7 +75,7 @@ public class vvAutonBackBlue extends LinearOpMode {
     double pickUpPwr = 0.7;
     final int autonPickupIdle = -30; // the idle position for the pickup motor 109
     final int autonPickupHigh = -5; // the placing position for the pickup motor in the high position 148
-    final int autonPickupLow = -25; // the placing position for the pickup motor in the low/forward position 5
+    final int autonPickupLow = -27; // the placing position for the pickup motor in the low/forward position 5
 
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
 
@@ -343,25 +343,23 @@ public class vvAutonBackBlue extends LinearOpMode {
                     telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
                     telemetry.update();
                 }
-                if (Objects.equals(spikeLoc, "NOTFOUND")){//Left is the default
+                if (Objects.equals(spikeLoc, "NOTFOUND")){//Right is the default
                     robot.movePickUp(5, pickUpPwr);
                     sleep(500);
                     robot.armPos(armStart, armEPower);
                     sleep(500);
-                    vvdrive.followTrajectorySequence(purpleDropLeftRed);
+                    vvdrive.followTrajectorySequence(purpleDropRightRed);
                     telemetry.addData("Parallel Position: ", poseEstimate.getX());
                     telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
                     telemetry.update();
                     robot.rightWheel.setPower(-0.9);
                     sleep(1000);
                     robot.rightWheel.setPower(0);
-                    robot.movePickUp(autonPickupLow, pickUpPwr);
-                    sleep(500);
-                    vvdrive.followTrajectorySequence(yellowBackDropLeftBlue);
+                    vvdrive.followTrajectorySequence(yellowBackDropRightBlue);
                     robot.leftWheel.setPower(0.9);
                     sleep(1000);
                     robot.leftWheel.setPower(0);
-                    vvdrive.followTrajectorySequence(blueLeftEnd);
+                    vvdrive.followTrajectorySequence(blueRightEnd);
                     telemetry.addData("Parallel Position: ", poseEstimate.getX());
                     telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
                     telemetry.update();
@@ -402,9 +400,9 @@ public class vvAutonBackBlue extends LinearOpMode {
                 telemetry.addData("- Position", "%.0f / %.0f", x, y);
 
                 if (propHeight > 70 && propHeight < 170 && propWidth > 70 && propWidth < 170) {
-                    if (x < 49) {
+                    if (x < 200) {
                         teamPropPosition = "LEFT";
-                    } else if (x >= 50 && x < 460) {
+                    } else if (x >= 201 && x < 500) {
                         teamPropPosition = "CENTER";
                     } else {
                         teamPropPosition = "RIGHT";
