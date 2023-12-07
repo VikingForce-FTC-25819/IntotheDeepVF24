@@ -90,6 +90,8 @@ public class vvHardwareRR {
     public static final int autonPickupIdle = -30; // the idle position for the pickup motor 109
     public static final int autonPickupHigh = -5; // the placing position for the pickup motor in the high position 148
     public static final int autonPickupLow = -27; // the placing position for the pickup motor in the low/forward position 5
+    public static final int autonPickupStack = -38; // pickup location for getting the top pixel on the stack
+    public static final int autonPickupDoor = -45; // pickup location to move the stage door up
 
     public static final double pickUpPwr = 0.7;
 
@@ -103,6 +105,9 @@ public class vvHardwareRR {
 
     public static final int armHigh = 395; // the high-overhead encoder position for the arm 329
     public static final int armStart = 25;
+    public static final int armStack = 29; // arm position to pick up to top pixel on pixel stack
+    public static final int armDoor = 125 ; // arm position to move the stage door up
+
 
     // Define a constructor that allows the OpMode to pass a reference to itself.
     public vvHardwareRR(LinearOpMode opmode) {

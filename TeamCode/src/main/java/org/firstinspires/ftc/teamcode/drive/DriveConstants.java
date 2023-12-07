@@ -47,7 +47,7 @@ public class DriveConstants {
      */
     public static double WHEEL_RADIUS = 0.94488; // in 1.88976
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (motor) speed
-    public static double TRACK_WIDTH = 9.1; // in
+    public static double TRACK_WIDTH = 9.38; // in
 
     /*
      * These are the feedforward parameters used to model the drive motor behavior. If you are using
@@ -55,10 +55,11 @@ public class DriveConstants {
      * motor encoders or have elected not to use them for velocity control, these values should be
      * empirically tuned.
      */
-    public static double kV = 0.019; //1 / rpmToVelocity(MAX_RPM);
-    public static double kA = 0.0002; //.0007; //0.00047
+    public static double kV = 0.018; //1 / rpmToVelocity(MAX_RPM); 0.018
+    public static double kA = 0.0028; //.0007; //0.00047 0.0002
     public static double kStatic = 0.0025; //.25541; //0.26113
     //Testing on 28Nov kV = 0.01121/0.01905/0.25162, kStatic = 0.35475 (R^2 = 0.00), kA = 0.00054 (R^2 = 0.00)
+    //kV = 0.01644, kStatic = 0.05591 (R^2 = 0.99) kA = 0.00022 (R^2 = 0.05)
 
     /*
      * These values are used to generate the trajectories for you robot. To ensure proper operation,
@@ -83,14 +84,15 @@ public class DriveConstants {
      * The maximum acceleration is somewhat arbitrary and it is recommended that you tweak this yourself based on
      * actual testing. Just set it at a reasonable value and keep increasing until your path following starts
      * to degrade. As of now, it simply mirrors the velocity, resulting in 52.48180821614297 in/s/s
-     *
+     *Max Recommended Velocity: 51.139408492522215 Max Velocity: 63.92426061565276 Voltage Compensated kF: 6.0943787008924994
      * Maximum Angular Velocity is calculated as: maximum velocity / trackWidth * (180 / Math.PI) but capped at 360°/s.
+     * Max Angular Velocity (deg): 160.81121691320917 Max Angular Velocity (rad): 2.806685209274292 Max Recommended Angular Velocity (deg): 128.64897353056733 Max Recommended Angular Velocity (rad): 2.2453481674194338
      * You are free to raise this on your own if you would like. It is best determined through experimentation.
      
      */
-    public static double MAX_VEL = 15 ; //26.295
-    public static double MAX_ACCEL = 26 ; //52.48180821614297
-    public static double MAX_ANG_VEL = Math.toRadians(141.64);
+    public static double MAX_VEL = 32 ; //26.295 51.1394
+    public static double MAX_ACCEL = 32 ; //52.48180821614297 51.1394
+    public static double MAX_ANG_VEL = Math.toRadians(128.6489); //141.64
     public static double MAX_ANG_ACCEL = Math.toRadians(184.02607784577722);
 
     //public static String LOGO_FACING_DIR = "LEFT";
