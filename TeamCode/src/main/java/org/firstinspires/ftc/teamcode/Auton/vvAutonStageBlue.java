@@ -106,19 +106,19 @@ public class vvAutonStageBlue extends LinearOpMode {
         vvRoadRunnerDrive vvdrive = new vvRoadRunnerDrive(hardwareMap);
 
         // We want to start the bot at x: 14, y: -60, heading: 90 degrees
-        Pose2d startPose = new Pose2d(14, -60, Math.toRadians(90));
+        Pose2d startPose = new Pose2d(-41, 65, Math.toRadians(270));
 
         vvdrive.setPoseEstimate(startPose);
 
         TrajectorySequence purpleDropTopBlue = vvdrive.trajectorySequenceBuilder(startPose) //Also Red Back
-                .forward(40)
+                .forward(33)
                 .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.movePickUp(autonPickupLow, pickUpPwr))
                 .back(10)
                 .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.armPos(armIdle + 5, armEPower))
                 .waitSeconds(1)
                 .build();
         TrajectorySequence purpleDropLeftBlue = vvdrive.trajectorySequenceBuilder(startPose)
-                .forward(30)
+                .forward(24)
                 .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.movePickUp(autonPickupLow, pickUpPwr))
                 .turn(Math.toRadians(60))
                 .UNSTABLE_addTemporalMarkerOffset(-0.5, () -> robot.armPos(armIdle + 5, armEPower))
@@ -127,7 +127,7 @@ public class vvAutonStageBlue extends LinearOpMode {
                 .back(3)
                 .build();
         TrajectorySequence purpleDropRightBlue = vvdrive.trajectorySequenceBuilder(startPose)
-                .forward(36)
+                .forward(26)
                 .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.movePickUp(autonPickupLow, pickUpPwr))
                 .turn(Math.toRadians(-45))
                 .UNSTABLE_addTemporalMarkerOffset(-0.5, () -> robot.armPos(armIdle + 5, armEPower))
@@ -173,8 +173,8 @@ public class vvAutonStageBlue extends LinearOpMode {
                 .forward(42)
                 .UNSTABLE_addDisplacementMarkerOffset(-30, () -> robot.armPos(armLow, armEPower))
                 .strafeRight(9)
-                .UNSTABLE_addTemporalMarkerOffset(-0.5, () -> robot.movePickUp(autonPickupLow, pickUpPwr))
-                .forward(4)
+                .UNSTABLE_addTemporalMarkerOffset(-0.5, () -> robot.movePickUp(autonPickupLow-6, pickUpPwr))
+                .forward(3)
                 .build();
         TrajectorySequence yellowBackDropLeftBlue = vvdrive.trajectorySequenceBuilder(purpleDropLeftRed.end())
                 .strafeLeft(10)

@@ -101,6 +101,7 @@ public class vvHardware {
 
 
 
+
     // the amount of time the pickup takes to activate in seconds
     final double pickupTime = 1;
     // the amount of time the arm takes to raise in seconds
@@ -109,6 +110,8 @@ public class vvHardware {
     final public int armIdle = 0; // -84
     final public int armLow = 100; // the low encoder position for the arm -23
     final public int armHigh = 401; // the high-overhead encoder position for the arm 329
+    final public int armHang = 293;
+    final public int pickUpHang = -119;
     final public int armStart = 25;
     final public int autonArmIdle = 5;
 
@@ -415,7 +418,8 @@ public class vvHardware {
         lift.setPower(liftPower); }
     /**
      * Pass the requested lift position to the appropriate hardware drive motor
-     * 1250 ticks will clear the bar
+     * 1250 ticks will clear the bar (four stage, 435 RPM motor)
+     * 1650 ticks will clear the bar (three stage, 312 RPM motor)
      * @param liftLoc driving power (-1.0 to 1.0)
      */
     public void moveLiftEnc(int liftLoc) {

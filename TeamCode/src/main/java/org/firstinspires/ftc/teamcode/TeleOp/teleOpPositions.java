@@ -133,7 +133,7 @@ public class teleOpPositions extends LinearOpMode {
 
                 //robot.moveLift(liftPower);
                 if (gamepad1.dpad_up)
-                    robot.moveLiftEnc(1250);
+                    robot.moveLiftEnc(1650);
                 else if (gamepad1.dpad_down)
                     robot.moveLiftEnc(0);
 
@@ -163,9 +163,9 @@ public class teleOpPositions extends LinearOpMode {
                 else if (gamepad2.dpad_right){
                     robot.armPos(armLow,armEPower); //Drive location
                     robot.movePickUp(pickupLow,pickUpPwr);}
-                else if (gamepad2.dpad_left)
-                   robot.armPos(armHang,armEPower);
-
+                else if (gamepad2.dpad_left){
+                   robot.armPos(robot.armHang, armEPower );
+                robot.movePickUp(robot.pickUpHang,pickUpPwr);}
                 // Controlling the pixel pick-up with the trigger and buttons (individual)
                 if (gamepad2.left_trigger>0)
                     robot.leftWheel.setPower(LWPowerPU);
