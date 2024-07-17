@@ -127,7 +127,7 @@ public class vvAutonStageRed extends LinearOpMode {
                 .build();
         // Purple Stage Drop Trajectories - Red **Note these are flipped in the Backdrop
         TrajectorySequence purpleDropTopRed = vvdrive.trajectorySequenceBuilder(startPose) //Also Blue Back
-                .forward(32)
+                .forward(30)
                 .UNSTABLE_addTemporalMarkerOffset(-1.5, () -> robot.movePickUp(robot.autonPickupIdle - 5, robot.pickUpPwr))
                 .back(6)
                 .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.armPos(robot.armIdle + 5, robot.armEPower))
@@ -145,7 +145,7 @@ public class vvAutonStageRed extends LinearOpMode {
         TrajectorySequence purpleDropRightRed = vvdrive.trajectorySequenceBuilder(startPose)
                 .forward(32)
                 .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.movePickUp(robot.autonPickupLow, robot.pickUpPwr))
-                .turn(Math.toRadians(-50))
+                .turn(Math.toRadians(50))
                 .UNSTABLE_addTemporalMarkerOffset(-0.5, () -> robot.armPos(robot.armIdle + 5, robot.armEPower))
                 .forward(6)
                 .waitSeconds(1)

@@ -51,10 +51,18 @@ public class vvAutonTuningRR extends LinearOpMode {
 
         //Truss Lap Race
         TrajectorySequence trussRace = vvdrive.trajectorySequenceBuilder(startPose)
-                .forward(100)
-                .strafeLeft(48)
-                .back(100)
-                .strafeRight(48)
+                .forward(118)
+                .strafeLeft(76)
+                .back(116)
+                .strafeRight(76)
+                .forward(114)
+                .strafeLeft(76)
+                .back(116)
+                .strafeRight(76)
+                .forward(114)
+                .strafeLeft(76)
+                .back(116)
+                .strafeRight(76)
                 .build();
         // Purple Stage Drop Trajectories - Blue **Note these are flipped in the Backdrop
         TrajectorySequence purpleDropTopBlue = vvdrive.trajectorySequenceBuilder(startPose) //Also Red Back
@@ -396,14 +404,6 @@ public class vvAutonTuningRR extends LinearOpMode {
                 telemetry.addLine("Running...");
                 telemetry.update();
                 robot.movePickUp(5, robot.pickUpPwr);
-                vvdrive.followTrajectorySequence(trussRace);
-                telemetry.addData("Parallel Position: ", poseEstimate.getX());
-                telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
-                telemetry.update();
-                vvdrive.followTrajectorySequence(trussRace);
-                telemetry.addData("Parallel Position: ", poseEstimate.getX());
-                telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
-                telemetry.update();
                 vvdrive.followTrajectorySequence(trussRace);
                 telemetry.addData("Parallel Position: ", poseEstimate.getX());
                 telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
