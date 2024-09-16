@@ -129,3 +129,13 @@ Note: Some names start with "Team" and others start with "team".  This is intent
 5)  Add:    include ':Team0417' to the "/settings.gradle" file.
     
 6)  Open up Android Studios and clean out any old files by using the menu to "Build/Clean Project""
+
+CLASS ASSIGNMENTS
+Machine learning - Isabela
+LimeLight - Riddhi
+Core Hardware- Isabela
+Auton - Dev, Isabela, Riddhi (Work in Trajectory sequence class and each work on 1 catagory of trajectory sequence )
+TeleOp- Saisha
+LED lights - Dev
+Documentation - Saisha
+
