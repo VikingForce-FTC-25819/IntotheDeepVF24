@@ -1,18 +1,18 @@
 ## Vibranium Viking Team Info
 
-Creation of documentation regarding how our code "flows"
+Creation of documentation regarding how our code flows
 
-All devices start with methods in the vvHardware.java class
+Hardware Abstraction and proper programming structure is critical to ensure reliability and improve troubleshooting
 
-Using 'robot.' can call any hardware from that class in the active class for reuse and ease
+All devices start with configuration and methods in the vvHardware.java class
+Using 'robot.' (or whatever is declared in the respective class, for this class call) can call any hardware from that class into the active class for reuse and consistency
 
-1Nov23 Programming objectives - Video the team prop and begin the ML process.  Read the Road Runner code and begin to implement in preparation of tuning.
+For Trajectory Sequences we will add vvHardwareRR to call the methods for trajectory building and any sequence automation.
 
-5Nov23 Added new Packages to keep things tidy.
- - Auton, Concept, Core, & TeleOp
+Packages are used to keep things organized
+ - Auton, Concept, Core, & TeleOp are packages our team will work within
+ - drive, trajectorysequence, and util are used for Core extensions and tuning
  - Core is for any classes we intent to call for methods and actions
  - Concept will be any troubleshooting or learning classes
 
-14Nov23 Adjusted to a right claw, taller arm gear ratio, and new start position (arm up with pickup collapsed)
-- Classes impacted, vvHardware, new TeleOp for testing
-- Added Field Centric method to vvHardware
+Tuning is required for every robot due to differences in mass, structure, and controls
