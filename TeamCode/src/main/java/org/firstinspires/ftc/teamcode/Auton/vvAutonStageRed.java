@@ -40,13 +40,13 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+//import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.Core.vvHardware;
 import org.firstinspires.ftc.teamcode.Core.vvHardwareRR;
 import org.firstinspires.ftc.teamcode.Core.vvRoadRunnerDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.vision.VisionPortal;
-import org.firstinspires.ftc.vision.tfod.TfodProcessor;
+//import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 import org.firstinspires.ftc.teamcode.Core.vvHardware;
 
 import java.util.List;
@@ -80,12 +80,12 @@ public class vvAutonStageRed extends LinearOpMode {
     /**
      * The variable to store our instance of the TensorFlow Object Detection processor.
      */
-    private TfodProcessor tfod;
+    //private TfodProcessor tfod;
 
     /**
      * The variable to store our instance of the vision portal.
      */
-    private VisionPortal visionPortal;
+    //private VisionPortal visionPortal;
 
     //public vvTFOD(LinearOpMode opmode) { myOpMode = opmode;}
     @Override
@@ -159,16 +159,16 @@ public class vvAutonStageRed extends LinearOpMode {
                 .strafeRight(40)
                 .UNSTABLE_addDisplacementMarkerOffset(-6, () -> robot.movePickUp(robot.autonPickupStack, robot.pickUpPwr))
                 .forward(7)
-                .UNSTABLE_addTemporalMarkerOffset(-1,() -> robot.rightWheel.setPower(0.9))
+                .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.rightWheel.setPower(0.9))
                 .waitSeconds(1)
-                .UNSTABLE_addTemporalMarkerOffset(0,() -> robot.rightWheel.setPower(0))
+                .UNSTABLE_addTemporalMarkerOffset(0, () -> robot.rightWheel.setPower(0))
                 .lineToConstantHeading(new Vector2d(24, 3))
                 .UNSTABLE_addDisplacementMarkerOffset(-62, () -> robot.armPos(robot.armDoor, robot.armEPower))
-                .UNSTABLE_addDisplacementMarkerOffset(-60,() -> robot.movePickUp(robot.autonPickupDoor,robot.pickUpPwr))
+                .UNSTABLE_addDisplacementMarkerOffset(-60, () -> robot.movePickUp(robot.autonPickupDoor, robot.pickUpPwr))
                 .UNSTABLE_addDisplacementMarkerOffset(-10, () -> robot.armPos(robot.armLow, robot.armEPower))
-                .UNSTABLE_addDisplacementMarkerOffset(-8,() -> robot.movePickUp(robot.autonPickupLow,robot.pickUpPwr))
+                .UNSTABLE_addDisplacementMarkerOffset(-8, () -> robot.movePickUp(robot.autonPickupLow, robot.pickUpPwr))
                 .turn(Math.toRadians(180))
-                .splineToConstantHeading(new Vector2d(46,-30),Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(46, -30), Math.toRadians(0))
                 .forward(6)
                 .build();
         TrajectorySequence yellowStageDropLeftRed = vvdrive.trajectorySequenceBuilder(purpleDropTopRed.end())
@@ -180,14 +180,14 @@ public class vvAutonStageRed extends LinearOpMode {
                 .turn(Math.toRadians(90))
                 .lineToConstantHeading(new Vector2d(24, 3))
                 .UNSTABLE_addDisplacementMarkerOffset(-62, () -> robot.armPos(robot.armDoor, robot.armEPower))
-                .UNSTABLE_addDisplacementMarkerOffset(-60,() -> robot.movePickUp(robot.autonPickupDoor,robot.pickUpPwr))
+                .UNSTABLE_addDisplacementMarkerOffset(-60, () -> robot.movePickUp(robot.autonPickupDoor, robot.pickUpPwr))
                 .UNSTABLE_addDisplacementMarkerOffset(-10, () -> robot.armPos(robot.armLow, robot.armEPower))
-                .UNSTABLE_addDisplacementMarkerOffset(-8,() -> robot.movePickUp(robot.autonPickupLow,robot.pickUpPwr))
+                .UNSTABLE_addDisplacementMarkerOffset(-8, () -> robot.movePickUp(robot.autonPickupLow, robot.pickUpPwr))
                 /*.UNSTABLE_addDisplacementMarkerOffset(-6, () -> robot.movePickUp(robot.autonPickupStack, robot.pickUpPwr))
                 .forward(7)
                 .UNSTABLE_addTemporalMarkerOffset(-1,() -> robot.rightWheel.setPower(0.9))*/
                 .turn(Math.toRadians(180))
-                .splineToConstantHeading(new Vector2d(46,-30),Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(46, -30), Math.toRadians(0))
                 .forward(6)
                 .build();
         TrajectorySequence yellowStageDropRightRed = vvdrive.trajectorySequenceBuilder(purpleDropTopRed.end())
@@ -204,11 +204,11 @@ public class vvAutonStageRed extends LinearOpMode {
                   .UNSTABLE_addTemporalMarkerOffset(0,() -> robot.rightWheel.setPower(0)*/
                 .lineToConstantHeading(new Vector2d(24, 3))
                 .UNSTABLE_addDisplacementMarkerOffset(-62, () -> robot.armPos(robot.armDoor, robot.armEPower))
-                .UNSTABLE_addDisplacementMarkerOffset(-60,() -> robot.movePickUp(robot.autonPickupDoor,robot.pickUpPwr))
+                .UNSTABLE_addDisplacementMarkerOffset(-60, () -> robot.movePickUp(robot.autonPickupDoor, robot.pickUpPwr))
                 .UNSTABLE_addDisplacementMarkerOffset(-10, () -> robot.armPos(robot.armLow, robot.armEPower))
-                .UNSTABLE_addDisplacementMarkerOffset(-8,() -> robot.movePickUp(robot.autonPickupLow,robot.pickUpPwr))
+                .UNSTABLE_addDisplacementMarkerOffset(-8, () -> robot.movePickUp(robot.autonPickupLow, robot.pickUpPwr))
                 .turn(Math.toRadians(180))
-                .splineToConstantHeading(new Vector2d(46,-44),Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(46, -44), Math.toRadians(0))
                 .forward(8)
                 .build();
         // Yellow Backdrop Trajectories - Blue
@@ -313,7 +313,7 @@ public class vvAutonStageRed extends LinearOpMode {
                 .UNSTABLE_addTemporalMarkerOffset(-0.2, () -> robot.armPos(robot.armIdle, robot.armEPower))
                 .build();
 
-        initTfod();
+        //initTfod();
         String spikeLoc;
         // Wait for the DS start button to be touched.
         telemetry.addData(">", "Robot Ready");
@@ -326,8 +326,8 @@ public class vvAutonStageRed extends LinearOpMode {
         if (opModeIsActive()) {
             while (opModeIsActive()) {
 
-                telemetryTfod();
-                spikeLoc = startDetection();
+                //telemetryTfod();
+                spikeLoc = "Blue";
                 // Push telemetry to the Driver Station.
                 telemetry.addData("Location Heading", spikeLoc);
                 telemetry.update();
@@ -339,7 +339,7 @@ public class vvAutonStageRed extends LinearOpMode {
                 // Share the CPU.
                 sleep(200);
 
-                if (Objects.equals(spikeLoc, "LEFT")){
+                if (Objects.equals(spikeLoc, "LEFT")) {
                     robot.movePickUp(5, robot.pickUpPwr);
                     sleep(500);
                     robot.armPos(robot.armStart, robot.armEPower);
@@ -352,7 +352,7 @@ public class vvAutonStageRed extends LinearOpMode {
                     sleep(1000);
                     robot.rightWheel.setPower(0);
                 }
-                if (Objects.equals(spikeLoc, "CENTER")){
+                if (Objects.equals(spikeLoc, "CENTER")) {
                     telemetry.addLine("Running...");
                     telemetry.update();
                     robot.movePickUp(5, robot.pickUpPwr);
@@ -371,7 +371,7 @@ public class vvAutonStageRed extends LinearOpMode {
                     robot.rightWheel.setPower(0);
                     vvdrive.followTrajectorySequence(redStageTopEnd);
                 }
-                if (Objects.equals(spikeLoc, "RIGHT")){
+                if (Objects.equals(spikeLoc, "RIGHT")) {
                     telemetry.addLine("Running...");
                     telemetry.update();
                     robot.movePickUp(5, robot.pickUpPwr);
@@ -390,7 +390,7 @@ public class vvAutonStageRed extends LinearOpMode {
                     robot.rightWheel.setPower(0);
                     vvdrive.followTrajectorySequence(redStageTopEnd);
                 }
-                if ((Objects.equals(spikeLoc, "NOTFOUND"))){ //Right is default
+                if ((Objects.equals(spikeLoc, "NOTFOUND"))) { //Right is default
                     telemetry.addLine("Running...");
                     telemetry.update();
                     robot.movePickUp(5, robot.pickUpPwr);
@@ -415,18 +415,19 @@ public class vvAutonStageRed extends LinearOpMode {
                 telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
                 telemetry.update();
 
-            break;
+                break;
             }
         }
 
         // Save more CPU resources when camera is no longer needed.
-        visionPortal.close();
+        //visionPortal.close();
 
     }   // end runOpMode()
+}
 
     /**
      * Initialize the TensorFlow Object Detection processor.
-     */
+
     protected String startDetection() {
         String teamPropPosition = "NOTFOUND";
 
@@ -530,7 +531,7 @@ public class vvAutonStageRed extends LinearOpMode {
 
     /**
      * Add telemetry about TensorFlow Object Detection (TFOD) recognitions.
-     */
+
     private void telemetryTfod() {
 
         List<Recognition> currentRecognitions = tfod.getRecognitions();
@@ -567,4 +568,4 @@ public class vvAutonStageRed extends LinearOpMode {
 
     }   // end method locTfod()
 
-}   // end class
+}   // end class*/

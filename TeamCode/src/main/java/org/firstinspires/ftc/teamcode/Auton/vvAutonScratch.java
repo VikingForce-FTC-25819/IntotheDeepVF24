@@ -39,10 +39,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+//import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.Core.vvHardware;
 import org.firstinspires.ftc.vision.VisionPortal;
-import org.firstinspires.ftc.vision.tfod.TfodProcessor;
+//import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 
 import java.util.List;
 
@@ -83,12 +83,12 @@ public class vvAutonScratch extends LinearOpMode {
     /**
      * The variable to store our instance of the TensorFlow Object Detection processor.
      */
-    private TfodProcessor tfod;
+    //private TfodProcessor tfod;
 
     /**
      * The variable to store our instance of the vision portal.
      */
-    private VisionPortal visionPortal;
+    //private VisionPortal visionPortal;
 
     //public vvTFOD(LinearOpMode opmode) { myOpMode = opmode;}
     @Override
@@ -110,13 +110,16 @@ public class vvAutonScratch extends LinearOpMode {
         if (opModeIsActive()) {
 
             while (opModeIsActive()) {
-
+            }
+        }
+    }
+}
                 //y = -robot.parallelEncoder.getCurrentPosition();
                 //x = robot.perpendicularEncoder.getCurrentPosition(); //parallel, forward encoder distance is 0
 
                 //telemetry.addData("Y Encoder",y);
                 //telemetry.addData("X Encoder",x);
-
+/**
                 runtime.reset();
                 while (opModeIsActive() && (runtime.seconds() < 10.0)) {
                     List<Recognition> currentRecognitions = tfod.getRecognitions();
@@ -172,9 +175,9 @@ public class vvAutonScratch extends LinearOpMode {
             }// end runOpMode()
         }
     }
-        /**
+
          * Initialize the TensorFlow Object Detection processor.
-         */
+
         public void initTfod () {
 
             // Create the TensorFlow processor by using a builder.
@@ -263,9 +266,9 @@ public class vvAutonScratch extends LinearOpMode {
         }
     
 
-    /**
+
      * Add telemetry about TensorFlow Object Detection (TFOD) recognitions.
-     */
+
     private void telemetryTfod() {
 
         List<Recognition> currentRecognitions = tfod.getRecognitions();
@@ -296,7 +299,7 @@ public class vvAutonScratch extends LinearOpMode {
                     spike = 2;
                 if (x < 150) // x <100 && heading < 0
                     spike = 0;
-*/
+
                 telemetry.addData("", " ");
                 telemetry.addData("Image", "%s (%.0f %% Conf.)", recognition.getLabel(), recognition.getConfidence() * 100);
                 telemetry.addData("- Position", "%.0f / %.0f", x, y);
@@ -395,7 +398,7 @@ public class vvAutonScratch extends LinearOpMode {
             while (opModeIsActive() && (runtime.seconds() < 1.0)) {
                 telemetry.addData("Path", "Leg 0: %4.1f S Elapsed", runtime.seconds());
                 telemetry.update();
-            }*/
+            }
 
             // Step 1:  Drive forward for 3 seconds
 
@@ -425,7 +428,7 @@ public class vvAutonScratch extends LinearOpMode {
             while (opModeIsActive() && (runtime.seconds() < 1.0)) {
                 telemetry.addData("Path", "Leg 3: %4.1f S Elapsed", runtime.seconds());
                 telemetry.update();
-            }*/
+            }
 
             // Step 4:  Stop
             robot.driveRobot(0, 0, 0, 0);
@@ -451,7 +454,7 @@ public class vvAutonScratch extends LinearOpMode {
             while (opModeIsActive() && (runtime.seconds() < 3.0)) {
                 telemetry.addData("Path", "Leg 6: %4.1f S Elapsed", runtime.seconds());
                 telemetry.update();
-            }*/
+            }
 
             telemetry.addData("Path", "Complete");
             telemetry.update();
@@ -500,7 +503,7 @@ public class vvAutonScratch extends LinearOpMode {
             while (opModeIsActive() && (runtime.seconds() < 1.0)) {
                 telemetry.addData("Path", "Leg 3: %4.1f S Elapsed", runtime.seconds());
                 telemetry.update();
-            }*/
+            }
 
             // Step 4:  Stop
             robot.driveRobot(0, 0, 0, 0);
@@ -534,3 +537,4 @@ public class vvAutonScratch extends LinearOpMode {
         }
     }
 }// end class
+         */
