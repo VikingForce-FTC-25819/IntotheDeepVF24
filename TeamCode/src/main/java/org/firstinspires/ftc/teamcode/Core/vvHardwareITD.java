@@ -17,12 +17,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.util.Encoder;
 
 /*
- * New hardware class for the ITTD game
+ * New hardware class for the ITD (Into The Deep) game
  * Need to add single arm motor, extension motor, wrist, and claw
  */
 
 @Disabled
-public class vvHardwareITTD {
+public class vvHardwareITD {
 
 
     /* Declare OpMode members. */
@@ -98,7 +98,7 @@ public class vvHardwareITTD {
     static final double s13 = 18; //Final distance to the side after backdrop
 
     // Define a constructor that allows the OpMode to pass a reference to itself.
-    public vvHardwareITTD(LinearOpMode opmode) {
+    public vvHardwareITD(LinearOpMode opmode) {
         myOpMode = opmode;
     }
 
