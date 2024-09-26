@@ -38,13 +38,13 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+//import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.Core.vvHardware;
 import org.firstinspires.ftc.teamcode.Core.vvHardwareRR;
 import org.firstinspires.ftc.teamcode.Core.vvRoadRunnerDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.vision.VisionPortal;
-import org.firstinspires.ftc.vision.tfod.TfodProcessor;
+//import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 
 import java.util.List;
 import java.util.Objects;
@@ -92,7 +92,7 @@ public class vvAutonStageBlue extends LinearOpMode {
     /**
      * The variable to store our instance of the TensorFlow Object Detection processor.
      */
-    private TfodProcessor tfod;
+    //private TfodProcessor tfod;
 
     /**
      * The variable to store our instance of the vision portal.
@@ -173,7 +173,7 @@ public class vvAutonStageBlue extends LinearOpMode {
                 .forward(42)
                 .UNSTABLE_addDisplacementMarkerOffset(-30, () -> robot.armPos(armLow, armEPower))
                 .strafeRight(9)
-                .UNSTABLE_addTemporalMarkerOffset(-0.5, () -> robot.movePickUp(autonPickupLow-6, pickUpPwr))
+                .UNSTABLE_addTemporalMarkerOffset(-0.5, () -> robot.movePickUp(autonPickupLow - 6, pickUpPwr))
                 .forward(3)
                 .build();
         TrajectorySequence yellowBackDropLeftBlue = vvdrive.trajectorySequenceBuilder(purpleDropLeftRed.end())
@@ -250,7 +250,7 @@ public class vvAutonStageBlue extends LinearOpMode {
                 .build();
 
         robot.init();
-        initTfod();
+        //initTfod();
         String spikeLoc;
         // Wait for the DS start button to be touched.
         telemetry.addData(">", "Robot Ready");
@@ -262,8 +262,8 @@ public class vvAutonStageBlue extends LinearOpMode {
         if (opModeIsActive()) {
             while (opModeIsActive()) {
 
-                telemetryTfod();
-                spikeLoc = startDetection();
+                //telemetryTfod();
+                spikeLoc = "Blue";
                 // Push telemetry to the Driver Station.
                 telemetry.addData("Location Heading", spikeLoc);
                 telemetry.update();
@@ -325,13 +325,14 @@ public class vvAutonStageBlue extends LinearOpMode {
         }
 
         // Save more CPU resources when camera is no longer needed.
-        visionPortal.close();
+        //visionPortal.close();
 
     }   // end runOpMode()
+}
 
     /**
      * Initialize the TensorFlow Object Detection processor.
-     */
+
     protected String startDetection() {
         String teamPropPosition = "NOTFOUND";
 
@@ -435,7 +436,7 @@ public class vvAutonStageBlue extends LinearOpMode {
 
     /**
      * Add telemetry about TensorFlow Object Detection (TFOD) recognitions.
-     */
+
     private void telemetryTfod() {
 
         List<Recognition> currentRecognitions = tfod.getRecognitions();
@@ -471,4 +472,4 @@ public class vvAutonStageBlue extends LinearOpMode {
         }   // end for() loop
 
     }   // end method locTfod()
-}
+}*/

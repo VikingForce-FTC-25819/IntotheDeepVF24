@@ -37,9 +37,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+//import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.vision.VisionPortal;
-import org.firstinspires.ftc.vision.tfod.TfodProcessor;
+//import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 
 import java.util.List;
 
@@ -63,24 +63,24 @@ public class vvTFOD extends LinearOpMode {
     //private static final String TFOD_MODEL_FILE = "/sdcard/FIRST/tflitemodels/vvCenterStage7Nov.tflite";
     // Define the labels recognized in the model for TFOD (must be in training order!)
     private static final String[] LABELS = {
-       "BlueProp", "Pixel", "RedProp"
+            "BlueProp", "Pixel", "RedProp"
     };
 
     /**
      * The variable to store our instance of the TensorFlow Object Detection processor.
      */
-    private TfodProcessor tfod;
+    //private TfodProcessor tfod;
 
     /**
      * The variable to store our instance of the vision portal.
      */
-    private VisionPortal visionPortal;
+    //private VisionPortal visionPortal;
 
     //public vvTFOD(LinearOpMode opmode) { myOpMode = opmode;}
     //@Override
     public void runOpMode() {
 
-        initTfod();
+        //initTfod();
 
         // Wait for the DS start button to be touched.
         telemetry.addData("DS preview on/off", "3 dots, Camera Stream");
@@ -92,16 +92,16 @@ public class vvTFOD extends LinearOpMode {
             while (opModeIsActive()) {
 
                 telemetry.addData("Instructions", "Gamepad 1 Dpad Up to stream");
-                telemetryTfod();
+                //telemetryTfod();
 
                 // Push telemetry to the Driver Station.
                 telemetry.update();
 
                 // Save CPU resources; can resume streaming when needed.
                 if (gamepad1.dpad_down) {
-                    visionPortal.stopStreaming();
+                    //visionPortal.stopStreaming();
                 } else if (gamepad1.dpad_up) {
-                    visionPortal.resumeStreaming();
+                    //visionPortal.resumeStreaming();
                 }
 
                 // Share the CPU.
@@ -110,17 +110,18 @@ public class vvTFOD extends LinearOpMode {
         }
 
         // Save more CPU resources when camera is no longer needed.
-        visionPortal.close();
+        //visionPortal.close();
 
     }   // end runOpMode()
+}
 
     /**
      * Initialize the TensorFlow Object Detection processor.
-     */
+
     public void initTfod() {
 
         // Create the TensorFlow processor by using a builder.
-        tfod = new TfodProcessor.Builder()
+        //tfod = new TfodProcessor.Builder()
 
             // With the following lines commented out, the default TfodProcessor Builder
             // will load the default model for the season. To define a custom model to load, 
@@ -180,7 +181,7 @@ public class vvTFOD extends LinearOpMode {
 
     /**
      * Add telemetry about TensorFlow Object Detection (TFOD) recognitions.
-     */
+
     private void telemetryTfod() {
 
         List<Recognition> currentRecognitions = tfod.getRecognitions();
@@ -199,4 +200,4 @@ public class vvTFOD extends LinearOpMode {
 
     }   // end method telemetryTfod()
 
-}   // end class
+}   // end class */
