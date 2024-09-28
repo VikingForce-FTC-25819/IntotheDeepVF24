@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.Auton;
-/*
-* Auton with one basket and
+// Auton with 2 high chamber and parK
 // USE vvAutonBackBlue AS A REFERNCE
- */
-public class vvSnglBskt {
+public class vvHighCmbr {
 }
