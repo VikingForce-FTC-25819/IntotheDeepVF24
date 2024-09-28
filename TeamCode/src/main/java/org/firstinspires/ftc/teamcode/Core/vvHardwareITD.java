@@ -47,8 +47,8 @@ public class vvHardwareITD {
     private ElapsedTime runtime = new ElapsedTime();
 
     // Define Drive constants.  Make them public so they CAN be used by the calling OpMode
-    public static final double clawClose      =  0.5 ;
-    public static final double clawOpen       =  0 ;
+    public static final double clawClose      =  0.4 ;
+    public static final double clawOpen       =  0.1 ;
     public static final double ARM_UP_POWER    =  0.45 ;
     public static final double ARM_DOWN_POWER  = -0.45 ;
     public static final double floorPick = 0 ;
@@ -132,22 +132,16 @@ public class vvHardwareITD {
         parallelEncoder = rightFront; //Will need to use an opposite sign for right
 
         // Define Servos
-       //rightWheel = myOpMode.hardwareMap.crservo.get("RSW");
-        //rightClaw = myOpMode.hardwareMap.get(Servo.class,"RSW");
-       // leftWheel = myOpMode.hardwareMap.crservo.get("LSW");
         claw = myOpMode.hardwareMap.get(Servo.class,"claw");
         wrist = myOpMode.hardwareMap.get(Servo.class,"wrist");
 
-        //rightClaw.scaleRange(0.2,0.7);
-        //rightClaw.setDirection(Servo.Direction.FORWARD);
-        //rightClaw.setPosition(clawClose);
+        wrist.scaleRange(0,1);
+        wrist.setDirection(Servo.Direction.FORWARD);
+        wrist.setPosition(floorPick);
 
         claw.scaleRange(0,1);
         claw.setDirection(Servo.Direction.FORWARD);
         claw.setPosition(clawOpen);
-
-        //define and initialize sensors
-        //colorSensor = myOpMode.hardwareMap.get(ColorSensor.class, "CLR");
 
         // Retrieve the IMU from the hardware map
         imu = myOpMode.hardwareMap.get(IMU.class, "imu");
@@ -162,9 +156,6 @@ public class vvHardwareITD {
 
         imu.resetYaw(); //reset the imu during initialization
 
-        //distFront = myOpMode.hardwareMap.get(DistanceSensor.class, "FDS");
-        //distRear = myOpMode.hardwareMap.get(DistanceSensor.class, "RDS");
-
         //Set the motor directions
         leftFront.setDirection(DcMotor.Direction.REVERSE);
         rightFront.setDirection(DcMotor.Direction.FORWARD);
@@ -176,8 +167,7 @@ public class vvHardwareITD {
 
         arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         extend.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-       // pickup.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-       // lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
 
         rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -315,15 +305,9 @@ public class vvHardwareITD {
      */
     public void moveArm(double armPower) {
         arm.setPower(armPower);
-
-        /*if (leftArm.getCurrentPosition() >80 && leftArm.getCurrentPosition()<140) {
-            leftArm.setPower(armPower * 0.5);
-            rightArm.setPower(armPower * 0.5);
-        }
-        else {
-            leftArm.setPower(armPower);
-            rightArm.setPower(armPower);
-        }*/
+    }
+    public void moveExt(double extPower) {
+            extend.setPower(extPower);
     }
     /**
      * Pass the requested arm position and power to the arm drive motors
@@ -341,19 +325,19 @@ public class vvHardwareITD {
         arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         arm.setPower(extArmEPower);
     }
-    public void moveWristFloor( double wristPosition) {
+    public void moveWristFloor() {
         wrist.setPosition(floorPick);
     }
-    public void moveWristHighCw( double wristPosition) {
+    public void moveWristHighCw() {
         wrist.setPosition(highCw);
     }
-    public void moveWristLowCW( double wristPosition) {
+    public void moveWristLowCW() {
         wrist.setPosition(lowCW);
     }
-    public void moveWristLowBw( double wristPosition) {
+    public void moveWristLowBw() {
         wrist.setPosition(lowBw);
     }
-    public void moveWristHighBw( double wristPosition) {
+    public void moveWristHighBw() {
         wrist.setPosition(highBw);
     }
    // public void pwrPickUp(double pickUpPwr) {wrist.setPower();}
@@ -362,11 +346,11 @@ public class vvHardwareITD {
      *
      *
      */
-    public void openClaw(double setClaw) {
+    public void openClaw() {
        claw.setPosition(clawOpen);
     }
 
-    public void closeClaw(double setClaw) {
+    public void closeClaw() {
         claw.setPosition(clawClose);
     }
 

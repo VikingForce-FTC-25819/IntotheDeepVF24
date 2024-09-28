@@ -9,12 +9,12 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AngularVelocity;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
-import org.firstinspires.ftc.teamcode.Core.vvHardware;
+import org.firstinspires.ftc.teamcode.Core.vvHardwareITD;
 
 /**
  * ITD (into the deep) teleOp for test and shakedown
  *
- * Need to confirm the drive system and add the drone servo to have a full test case
+ * Need to confirm the arm, extender, wrist, and claw to have a full test case
  * Also need the telemetry to read all sensor values
  */
 
@@ -23,19 +23,7 @@ import org.firstinspires.ftc.teamcode.Core.vvHardware;
 public class vvTeleOp extends LinearOpMode {
 
     //vvHardware class external pull
-    vvHardware   robot       = new vvHardware(this);
-
-    // An Enum is used to represent pickup state
-    // (This is one thing enums are designed to do)
-    public enum PickupState {
-        PickupStart,
-        PickupDrive,
-        PickupPlaceLow,
-        PickupPlaceHigh
-    };
-    public ColorSensor colorSensor;
-    public DistanceSensor distFront;
-    public DistanceSensor distRear;
+    vvHardwareITD   robot       = new vvHardwareITD(this);
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -44,52 +32,15 @@ public class vvTeleOp extends LinearOpMode {
         double turn = 0;
         int x = 0;
         int y = 0;
-        double RWPower = 0;
-        double LWPower = 0;
-        double RWPowerPU = 0;
-        double LWPowerPU = 0;
         double drivePower = 0.5; //global drive power level
         double armPower = 0;
-        double liftPower = 0;
-        int liftLoc = 0;
-        double armEPower = 0;
-        double pickUpPwr = 0;
-        double droneSet = 0.25;
-        double droneLaunch = 0;
-        double servpos = 0;
-
-        // The pickupState variable is declared out here
-        // so its value persists between loop() calls
-        PickupState pickupState = PickupState.PickupStart;
-
-        // used with the dump servo, this will get covered in a bit
-        ElapsedTime pickupTimer = new ElapsedTime();
-
-        final int pickupIdle; // the idle position for the pickup motor
-        final int pickupHigh; // the placing position for the pickup motor in the high position
-        final int pickupLow; // the placing position for the pickup motor in the low/forward position
-
-        // the amount of time the pickup takes to activate in seconds
-        final double pickupTime;
-        // the amount of time the arm takes to raise in seconds
-        final double armTime;
-
-        final int armLow; // the low encoder position for the arm
-        final int armHigh; // the high-overhead encoder position for the arm
-
+        double extPower = 0;
+        int extLoc = 0;
+        double wristPos = 0;
+        double clawPos = 0;
 
         // initialize all the hardware, using the hardware class. See how clean and simple this is?
         robot.init();
-
-        //pickupTimer.reset();
-
-        // get a reference to our ColorSensor object.
-        //colorSensor = hardwareMap.get(ColorSensor.class, "CLR");
-
-        //distFront = hardwareMap.get(DistanceSensor.class, "FDS");
-        //distRear = hardwareMap.get(DistanceSensor.class, "RDS");
-
-        //Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor) distFront;
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData(">", "Robot Ready.  Press Play.");
@@ -105,11 +56,8 @@ public class vvTeleOp extends LinearOpMode {
                 driveY = -gamepad1.left_stick_y;
                 strafe = gamepad1.left_stick_x * 1;
                 turn = gamepad1.right_stick_x;
-                LWPowerPU = -gamepad2.left_trigger;
-                RWPowerPU = gamepad2.right_trigger;
-                armPower = -gamepad2.left_stick_y;
-                pickUpPwr = -gamepad2.right_stick_y * 0.75;
-                //liftPower = -gamepad1.right_stick_y;
+                armPower = gamepad2.left_stick_y;
+                extPower = gamepad2.right_stick_y * 0.75;
 
                 y = robot.parallelEncoder.getCurrentPosition();
                 x = robot.perpendicularEncoder.getCurrentPosition(); //parallel, forward encoder distance is 0
@@ -128,105 +76,20 @@ public class vvTeleOp extends LinearOpMode {
 
                 robot.moveArm(armPower);
 
-                robot.pwrPickUp(pickUpPwr);
+                robot.moveExt(extPower);
 
-                if (gamepad1.dpad_up)
-                    robot.moveLiftEnc(1250);
-                else if (gamepad1.dpad_down)
-                    robot.moveLiftEnc(0);
+                wristPos = robot.wrist.getPosition();
+                clawPos = robot.claw.getPosition();
 
-                servpos = robot.drone.getPosition();
-/*
-                //Controlling the pickup location
-                if (gamepad2.left_bumper)
-                    robot.movePickUp(45, 0.7);
-                else if (gamepad2.right_bumper)
-                    robot.movePickUp(-90,0.4);
-               // else if (gamepad1.right_stick_button)
-                   // robot.movePickUp(0,0.5);
-                else
-                    robot.movePickUp(0,0.5);
-/*
-                //Controlling the arm to three specific positions - backdrop, drive, pickup
-                if (gamepad2.dpad_up)
-                    robot.armPos(160, 0.95); //Backdrop location
-                else if (gamepad2.dpad_down)
-                    robot.armPos(0,0.2); //Pickup location
-                else if (gamepad2.dpad_right)
-                    robot.armPos(45,0.9); //Drive location
-*/
-                // Controlling the pixel pick-up with the dpad and buttons (individual)
-                if (gamepad2.left_trigger>0) {
-                    robot.setPickupPower(LWPowerPU, 0);
-                } else if (gamepad2.right_trigger>0) {
-                    robot.setPickupPower(0, RWPowerPU);
-                } else if (gamepad2.y)
-                    robot.setPickupPower(0, -0.3);
-                else if (gamepad2.x)
-                    robot.setPickupPower(0.3, 0);
-                else {
-                    robot.setPickupPower(0, 0);
-                }
-/*
-                switch (pickupState) {
-                    case PickupStart:
-                        // Waiting for some input
-                        if (gamepad1.x) {
-                            // x is pressed, start extending
-                            liftMotor.setTargetPosition(LIFT_HIGH);
-                            liftState = LiftState.LIFT_EXTEND;
-                        }
-                        break;
-                    case LIFT_EXTEND:
-                        // check if the lift has finished extending,
-                        // otherwise do nothing.
-                        if (Math.abs(liftMotor.getCurrentPosition() - LIFT_HIGH) < 10) {
-                            // our threshold is within
-                            // 10 encoder ticks of our target.
-                            // this is pretty arbitrary, and would have to be
-                            // tweaked for each robot.
+                if (gamepad2.a)
+                    robot.openClaw();
+                if (gamepad2.b)
+                    robot.closeClaw();
 
-                            // set the lift dump to dump
-                            liftDump.setTargetPosition(DUMP_DEPOSIT);
-
-                            liftTimer.reset();
-                            liftState = LiftState.LIFT_DUMP;
-                        }
-                        break;
-                    case LIFT_DUMP:
-                        if (liftTimer.seconds() >= DUMP_TIME) {
-                            // The robot waited long enough, time to start
-                            // retracting the lift
-                            liftDump.setTargetPosition(DUMP_IDLE);
-                            liftMotor.setTargetPosition(LIFT_LOW);
-                            liftState = LiftState.LIFT_RETRACT;
-                        }
-                        break;
-                    case LIFT_RETRACT:
-                        if (Math.abs(liftMotor.getCurrentPosition() - LIFT_LOW) < 10) {
-                            liftState = LiftState.LIFT_START;
-                        }
-                        break;
-                    default:
-                        // should never be reached, as liftState should never be null
-                        liftState = LiftState.LIFT_START;
-                }
-
-                // small optimization, instead of repeating ourselves in each
-                // lift state case besides LIFT_START for the cancel action,
-                // it's just handled here
-                if (gamepad1.y && liftState != LiftState.LIFT_START) {
-                    liftState = LiftState.LIFT_START;
-                }
-
-                // mecanum drive code goes here
-                // But since none of the stuff in the switch case stops
-                // the robot, this will always run!
-                updateDrive(gamepad1, gamepad2);
-*/
-                //Drone launch
-                if (gamepad2.options)
-                    robot.setDronePosition(droneLaunch);
+                if (gamepad2.x)
+                    robot.moveWristFloor();
+                if (gamepad2.y)
+                    robot.moveWristHighBw();
 
                 // Retrieve Rotational Angles and Velocities
                 YawPitchRollAngles orientation = robot.imu.getRobotYawPitchRollAngles();
@@ -241,12 +104,13 @@ public class vvTeleOp extends LinearOpMode {
                 telemetry.addData("Y Encoder",y);
                 telemetry.addData("X Encoder",x);
                 telemetry.addData("Yaw (Z)", "%.2f Deg. (Heading)", orientation.getYaw(AngleUnit.DEGREES));
-                telemetry.addData("PickUp Position", robot.pickUp.getCurrentPosition());
                 telemetry.addData("Arm Power", armPower);
-                telemetry.addData("Arm Position", robot.rightArm.getCurrentPosition());
-                telemetry.addData("Arm Target", robot.rightArm.getTargetPosition());
-                telemetry.addData("Drone", servpos);
-                telemetry.addData("Lift Position", robot.lift.getCurrentPosition());
+                telemetry.addData("Arm Position", robot.arm.getCurrentPosition());
+                //telemetry.addData("Arm Target", robot.rightArm.getTargetPosition());
+                telemetry.addData("Extend Position", robot.extend.getCurrentPosition());
+                telemetry.addData("Wrist", wristPos);
+                telemetry.addData("Claw", clawPos);
+
 
                 telemetry.update();
 
