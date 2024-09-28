@@ -14,6 +14,9 @@ import java.util.List;
 
 /*
  * VV LimeLight3A class
+ * Pipeline 0 is AprilTags
+ * Pipeline 1 is our Neural Detector with "red", "blue", and "yellow"
+ * Pipeline 2 is Color detection
  */
 @TeleOp(name = "LimelightTest", group = "Sensor")
 
