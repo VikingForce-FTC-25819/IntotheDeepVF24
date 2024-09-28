@@ -41,12 +41,17 @@ public class vvHardwareITD {
     public IMU imu;
     public DcMotor parallelEncoder;
     public DcMotor perpendicularEncoder;
-    public ColorSensor colorSensor;
-    public DistanceSensor distFront;
-    public DistanceSensor distRear;
+    //public ColorSensor colorSensor;
+    //public DistanceSensor distFront;
+    //public DistanceSensor distRear;
     private ElapsedTime runtime = new ElapsedTime();
 
-    // Define Drive constants.  Make them public so they CAN be used by the calling OpMode
+    /* Define Drive constants.  Make them public so they CAN be used by the calling OpMode
+    * arm variables: floorArm, highCa, lowCa, highBa, lowBa
+    * extension variables: floorTuck, full, highCe, lowCe, highBe, lowBe
+    * wrist variables: floorPick, highCw, lowCw, highBw, lowBw
+    * claw variables: openClaw, closeClaw (Do we need to add one for length vs. width samples?)
+    */
     public static final double clawClose      =  0.4 ;
     public static final double clawOpen       =  0.1 ;
     public static final double ARM_UP_POWER    =  0.45 ;
@@ -56,19 +61,6 @@ public class vvHardwareITD {
     public static final double lowCW = 0.25 ;
     public static final double highBw = 0.4 ;
     public static final double lowBw = 0.3 ;
-
-    // All variables below are used for auton methods
-    final int autonPickupIdle = -30; // the idle position for the pickup motor 109
-    final int autonPickupHigh = -5; // the placing position for the pickup motor in the high position 148
-    final int autonPickupLow = -27; // the placing position for the pickup motor in the low/forward position 5
-
-
-
-
-    // the amount of time the pickup takes to activate in seconds
-    final double pickupTime = 1;
-    // the amount of time the arm takes to raise in seconds
-    final double armTime = 3;
 
     final public int floorArm = 0; // -84
     final public int armLowCa = 100; // the low encoder position for the arm -23
@@ -80,9 +72,6 @@ public class vvHardwareITD {
     final public int extArmHighCe = 150;
     final public int extArmLowCe = 300;
     final public int extArmFloorTuck= 50;
-    final public int extArmReadyPos = 0;
-    final public int armStart = 25;
-    final public int autonArmIdle = 5;
 
     static final double FORWARD_SPEED = 0.3;
     static final double TURN_SPEED = 0.5;
@@ -90,18 +79,6 @@ public class vvHardwareITD {
     public static final double TICKS_PER_REV = 2000;
     public double encTicksPerInches = TICKS_PER_REV/(WHEEL_DIAMETER*Math.PI);
     public double encInchesPerTicks = (WHEEL_DIAMETER*Math.PI)/TICKS_PER_REV;
-    static final double s1Side = 15;
-    static final double s1Top = 20;
-    static final double s2Turn = 45; //degrees
-    static final double s3Reverse = 4;
-    static final double s3Forward = 4;
-
-    static final double s5 = 3.5;
-    static final double s9Turn = 90; //Turn towards backdrop
-    static final double s11 = 24; //Strafing distance to backdrop
-    static final double s12 = 6; //Final distance to backdrop for placement
-
-    static final double s13 = 18; //Final distance to the side after backdrop
 
     // Define a constructor that allows the OpMode to pass a reference to itself.
     public vvHardwareITD(LinearOpMode opmode) {
@@ -124,7 +101,6 @@ public class vvHardwareITD {
         extend = myOpMode.hardwareMap.get(DcMotorEx.class, "extend");
         arm = myOpMode.hardwareMap.get(DcMotorEx.class, "arm");
 
-
         //Shadow the motors with encoder-odometry
         //parallelEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "rightFront"));
         //perpendicularEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "leftFront"));
@@ -137,11 +113,11 @@ public class vvHardwareITD {
 
         wrist.scaleRange(0,1);
         wrist.setDirection(Servo.Direction.FORWARD);
-        wrist.setPosition(floorPick);
+        wrist.setPosition(0.3);
 
         claw.scaleRange(0,1);
         claw.setDirection(Servo.Direction.FORWARD);
-        claw.setPosition(clawOpen);
+        claw.setPosition(clawClose);
 
         // Retrieve the IMU from the hardware map
         imu = myOpMode.hardwareMap.get(IMU.class, "imu");
@@ -164,10 +140,8 @@ public class vvHardwareITD {
         arm.setDirection(DcMotorSimple.Direction.FORWARD);
         extend.setDirection(DcMotor.Direction.FORWARD);
 
-
         arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         extend.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
 
         rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -182,7 +156,7 @@ public class vvHardwareITD {
 
 
         myOpMode.telemetry.addData(">", "Hardware Initialized");
-        myOpMode.telemetry.addData("Drone Servo", claw.getPosition());
+        myOpMode.telemetry.addData("Claw", claw.getPosition());
         myOpMode.telemetry.update();
     }
     /**
@@ -313,7 +287,9 @@ public class vvHardwareITD {
      * Pass the requested arm position and power to the arm drive motors
      *
      * @param armEPower driving power (-1.0 to 1.0)
-     * @param armPosition full lift range is
+     * @param armPosition full lift range is XXXX to XXXX
+     * @param extArmEPower, extension driving power
+     * @param extArmPosition full lift range is XXXX to XXXX
      */
     public void armPos(int armPosition, double armEPower) {
         arm.setTargetPosition(armPosition);
@@ -340,43 +316,17 @@ public class vvHardwareITD {
     public void moveWristHighBw() {
         wrist.setPosition(highBw);
     }
-   // public void pwrPickUp(double pickUpPwr) {wrist.setPower();}
-    /**
-     * Set the pickup servo powers
-     *
-     *
-     */
-    public void openClaw() {
-       claw.setPosition(clawOpen);
-    }
-
-    public void closeClaw() {
-        claw.setPosition(clawClose);
-    }
-
     /**
      * Set the claw servo to close
      *
      * @param clawClose
      */
-
-
-
-    /**
-     * Pass the requested lift power to the appropriate hardware drive motor
-     *
-     * @param liftPower driving power (-1.0 to 1.0)
-     */
-
-    /**
-     * Pass the requested lift position to the appropriate hardware drive motor
-     * 1250 ticks will clear the bar (four stage, 435 RPM motor)
-     * 1650 ticks will clear the bar (three stage, 312 RPM motor)
-     * @param liftLoc driving power (-1.0 to 1.0)
-     */
-
-
-
-
+    public void openClaw() {
+       claw.setPosition(clawOpen);
     }
+    public void closeClaw() {
+        claw.setPosition(clawClose);
+    }
+    
+}
 
