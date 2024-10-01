@@ -63,15 +63,16 @@ public class vvHardwareITD {
     public static final double lowBw = 0.3 ;
 
     final public int floorArm = 0; // -84
-    final public int armLowCa = 100; // the low encoder position for the arm -23
-    final public int armHighCa = 401; // the high-overhead encoder position for the arm 329
-    final public int armLowBa = 350;
-    final public int armHighBa = 500;
-    final public int extArmHighBe = 300;
-    final public int extArmLowBe = 100;
-    final public int extArmHighCe = 150;
-    final public int extArmLowCe = 300;
-    final public int extArmFloorTuck= 50;
+    final public int armLowCa = 125; // the low encoder position for the arm -23
+    final public int armHighCa = 1246; // the high-overhead encoder position for the arm 329
+    final public int armLowBa = 1528;
+    final public int armHighBa = 2209;
+    final public int extArmHighBe = 2188;
+    final public int extArmLowBe = 838;
+    final public int extArmHighCe = 410;
+    final public int extArmLowCe = 0;
+    final public int extArmFloorTuck= 0;
+    final public int extArmFLoorPick = 50;
 
     static final double FORWARD_SPEED = 0.3;
     static final double TURN_SPEED = 0.5;
@@ -137,11 +138,11 @@ public class vvHardwareITD {
         rightFront.setDirection(DcMotor.Direction.FORWARD);
         rightRear.setDirection(DcMotor.Direction.FORWARD);
         leftRear.setDirection(DcMotor.Direction.REVERSE);
-        arm.setDirection(DcMotorSimple.Direction.FORWARD);
-        extend.setDirection(DcMotor.Direction.FORWARD);
+        arm.setDirection(DcMotorSimple.Direction.REVERSE);
+        extend.setDirection(DcMotor.Direction.REVERSE);
 
-        arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        extend.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        extend.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
         rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
