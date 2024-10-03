@@ -1,5 +1,4 @@
 package org.firstinspires.ftc.teamcode.Core;
-
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -14,17 +13,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.teamcode.util.Encoder;
 
-/*
- * New hardware class for the ITD (Into The Deep) game
- * Need to add single arm motor, extension motor, wrist, and claw
- */
-
-
-public class vvHardwareITD {
-
-
+public class vvHardwareITDRR {
     /* Declare OpMode members. */
     private LinearOpMode myOpMode = null;   // gain access to methods in the calling OpMode.
 
@@ -47,11 +37,11 @@ public class vvHardwareITD {
     private ElapsedTime runtime = new ElapsedTime();
 
     /* Define Drive constants.  Make them public so they CAN be used by the calling OpMode
-    * arm variables: floorArm, highCa, lowCa, highBa, lowBa
-    * extension variables: floorTuck, full, highCe, lowCe, highBe, lowBe
-    * wrist variables: floorPick, highCw, lowCw, highBw, lowBw
-    * claw variables: openClaw, closeClaw (Do we need to add one for length vs. width samples?)
-    */
+     * arm variables: floorArm, highCa, lowCa, highBa, lowBa
+     * extension variables: floorTuck, full, highCe, lowCe, highBe, lowBe
+     * wrist variables: floorPick, highCw, lowCw, highBw, lowBw
+     * claw variables: openClaw, closeClaw (Do we need to add one for length vs. width samples?)
+     */
     public static final double clawClose      =  0.4 ;
     public static final double clawOpen       =  0.1 ;
     public static final double ARM_UP_POWER    =  0.45 ;
@@ -82,7 +72,7 @@ public class vvHardwareITD {
     public double encInchesPerTicks = (WHEEL_DIAMETER*Math.PI)/TICKS_PER_REV;
 
     // Define a constructor that allows the OpMode to pass a reference to itself.
-    public vvHardwareITD(LinearOpMode opmode) {
+    public vvHardwareITDRR(LinearOpMode opmode) {
         myOpMode = opmode;
     }
 
@@ -134,24 +124,24 @@ public class vvHardwareITD {
         imu.resetYaw(); //reset the imu during initialization
 
         //Set the motor directions
-        leftFront.setDirection(DcMotor.Direction.REVERSE);
+      /*  leftFront.setDirection(DcMotor.Direction.REVERSE);
         rightFront.setDirection(DcMotor.Direction.FORWARD);
         rightRear.setDirection(DcMotor.Direction.FORWARD);
-        leftRear.setDirection(DcMotor.Direction.REVERSE);
+        leftRear.setDirection(DcMotor.Direction.REVERSE);*/
         arm.setDirection(DcMotorSimple.Direction.REVERSE);
         extend.setDirection(DcMotor.Direction.REVERSE);
 
         arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         extend.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
-        rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+       // rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+       // leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         extend.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 
-        rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+       // rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         extend.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
@@ -170,7 +160,7 @@ public class vvHardwareITD {
      * @param strafe    Side to side driving power (-1.0 to 1.0) +ve is left
      * @param turn      Right/Left turning power (-1.0 to 1.0) +ve is CW
      */
-    public void driveRobot(double drivePower, double driveY, double strafe, double turn) {
+   /* public void driveRobot(double drivePower, double driveY, double strafe, double turn) {
         double strafeBias = 1; // given weight distribution need to bias the back wheel power
         double denominator = Math.max(Math.abs(driveY) + Math.abs(strafe*strafeBias) + Math.abs(turn), 1);
         double frontLeftPower = (driveY + strafe + turn) / denominator;
@@ -182,7 +172,7 @@ public class vvHardwareITD {
         leftRear.setPower(drivePower * backLeftPower);
         rightFront.setPower(drivePower * frontRightPower);
         rightRear.setPower(drivePower * backRightPower);
-    }
+    }*/
     /**
      * Field centric method
      * robot motions: Drive (Axial-X motion), Strafe (Side-to-Side-Y motion) and Turn (Yaw-Z motion).
@@ -211,7 +201,7 @@ public class vvHardwareITD {
         rightFront.setPower(drivePower * frontRightPower);
         rightRear.setPower(drivePower * backRightPower);
     }
-    /**
+    /*
      * Sets the target for the chassis to achieve the desired position and heading
      * robot motions: Drive (Axial-X motion), Strafe (Side-to-Side-Y motion) and Turn (Yaw-Z motion).
      * Then sends these power levels to the motors.
@@ -220,7 +210,7 @@ public class vvHardwareITD {
      * @param strafe    Side to side driving power (-1.0 to 1.0) +ve is left
      * @param turn      Right/Left turning power (-1.0 to 1.0) +ve is CW
      */
-    public void driveAuton(double autonPower, double driveY, double strafe, double turn) {
+  /*  public void driveAuton(double autonPower, double driveY, double strafe, double turn) {
         double denominator = Math.max(Math.abs(driveY) + Math.abs(strafe) + Math.abs(turn), 1);
         double frontLeftPower = (driveY + strafe + turn) / denominator;
         double backLeftPower = (driveY - strafe + turn) / denominator;
@@ -282,7 +272,7 @@ public class vvHardwareITD {
         arm.setPower(armPower);
     }
     public void moveExt(double extPower) {
-            extend.setPower(extPower);
+        extend.setPower(extPower);
     }
     /*
      * Pass the requested arm position and power to the arm drive motors
@@ -323,11 +313,11 @@ public class vvHardwareITD {
      * @param
      */
     public void openClaw() {
-       claw.setPosition(clawOpen);
+        claw.setPosition(clawOpen);
     }
     public void closeClaw() {
         claw.setPosition(clawClose);
     }
-    
+
 }
 

@@ -90,14 +90,21 @@ public class vvTeleOp extends LinearOpMode {
                     robot.moveWristFloor();
                 if (gamepad2.y)
                     robot.moveWristHighBw();
-                if (gamepad2.dpad_up)
-                    robot.armPos(robot.armHighBa,0.5 ) ;
-                    robot.extArmPos(robot.extArmHighBe,0.5);
+                if (gamepad2.dpad_up) {
+                    robot.armPos(robot.armHighBa, 0.5);
+                    robot.extArmPos(robot.extArmHighBe, 0.5);
+                }
                 if (gamepad2.dpad_right)
                     robot.armPos(robot.armLowBa,0.5);
                     robot.extArmPos(robot.extArmLowBe, 0.5);
-                if (gamepad2.dpad_left)
-                        robot.
+                if (gamepad2.dpad_left) {
+                    robot.armPos(robot.armHighCa, 0.5);
+                    robot.extArmPos(robot.armHighCa, 0.5);
+                }
+                if (gamepad2.dpad_down) {
+                    robot.armPos(robot.armLowCa, 0.5);
+                    robot.extArmPos(robot.extArmLowCe, 0.5);
+                }
 
                 // Retrieve Rotational Angles and Velocities
                 YawPitchRollAngles orientation = robot.imu.getRobotYawPitchRollAngles();
