@@ -86,24 +86,31 @@ public class vvTeleOp extends LinearOpMode {
                 if (gamepad2.left_bumper)
                     robot.closeClaw();
 
-                if (gamepad2.x)
+                if (gamepad2.a) {
+                    robot.armPos(robot.floorArm, armPower);
+                    robot.extArmPos(robot.extArmFLoorPick,extPower);
                     robot.moveWristFloor();
-                if (gamepad2.y)
-                    robot.moveWristHighBw();
-                if (gamepad2.dpad_up) {
-                    robot.armPos(robot.armHighBa, 0.5);
-                    robot.extArmPos(robot.extArmHighBe, 0.5);
                 }
-                if (gamepad2.dpad_right)
-                    robot.armPos(robot.armLowBa,0.5);
-                    robot.extArmPos(robot.extArmLowBe, 0.5);
+
+                if (gamepad2.dpad_up) {
+                    robot.armPos(robot.armHighBa, armPower);
+                    robot.extArmPos(robot.extArmHighBe, extPower);
+                        robot.moveWristHighBw();
+                }
+                if (gamepad2.dpad_right) {
+                    robot.armPos(robot.armLowBa, armPower);
+                    robot.extArmPos(robot.extArmLowBe, extPower);
+                    robot.moveWristLowBw();
+                }
                 if (gamepad2.dpad_left) {
-                    robot.armPos(robot.armHighCa, 0.5);
-                    robot.extArmPos(robot.armHighCa, 0.5);
+                    robot.armPos(robot.armHighCa, armPower);
+                    robot.extArmPos(robot.armHighCa, extPower);
+                    robot.moveWristHighCw();
                 }
                 if (gamepad2.dpad_down) {
-                    robot.armPos(robot.armLowCa, 0.5);
-                    robot.extArmPos(robot.extArmLowCe, 0.5);
+                    robot.armPos(robot.armLowCa, armPower);
+                    robot.extArmPos(robot.extArmLowCe, extPower);
+                    robot.moveWristLowCW();
                 }
 
                 // Retrieve Rotational Angles and Velocities

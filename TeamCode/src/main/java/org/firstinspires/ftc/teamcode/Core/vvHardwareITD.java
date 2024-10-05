@@ -62,7 +62,8 @@ public class vvHardwareITD {
     public static final double highBw = 0.4 ;
     public static final double lowBw = 0.3 ;
 
-    final public int floorArm = 0; // -84
+    final public int floorArm = 0;// -84
+    final public double armPower = 0.5;
     final public int armLowCa = 125; // the low encoder position for the arm -23
     final public int armHighCa = 1246; // the high-overhead encoder position for the arm 329
     final public int armLowBa = 1528;
@@ -73,6 +74,7 @@ public class vvHardwareITD {
     final public int extArmLowCe = 0;
     final public int extArmFloorTuck= 0;
     final public int extArmFLoorPick = 50;
+    final public double extArmPower = 0.5;
 
     static final double FORWARD_SPEED = 0.3;
     static final double TURN_SPEED = 0.5;
@@ -328,6 +330,6 @@ public class vvHardwareITD {
     public void closeClaw() {
         claw.setPosition(clawClose);
     }
-    
+
 }
 
