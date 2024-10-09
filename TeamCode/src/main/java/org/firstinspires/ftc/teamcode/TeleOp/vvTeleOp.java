@@ -33,8 +33,8 @@ public class vvTeleOp extends LinearOpMode {
         int x = 0;
         int y = 0;
         double drivePower = 0.5; //global drive power level
-        double armPower = 0;
-        double extPower = 0;
+        double armPower = 0.5;
+        double extPower = 0.5;
         int extLoc = 0;
         double wristPos = 0;
         double clawPos = 0;
@@ -56,8 +56,8 @@ public class vvTeleOp extends LinearOpMode {
                 driveY = -gamepad1.left_stick_y;
                 strafe = gamepad1.left_stick_x * 1;
                 turn = gamepad1.right_stick_x;
-                armPower = gamepad2.left_stick_y;
-                extPower = gamepad2.right_stick_y * 0.75;
+                //armPower = -gamepad2.left_stick_y;
+                //extPower = -gamepad2.right_stick_y * 0.75;
 
                 y = robot.parallelEncoder.getCurrentPosition();
                 x = robot.perpendicularEncoder.getCurrentPosition(); //parallel, forward encoder distance is 0
@@ -74,9 +74,9 @@ public class vvTeleOp extends LinearOpMode {
                 // Methods called for motion
                 robot.driveRobot(drivePower, driveY, strafe, turn);
 
-                robot.moveArm(armPower);
+                //robot.moveArm(armPower);
 
-                robot.moveExt(extPower);
+                //robot.moveExt(extPower);
 
                 wristPos = robot.wrist.getPosition();
                 clawPos = robot.claw.getPosition();
@@ -85,17 +85,26 @@ public class vvTeleOp extends LinearOpMode {
                     robot.openClaw();
                 if (gamepad2.left_bumper)
                     robot.closeClaw();
+                if (gamepad2.x)
+                    robot.longClaw();
 
                 if (gamepad2.a) {
                     robot.armPos(robot.floorArm, armPower);
                     robot.extArmPos(robot.extArmFLoorPick,extPower);
                     robot.moveWristFloor();
                 }
+                if (gamepad2.b) {
+                    robot.armPos(robot.floorArm, armPower);
+                    robot.extArmPos(robot.extArmFLoorPick,extPower);
+                    robot.moveWristCarry();
+
+
+                }
 
                 if (gamepad2.dpad_up) {
                     robot.armPos(robot.armHighBa, armPower);
                     robot.extArmPos(robot.extArmHighBe, extPower);
-                        robot.moveWristHighBw();
+                    robot.moveWristHighBw();
                 }
                 if (gamepad2.dpad_right) {
                     robot.armPos(robot.armLowBa, armPower);

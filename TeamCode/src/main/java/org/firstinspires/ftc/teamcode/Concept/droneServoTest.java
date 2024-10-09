@@ -49,7 +49,7 @@ import com.qualcomm.robotcore.hardware.Servo;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 @TeleOp(name = "Concept: Scan Servo", group = "Concept")
-@Disabled
+
 public class droneServoTest extends LinearOpMode {
 
     static final double INCREMENT = 0.01;     // amount to slew servo each CYCLE_MS cycle
@@ -59,7 +59,7 @@ public class droneServoTest extends LinearOpMode {
     public static final double LAUNCH   =  0.25 ;
 
     // Define class members
-    Servo drone;
+    Servo wrist;
     double position = (MAX_POS - MIN_POS) / 2; // Start at halfway position
     boolean rampUp = true;
 
@@ -69,7 +69,7 @@ public class droneServoTest extends LinearOpMode {
 
         // Connect to servo (Assume Robot Left Hand)
         // Change the text in quotes to match any servo name on your robot.
-        drone = hardwareMap.get(Servo.class, "drone");
+        wrist = hardwareMap.get(Servo.class, "wrist");
 
         // Wait for the start button
         telemetry.addData(">", "Press Start to scan Servo.");
@@ -89,7 +89,7 @@ public class droneServoTest extends LinearOpMode {
                     rampUp = !rampUp;   // Switch ramp direction
                 }
             } else if (gamepad2.right_bumper){
-                drone.setPosition(LAUNCH);
+                wrist.setPosition(LAUNCH);
             }
             else {
                 // Keep stepping down until we hit the min value.
@@ -106,7 +106,7 @@ public class droneServoTest extends LinearOpMode {
             telemetry.update();
 
             // Set the servo to the new position and pause;
-            drone.setPosition(position);
+            wrist.setPosition(position);
             sleep(CYCLE_MS);
             idle();
         }
