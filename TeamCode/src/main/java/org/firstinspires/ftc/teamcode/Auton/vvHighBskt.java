@@ -110,62 +110,55 @@ public class  vvHighBskt extends LinearOpMode {
 
         vvdrive.setPoseEstimate(startPose);
 
-        TrajectorySequence setArmPos = vvdrive.trajectorySequenceBuilder(startPose) //Also Red Back
+        TrajectorySequence fwdHighCmbr = vvdrive.trajectorySequenceBuilder(startPose) //Also Red Back
                 .forward(36)
-                .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.armPos(robot.armHighCa, armEPower))
-                .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.moveWristHighCw())
-                .waitSeconds(0)
-                .build();
-        TrajectorySequence hangSpecimen = vvdrive.trajectorySequenceBuilder(setArmPos)
-                .forward(6)
+                .UNSTABLE_addTemporalMarkerOffset(-3, () -> robot.armPos(robot.armHighCa, armEPower))
+                .UNSTABLE_addTemporalMarkerOffset(-3, () -> robot.moveWristHighCw())
                 .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.extArmPos(robot.extArmHighCe, armEPower))
-                .UNSTABLE_addTemporalMarkerOffset(-0.5, () -> robot.moveWristHighCw())
                 .waitSeconds(0)
                 .build();
-        TrajectorySequence posSample1 = vvdrive.trajectorySequenceBuilder(hangSpecimen)
-                .strafeLeft(20)
-                .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.extArmPos(robot.extArmFLoorPick, armEPower))
-                .UNSTABLE_addTemporalMarkerOffset(-0.5, () -> robot.armPos(robot.floorArm, armEPower))
-                .waitSeconds(0)
-                .build();
-        TrajectorySequence grabSample1 = vvdrive.trajectorySequenceBuilder(posSample1) //Also Blue Back
+        TrajectorySequence yellow1 = vvdrive.trajectorySequenceBuilder(fwdHighCmbr.end())
+                .back(2)
+                .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.extArmPos(robot.extArmFloorTuck, armEPower))
                 .turn(-90)
-                .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.closeClaw())
+                .forward(24)
+                .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.armPos(robot.floorArm, armEPower))
                 .waitSeconds(0)
                 .build();
-        TrajectorySequence dropSample1 = vvdrive.trajectorySequenceBuilder(grabSample1)
-                .strafeLeft(58)
-                .turn(90)
+        TrajectorySequence yellow1Drop = vvdrive.trajectorySequenceBuilder(yellow1.end())
+                .turn(-45)
+                .forward(30)
                 .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.armPos(robot.armHighBa, armEPower))
+                .UNSTABLE_addTemporalMarkerOffset(-2, () -> robot.moveWristHighBw())
                 .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.extArmPos(robot.extArmHighBe, armEPower))
-                .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.moveWristHighBw())
-                .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.openClaw())
                 .waitSeconds(0)
                 .build();
-        TrajectorySequence posSample2 = vvdrive.trajectorySequenceBuilder(dropSample1)
-                .turn(180)
-                .forward(58)
+        TrajectorySequence yellow2 = vvdrive.trajectorySequenceBuilder(yellow1Drop.end()) //Also Blue Back
+                .back(5)
                 .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.extArmPos(robot.extArmFloorTuck, armEPower))
-                .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.armPos(robot.armFloorArm, armEPower))
-                .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.moveWristFloor())
-                .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.openClaw())
+                .turn(45)
+                .forward(30)
+                .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.armPos(robot.floorArm, armEPower))
+                .UNSTABLE_addTemporalMarkerOffset(-2, () -> robot.moveWristFloor())
                 .waitSeconds(0)
                 .build();
-        TrajectorySequence grabSample2 = vvdrive.trajectorySequenceBuilder(posSample2)
-                .turn(-180)
-                .forward(58)
-                .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.armPos(robot.armHighBa, armEPower))
+        TrajectorySequence yellow2Drop = vvdrive.trajectorySequenceBuilder(yellow2.end())
+                .back(5)
+                .turn(-135)
+                .forward(24)
+                .UNSTABLE_addTemporalMarkerOffset(-2, () -> robot.armPos(robot.armHighBa, armEPower))
+                .UNSTABLE_addTemporalMarkerOffset(-2, () -> robot.moveWristHighBw())
                 .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.extArmPos(robot.extArmHighBe, armEPower))
-                .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.moveWristHighBw())
-                .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.openClaw())
+                .waitSeconds(0)
                 .build();
-        TrajectorySequence dropSample2 = vvdrive.trajectorySequenceBuilder(grabSample2)
-                .strafeLeft(200)
-                .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.extArmPos(robot.extArmFloorTuck, armEPower))
+        TrajectorySequence ascentPark = vvdrive.trajectorySequenceBuilder(yellow2Drop.end())
+                .back(48)
+                .UNSTABLE_addTemporalMarkerOffset(-3, () -> robot.extArmPos(robot.extArmFloorTuck, armEPower))
                 .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.armPos(robot.floorArm, armEPower))
                 .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.moveWristFloor())
-                .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.openClaw())
+                .waitSeconds(0)
                 .build();
+
 
         robot.init();
         //initTfod();
@@ -182,110 +175,31 @@ public class  vvHighBskt extends LinearOpMode {
         if (opModeIsActive()) {
             while (opModeIsActive()) {
 
-                //telemetryTfod();
-                spikeLoc = "Blue";
-                // Push telemetry to the Driver Station.
-                //telemetry.addData("Location Heading", spikeLoc);
-                telemetry.update();
-
-                // Share the CPU.
-                sleep(200);
-
                 Pose2d poseEstimate = vvdrive.getPoseEstimate();
                 vvdrive.update();
 
-                if (Objects.equals(spikeLoc, "LEFT")) {
-                    robot.movePickUp(5, pickUpPwr);
-                    sleep(500);
-                    robot.armPos(armStart, armEPower);
-                    sleep(500);
-                    vvdrive.followTrajectorySequence(purpleDropLeftRed);
-                    telemetry.addData("Parallel Position: ", poseEstimate.getX());
-                    telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
-                    telemetry.update();
-                    robot.rightWheel.setPower(-0.9);
-                    sleep(1000);
-                    robot.rightWheel.setPower(0);
-                    robot.movePickUp(autonPickupLow, pickUpPwr);
-                    sleep(500);
-                    vvdrive.followTrajectorySequence(yellowBackDropLeftBlue);
-                    robot.leftWheel.setPower(0.9);
-                    sleep(1000);
-                    robot.leftWheel.setPower(0);
-                    vvdrive.followTrajectorySequence(blueLeftEnd);
-                    telemetry.addData("Parallel Position: ", poseEstimate.getX());
-                    telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
-                    telemetry.update();
-                }
-                if (Objects.equals(spikeLoc, "CENTER")) {
-                    robot.movePickUp(5, pickUpPwr);
-                    sleep(500);
-                    robot.armPos(armStart, armEPower);
-                    sleep(500);
-                    vvdrive.followTrajectorySequence(purpleDropTopRed);
-                    robot.movePickUp(autonPickupLow, pickUpPwr);
-                    telemetry.addData("Parallel Position: ", poseEstimate.getX());
-                    telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
-                    telemetry.update();
-                    robot.rightWheel.setPower(-0.9);
-                    sleep(1000);
-                    robot.rightWheel.setPower(0);
-                    vvdrive.followTrajectorySequence(yellowBackDropTopBlue);
-                    telemetry.addData("Parallel Position: ", poseEstimate.getX());
-                    telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
-                    telemetry.update();
-                    robot.leftWheel.setPower(0.9);
-                    sleep(1000);
-                    robot.leftWheel.setPower(0);
-                    vvdrive.followTrajectorySequence(blueTopEnd);
-                    telemetry.addData("Parallel Position: ", poseEstimate.getX());
-                    telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
-                    telemetry.update();
-                }
-                if (Objects.equals(spikeLoc, "RIGHT")) {
-                    robot.movePickUp(5, pickUpPwr);
-                    sleep(500);
-                    robot.armPos(armStart, armEPower);
-                    sleep(500);
-                    vvdrive.followTrajectorySequence(purpleDropRightRed);
-                    telemetry.addData("Parallel Position: ", poseEstimate.getX());
-                    telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
-                    telemetry.update();
-                    robot.rightWheel.setPower(-0.9);
-                    sleep(1000);
-                    robot.rightWheel.setPower(0);
-                    vvdrive.followTrajectorySequence(yellowBackDropRightBlue);
-                    robot.leftWheel.setPower(0.9);
-                    sleep(1000);
-                    robot.leftWheel.setPower(0);
-                    vvdrive.followTrajectorySequence(blueRightEnd);
-                    telemetry.addData("Parallel Position: ", poseEstimate.getX());
-                    telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
-                    telemetry.update();
-                }
-                if (Objects.equals(spikeLoc, "NOTFOUND")) {//Right is the default
-                    robot.movePickUp(5, pickUpPwr);
-                    sleep(500);
-                    robot.armPos(armStart, armEPower);
-                    sleep(500);
-                    vvdrive.followTrajectorySequence(purpleDropLeftRed);
-                    telemetry.addData("Parallel Position: ", poseEstimate.getX());
-                    telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
-                    telemetry.update();
-                    robot.rightWheel.setPower(-0.9);
-                    sleep(1000);
-                    robot.rightWheel.setPower(0);
-                    robot.movePickUp(autonPickupLow, pickUpPwr);
-                    sleep(500);
-                    vvdrive.followTrajectorySequence(yellowBackDropLeftBlue);
-                    robot.leftWheel.setPower(0.9);
-                    sleep(1000);
-                    robot.leftWheel.setPower(0);
-                    vvdrive.followTrajectorySequence(blueLeftEnd);
-                    telemetry.addData("Parallel Position: ", poseEstimate.getX());
-                    telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
-                    telemetry.update();
-                }
+                vvdrive.followTrajectorySequence(fwdHighCmbr);
+                telemetry.addData("Parallel Position: ", poseEstimate.getX());
+                telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
+                telemetry.update();
+                robot.armPos(robot.armHighCa,armEPower);
+                robot.openClaw();
+                vvdrive.followTrajectorySequence(yellow1);
+                robot.extArmFLoorPick
+                sleep(1000);
+                robot.closeClaw();
+                robot.rightWheel.setPower(0);
+                robot.movePickUp(autonPickupLow, pickUpPwr);
+                sleep(500);
+                vvdrive.followTrajectorySequence(yellowBackDropLeftBlue);
+                robot.leftWheel.setPower(0.9);
+                sleep(1000);
+                robot.leftWheel.setPower(0);
+                vvdrive.followTrajectorySequence(blueLeftEnd);
+                telemetry.addData("Parallel Position: ", poseEstimate.getX());
+                telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
+                telemetry.update();
+
                 break;
             }
         }
