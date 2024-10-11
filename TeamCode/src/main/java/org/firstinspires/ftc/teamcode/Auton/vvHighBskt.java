@@ -161,8 +161,6 @@ public class  vvHighBskt extends LinearOpMode {
 
 
         robot.init();
-        //initTfod();
-        String spikeLoc;
 
         // Wait for the DS start button to be touched.
         telemetry.addData(">", "Robot Ready");
@@ -185,17 +183,10 @@ public class  vvHighBskt extends LinearOpMode {
                 robot.armPos(robot.armHighCa,armEPower);
                 robot.openClaw();
                 vvdrive.followTrajectorySequence(yellow1);
-                robot.extArmFLoorPick
+                robot.extArmPos(robot.extArmFLoorPick,armEPower);
                 sleep(1000);
                 robot.closeClaw();
-                robot.rightWheel.setPower(0);
-                robot.movePickUp(autonPickupLow, pickUpPwr);
-                sleep(500);
-                vvdrive.followTrajectorySequence(yellowBackDropLeftBlue);
-                robot.leftWheel.setPower(0.9);
-                sleep(1000);
-                robot.leftWheel.setPower(0);
-                vvdrive.followTrajectorySequence(blueLeftEnd);
+
                 telemetry.addData("Parallel Position: ", poseEstimate.getX());
                 telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
                 telemetry.update();
