@@ -57,7 +57,7 @@ import java.util.Objects;
  */
 @Autonomous(name = "vvAutonBackBlue", group = "1 - Blue Auton")
 
-public class  vvHighBskt extends LinearOpMode {
+public class  vvSnglBskt extends LinearOpMode {
     vvHardwareITDRR robot = new vvHardwareITDRR(this);
 
     private ElapsedTime runtime = new ElapsedTime();
@@ -177,18 +177,11 @@ public class  vvHighBskt extends LinearOpMode {
                 telemetry.update();
                 robot.armPos(robot.armHighCa,armEPower);
                 robot.openClaw();
-                vvdrive.followTrajectorySequence(yellow1);
-                robot.extArmFLoorPick
+                vvdrive.followTrajectorySequence(yellow);
+                robot.armPos(robot.extArmFLoorPick,armEPower);
                 sleep(1000);
                 robot.closeClaw();
-                robot.rightWheel.setPower(0);
-                robot.movePickUp(autonPickupLow, pickUpPwr);
-                sleep(500);
-                vvdrive.followTrajectorySequence(yellowBackDropLeftBlue);
-                robot.leftWheel.setPower(0.9);
-                sleep(1000);
-                robot.leftWheel.setPower(0);
-                vvdrive.followTrajectorySequence(blueLeftEnd);
+
                 telemetry.addData("Parallel Position: ", poseEstimate.getX());
                 telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
                 telemetry.update();
