@@ -36,7 +36,7 @@ public class vvTeleOp extends LinearOpMode {
         double armBump = 0;
         double extBump = 0;
         int armBumpInc = 50;
-        int extBumpInc = 50;
+        int extBumpInc = 100;
         int extLoc = 0;
         double wristPos = 0;
         double clawPos = 0;
@@ -108,10 +108,10 @@ public class vvTeleOp extends LinearOpMode {
                     robot.armPos(robot.arm.getCurrentPosition()-armBumpInc,robot.armEPower);
                 }
                 if (extBump>0.8) {
-                    robot.armPos(robot.arm.getCurrentPosition()+extBumpInc,robot.extArmEPower);
+                    robot.extArmPos(robot.arm.getCurrentPosition()+extBumpInc,robot.extArmEPower);
                 }
                 if (extBump<-0.8) {
-                    robot.armPos(robot.arm.getCurrentPosition()-extBumpInc,robot.extArmEPower);
+                    robot.extArmPos(robot.arm.getCurrentPosition()-extBumpInc,robot.extArmEPower);
                 }
 
                 if (gamepad2.dpad_up) { //High Basket

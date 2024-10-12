@@ -74,7 +74,7 @@ public class vvHardwareITD {
     final public int extArmHighBe = 2000;
     final public int extArmLowBe = 838;
     final public int extArmHighCe = 1200;
-    final public int extArmLowCe = 0;
+    final public int extArmLowCe = 300;
     final public int extArmFloorSub= 1200;
     final public int extArmFLoorPick = 290;
     final public double extArmEPower = 0.5;
