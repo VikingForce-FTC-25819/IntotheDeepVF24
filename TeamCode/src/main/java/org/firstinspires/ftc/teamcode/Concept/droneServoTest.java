@@ -60,6 +60,7 @@ public class droneServoTest extends LinearOpMode {
 
     // Define class members
     Servo wrist;
+    Servo claw;
     double position = (MAX_POS - MIN_POS) / 2; // Start at halfway position
     boolean rampUp = true;
 
@@ -70,7 +71,7 @@ public class droneServoTest extends LinearOpMode {
         // Connect to servo (Assume Robot Left Hand)
         // Change the text in quotes to match any servo name on your robot.
         wrist = hardwareMap.get(Servo.class, "wrist");
-
+        claw = hardwareMap.get(Servo.class, "claw");
         // Wait for the start button
         telemetry.addData(">", "Press Start to scan Servo.");
         telemetry.update();
@@ -90,6 +91,7 @@ public class droneServoTest extends LinearOpMode {
                 }
             } else if (gamepad2.right_bumper){
                 wrist.setPosition(LAUNCH);
+                claw.setPosition(LAUNCH);
             }
             else {
                 // Keep stepping down until we hit the min value.
@@ -107,6 +109,7 @@ public class droneServoTest extends LinearOpMode {
 
             // Set the servo to the new position and pause;
             wrist.setPosition(position);
+            claw.setPosition(position);
             sleep(CYCLE_MS);
             idle();
         }

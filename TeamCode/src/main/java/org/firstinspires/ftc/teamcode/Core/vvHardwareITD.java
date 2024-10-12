@@ -52,9 +52,9 @@ public class vvHardwareITD {
     * wrist variables: floorPick, highCw, lowCw, highBw, lowBw
     * claw variables: openClaw, closeClaw (Do we need to add one for length vs. width samples?)
     */
-    public static final double clawClose      =  0.35 ;
-    public static final double clawLong     =  0.25 ;
-    public static final double clawOpen       =  0.1 ;
+    public static final double clawClose      =  1 ;
+    public static final double clawLong     =  0.8 ;
+    public static final double clawOpen       =  0.65 ;
     public static final double ARM_UP_POWER    =  0.45 ;
     public static final double ARM_DOWN_POWER  = 0.45 ;
     public static final double floorPick = 0.3 ;
@@ -65,17 +65,18 @@ public class vvHardwareITD {
     public static final double lowBw = 0.4 ;
 
     final public int floorArm = 0;// -84
-    final public double armEPower = 0.7;
-    final public int armLowCa = 125; // the low encoder position for the arm -23
-    final public int armHighCa = 1246; // the high-overhead encoder position for the arm 329
-    final public int armLowBa = 1528;
+    final public double armEPower = 0.5;
+    final public int armLowCa = 125; //
+    final public int armHighCa = 1200; //
+    final public int armLowBa = 1450;
     final public int armHighBa = 2209;
-    final public int extArmHighBe = 2188;
+    final public int armFloorSub = 400;
+    final public int extArmHighBe = 2000;
     final public int extArmLowBe = 838;
-    final public int extArmHighCe = 410;
+    final public int extArmHighCe = 1200;
     final public int extArmLowCe = 0;
-    final public int extArmFloorTuck= 0;
-    final public int extArmFLoorPick = 50;
+    final public int extArmFloorSub= 1200;
+    final public int extArmFLoorPick = 290;
     final public double extArmEPower = 0.5;
 
     static final double FORWARD_SPEED = 0.3;
@@ -152,7 +153,6 @@ public class vvHardwareITD {
         leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         extend.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
 
         rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
