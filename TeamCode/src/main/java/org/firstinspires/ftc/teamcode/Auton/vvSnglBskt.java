@@ -181,7 +181,12 @@ public class  vvSnglBskt extends LinearOpMode {
                 robot.armPos(robot.extArmFLoorPick,armEPower);
                 sleep(1000);
                 robot.closeClaw();
-
+                vvdrive.followTrajectorySequence(yellowDrop);
+                robot.openClaw();
+                vvdrive.followTrajectorySequence(pickSpecimen);
+                robot.closeClaw();
+                vvdrive.followTrajectorySequence(observPark);
+                robot.openClaw();
                 telemetry.addData("Parallel Position: ", poseEstimate.getX());
                 telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
                 telemetry.update();
