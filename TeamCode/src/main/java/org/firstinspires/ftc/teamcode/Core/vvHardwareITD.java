@@ -52,27 +52,32 @@ public class vvHardwareITD {
     * wrist variables: floorPick, highCw, lowCw, highBw, lowBw
     * claw variables: openClaw, closeClaw (Do we need to add one for length vs. width samples?)
     */
-    public static final double clawClose      =  0.4 ;
-    public static final double clawOpen       =  0.1 ;
+    public static final double clawClose      =  1 ;
+    public static final double clawLong     =  0.8 ;
+    public static final double clawOpen       =  0.65 ;
     public static final double ARM_UP_POWER    =  0.45 ;
-    public static final double ARM_DOWN_POWER  = -0.45 ;
-    public static final double floorPick = 0 ;
-    public static final double highCw  = 0.25 ;
-    public static final double lowCW = 0.25 ;
-    public static final double highBw = 0.4 ;
-    public static final double lowBw = 0.3 ;
+    public static final double ARM_DOWN_POWER  = 0.45 ;
+    public static final double floorPick = 0.3 ;
+    public static final double floorCarry = 0.9 ;
+    public static final double highCw  = 0.5 ;
+    public static final double lowCW = 0.5 ;
+    public static final double highBw = 0.3 ;
+    public static final double lowBw = 0.4 ;
 
-    final public int floorArm = 0; // -84
-    final public int armLowCa = 125; // the low encoder position for the arm -23
-    final public int armHighCa = 1246; // the high-overhead encoder position for the arm 329
-    final public int armLowBa = 1528;
+    final public int floorArm = 0;// -84
+    final public double armEPower = 0.5;
+    final public int armLowCa = 125; //
+    final public int armHighCa = 1200; //
+    final public int armLowBa = 1450;
     final public int armHighBa = 2209;
-    final public int extArmHighBe = 2188;
+    final public int armFloorSub = 400;
+    final public int extArmHighBe = 2000;
     final public int extArmLowBe = 838;
-    final public int extArmHighCe = 410;
-    final public int extArmLowCe = 0;
-    final public int extArmFloorTuck= 0;
-    final public int extArmFLoorPick = 50;
+    final public int extArmHighCe = 1200;
+    final public int extArmLowCe = 300;
+    final public int extArmFloorSub= 1200;
+    final public int extArmFLoorPick = 290;
+    final public double extArmEPower = 0.5;
 
     static final double FORWARD_SPEED = 0.3;
     static final double TURN_SPEED = 0.5;
@@ -114,7 +119,7 @@ public class vvHardwareITD {
 
         wrist.scaleRange(0,1);
         wrist.setDirection(Servo.Direction.FORWARD);
-        wrist.setPosition(0.3);
+        wrist.setPosition(0.9);
 
         claw.scaleRange(0,1);
         claw.setDirection(Servo.Direction.FORWARD);
@@ -141,14 +146,13 @@ public class vvHardwareITD {
         arm.setDirection(DcMotorSimple.Direction.REVERSE);
         extend.setDirection(DcMotor.Direction.REVERSE);
 
-        arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        extend.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        extend.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         extend.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
 
         rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -282,7 +286,7 @@ public class vvHardwareITD {
         arm.setPower(armPower);
     }
     public void moveExt(double extPower) {
-            extend.setPower(extPower);
+        extend.setPower(extPower);
     }
     /*
      * Pass the requested arm position and power to the arm drive motors
@@ -298,12 +302,15 @@ public class vvHardwareITD {
         arm.setPower(armEPower);
     }
     public void extArmPos(int extArmPosition, double extArmEPower) {
-        arm.setTargetPosition(extArmPosition);
-        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        arm.setPower(extArmEPower);
+        extend.setTargetPosition(extArmPosition);
+        extend.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        extend.setPower(extArmEPower);
     }
     public void moveWristFloor() {
         wrist.setPosition(floorPick);
+    }
+    public void moveWristCarry() {
+        wrist.setPosition(floorCarry);
     }
     public void moveWristHighCw() {
         wrist.setPosition(highCw);
@@ -328,6 +335,9 @@ public class vvHardwareITD {
     public void closeClaw() {
         claw.setPosition(clawClose);
     }
-    
+    public void longClaw() {
+        claw.setPosition(clawLong);
+    }
+
 }
 

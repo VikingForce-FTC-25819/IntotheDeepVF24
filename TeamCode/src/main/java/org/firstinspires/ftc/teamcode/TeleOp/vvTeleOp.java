@@ -33,8 +33,10 @@ public class vvTeleOp extends LinearOpMode {
         int x = 0;
         int y = 0;
         double drivePower = 0.5; //global drive power level
-        double armPower = 0;
-        double extPower = 0;
+        double armBump = 0;
+        double extBump = 0;
+        int armBumpInc = 50;
+        int extBumpInc = 100;
         int extLoc = 0;
         double wristPos = 0;
         double clawPos = 0;
@@ -56,8 +58,8 @@ public class vvTeleOp extends LinearOpMode {
                 driveY = -gamepad1.left_stick_y;
                 strafe = gamepad1.left_stick_x * 1;
                 turn = gamepad1.right_stick_x;
-                armPower = gamepad2.left_stick_y;
-                extPower = gamepad2.right_stick_y * 0.75;
+                armBump = -gamepad2.left_stick_y;
+                extBump = -gamepad2.right_stick_y;
 
                 y = robot.parallelEncoder.getCurrentPosition();
                 x = robot.perpendicularEncoder.getCurrentPosition(); //parallel, forward encoder distance is 0
@@ -71,12 +73,17 @@ public class vvTeleOp extends LinearOpMode {
                     drivePower = Math.max(drivePower - 0.05, 0.1);
                 }
 
+                if (gamepad1.b) {
+                    robot.armPos(robot.floorArm, robot.armEPower);
+                    robot.extArmPos(robot.extArmFLoorPick,robot.extArmEPower);
+                    robot.moveWristCarry();
+                }
+
                 // Methods called for motion
                 robot.driveRobot(drivePower, driveY, strafe, turn);
 
-                robot.moveArm(armPower);
-
-                robot.moveExt(extPower);
+                //robot.moveArm(armPower);
+                //robot.moveExt(extPower);
 
                 wristPos = robot.wrist.getPosition();
                 clawPos = robot.claw.getPosition();
@@ -85,25 +92,53 @@ public class vvTeleOp extends LinearOpMode {
                     robot.openClaw();
                 if (gamepad2.left_bumper)
                     robot.closeClaw();
-
                 if (gamepad2.x)
+                    robot.longClaw();
+
+                if (gamepad2.a) { //Near floor pick
+                    robot.armPos(robot.floorArm, robot.armEPower);
+                    robot.extArmPos(robot.extArmFLoorPick,robot.extArmEPower);
                     robot.moveWristFloor();
-                if (gamepad2.y)
+                }
+
+                if (armBump>0.8) {
+                    robot.armPos(robot.arm.getCurrentPosition()+armBumpInc,robot.armEPower);
+                }
+                if (armBump<-0.8) {
+                    robot.armPos(robot.arm.getCurrentPosition()-armBumpInc,robot.armEPower);
+                }
+                if (extBump>0.8) {
+                    robot.extArmPos(robot.arm.getCurrentPosition()+extBumpInc,robot.extArmEPower);
+                }
+                if (extBump<-0.8) {
+                    robot.extArmPos(robot.arm.getCurrentPosition()-extBumpInc,robot.extArmEPower);
+                }
+
+                if (gamepad2.dpad_up) { //High Basket
+                    robot.armPos(robot.armHighBa, robot.armEPower);
+                    robot.extArmPos(robot.extArmHighBe, robot.extArmEPower);
                     robot.moveWristHighBw();
-                if (gamepad2.dpad_up) {
-                    robot.armPos(robot.armHighBa, 0.5);
-                    robot.extArmPos(robot.extArmHighBe, 0.5);
                 }
-                if (gamepad2.dpad_right)
-                    robot.armPos(robot.armLowBa,0.5);
-                    robot.extArmPos(robot.extArmLowBe, 0.5);
-                if (gamepad2.dpad_left) {
-                    robot.armPos(robot.armHighCa, 0.5);
-                    robot.extArmPos(robot.armHighCa, 0.5);
+                if (gamepad2.dpad_right) { //Low Basket
+                    robot.armPos(robot.armLowBa, robot.armEPower);
+                    robot.extArmPos(robot.extArmLowBe, robot.extArmEPower);
+                    robot.moveWristLowBw();
                 }
-                if (gamepad2.dpad_down) {
-                    robot.armPos(robot.armLowCa, 0.5);
-                    robot.extArmPos(robot.extArmLowCe, 0.5);
+                if (gamepad2.dpad_left) { //High Chamber
+                    robot.armPos(robot.armHighCa, robot.armEPower);
+                    robot.extArmPos(robot.extArmHighCe, robot.extArmEPower);
+                    robot.moveWristHighCw();
+                }
+                if (gamepad2.dpad_down) { //Low Chamber
+                    robot.armPos(robot.armLowCa, robot.armEPower);
+                    robot.extArmPos(robot.extArmLowCe, robot.extArmEPower);
+                    robot.moveWristLowCW();
+                }
+
+                if (gamepad2.y) { //Submersible pick
+                    robot.armPos(robot.armFloorSub, robot.armEPower);
+                    robot.moveWristFloor();
+                    robot.extArmPos(robot.extArmFloorSub, robot.extArmEPower);
                 }
 
                 // Retrieve Rotational Angles and Velocities
@@ -119,9 +154,8 @@ public class vvTeleOp extends LinearOpMode {
                 telemetry.addData("Y Encoder",y);
                 telemetry.addData("X Encoder",x);
                 telemetry.addData("Yaw (Z)", "%.2f Deg. (Heading)", orientation.getYaw(AngleUnit.DEGREES));
-                telemetry.addData("Arm Power", armPower);
+                //telemetry.addData("Arm Power", armPower);
                 telemetry.addData("Arm Position", robot.arm.getCurrentPosition());
-                //telemetry.addData("Arm Target", robot.rightArm.getTargetPosition());
                 telemetry.addData("Extend Position", robot.extend.getCurrentPosition());
                 telemetry.addData("Wrist", wristPos);
                 telemetry.addData("Claw", clawPos);
