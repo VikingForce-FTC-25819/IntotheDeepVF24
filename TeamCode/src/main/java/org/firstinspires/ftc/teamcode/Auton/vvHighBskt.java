@@ -186,7 +186,14 @@ public class  vvHighBskt extends LinearOpMode {
                 robot.extArmPos(robot.extArmFLoorPick,armEPower);
                 sleep(1000);
                 robot.closeClaw();
-
+                vvdrive.followTrajectorySequence(yellow1Drop);
+                robot.openClaw();
+                vvdrive.followTrajectorySequence(yellow2);
+                robot.closeClaw();
+                vvdrive.followTrajectorySequence(yellow2Drop);
+                robot.openClaw();
+                vvdrive.followTrajectorySequence(ascentPark);
+                robot.closeClaw();
                 telemetry.addData("Parallel Position: ", poseEstimate.getX());
                 telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
                 telemetry.update();
