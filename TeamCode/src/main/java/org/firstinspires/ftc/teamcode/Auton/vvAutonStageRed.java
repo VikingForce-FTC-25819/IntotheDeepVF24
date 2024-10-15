@@ -34,6 +34,7 @@ import android.util.Size;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -58,7 +59,7 @@ import java.util.Objects;
  *
  */
 @Autonomous(name = "vvAutonStageRed", group = "2 - Red Auton")
-
+@Disabled
 public class vvAutonStageRed extends LinearOpMode {
     vvHardwareRR robot = new vvHardwareRR(this);
 
