@@ -55,7 +55,7 @@ import java.util.Objects;
  * Start the robot on the furthest tile edge from the truss (left side)
  *
  */
-@Autonomous(name = "vvAutonBackBlue", group = "1 - Blue Auton")
+@Autonomous(name = "vvSnglBskt", group = "1 - Auton")
 
 public class  vvSnglBskt extends LinearOpMode {
     vvHardwareITDRR robot = new vvHardwareITDRR(this);
@@ -120,14 +120,14 @@ public class  vvSnglBskt extends LinearOpMode {
                 .build();
         TrajectorySequence yellow = vvdrive.trajectorySequenceBuilder(fwdHighCmbr.end())
                 .back(2)
-                .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.extArmPos(robot.extArmFloorTuck, armEPower))
-                .turn(-90)
+                .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.extArmPos(robot.extArmFLoorPick, armEPower))
+                .turn(Math.toRadians(-90))
                 .forward(24)
                 .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.armPos(robot.floorArm, armEPower))
                 .waitSeconds(0)
                 .build();
         TrajectorySequence yellowDrop = vvdrive.trajectorySequenceBuilder(yellow.end())
-                .turn(-45)
+                .turn(Math.toRadians(-45))
                 .forward(30)
                 .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.armPos(robot.armHighBa, armEPower))
                 .UNSTABLE_addTemporalMarkerOffset(-2, () -> robot.moveWristHighBw())
@@ -138,7 +138,7 @@ public class  vvSnglBskt extends LinearOpMode {
                 .strafeRight(96)
                 .forward(6)
                 .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.extArmPos(robot.extArmFLoorPick, armEPower))
-                .turn(180)
+                .turn(Math.toRadians(180))
                 .splineToConstantHeading(new Vector2d(0,-36),Math.toRadians(0))
                 .UNSTABLE_addTemporalMarkerOffset(-3, () -> robot.armPos(robot.armHighCa, armEPower))
                 .UNSTABLE_addTemporalMarkerOffset(-3, () -> robot.moveWristHighCw())
@@ -147,7 +147,7 @@ public class  vvSnglBskt extends LinearOpMode {
                 .build();
         TrajectorySequence observPark = vvdrive.trajectorySequenceBuilder(pickSpecimen.end())
                 .splineToConstantHeading(new Vector2d(48,-65),Math.toRadians(0))
-                .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.extArmPos(robot.extArmFloorTuck, armEPower))
+                .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.extArmPos(robot.extArmFLoorPick, armEPower))
                 .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.armPos(robot.floorArm, armEPower))
                 .waitSeconds(0)
                 .build();

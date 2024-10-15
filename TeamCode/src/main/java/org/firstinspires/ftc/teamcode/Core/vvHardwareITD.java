@@ -59,14 +59,14 @@ public class vvHardwareITD {
     public static final double ARM_DOWN_POWER  = 0.45 ;
     public static final double floorPick = 0.3 ;
     public static final double floorCarry = 0.9 ;
-    public static final double highCw  = 0.5 ;
+    public static final double highCw  = 0.4 ;
     public static final double lowCW = 0.5 ;
     public static final double highBw = 0.3 ;
     public static final double lowBw = 0.4 ;
 
     final public int floorArm = 0;// -84
     final public double armEPower = 0.5;
-    final public int armLowCa = 125; //
+    final public int armLowCa = 550; //
     final public int armHighCa = 1200; //
     final public int armLowBa = 1450;
     final public int armHighBa = 2209;
@@ -74,8 +74,8 @@ public class vvHardwareITD {
     final public int extArmHighBe = 2000;
     final public int extArmLowBe = 838;
     final public int extArmHighCe = 1200;
-    final public int extArmLowCe = 300;
-    final public int extArmFloorSub= 1200;
+    final public int extArmLowCe = 50;
+    final public int extArmFloorSub= 1350;
     final public int extArmFLoorPick = 290;
     final public double extArmEPower = 0.5;
 

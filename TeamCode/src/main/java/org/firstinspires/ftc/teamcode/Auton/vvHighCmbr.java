@@ -19,18 +19,15 @@ import java.util.List;
 import java.util.Objects;
 
 // Auton with 2 high chamber and parK
-// USE vvAutonBackBlue AS A REFERNCE
-public class vvHighCmbr {
-
 
     /*
      * Auton Blue - Backstage Side
      * Start the robot on the furthest tile edge from the truss (left side)
      *
      */
-    @Autonomous(name = "vvAutonBackBlue", group = "1 - Blue Auton")
+    @Autonomous(name = "vvHighCmbr", group = "1 - Blue Auton")
 
-    public class vvAutonBackBlue extends LinearOpMode {
+    public class vvHighCmbr extends LinearOpMode {
         vvHardwareRR robot = new vvHardwareRR(this);
 
         private ElapsedTime runtime = new ElapsedTime();
@@ -344,4 +341,4 @@ public class vvHighCmbr {
             }
         }
     }
-}
+

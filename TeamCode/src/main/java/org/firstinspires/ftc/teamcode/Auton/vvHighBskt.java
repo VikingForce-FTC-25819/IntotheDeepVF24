@@ -54,7 +54,7 @@ import java.util.Objects;
  * Start the robot on the furthest tile edge from the truss (left side)
  *
  */
-@Autonomous(name = "vvAutonBackBlue", group = "1 - Blue Auton")
+@Autonomous(name = "vvHighBskt", group = "1 - Auton")
 
 public class  vvHighBskt extends LinearOpMode {
     vvHardwareITDRR robot = new vvHardwareITDRR(this);
@@ -111,7 +111,7 @@ public class  vvHighBskt extends LinearOpMode {
         vvdrive.setPoseEstimate(startPose);
 
         TrajectorySequence fwdHighCmbr = vvdrive.trajectorySequenceBuilder(startPose) //Also Red Back
-                .forward(36)
+                .forward(24)
                 .UNSTABLE_addTemporalMarkerOffset(-3, () -> robot.armPos(robot.armHighCa, armEPower))
                 .UNSTABLE_addTemporalMarkerOffset(-3, () -> robot.moveWristHighCw())
                 .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.extArmPos(robot.extArmHighCe, armEPower))
@@ -119,8 +119,8 @@ public class  vvHighBskt extends LinearOpMode {
                 .build();
         TrajectorySequence yellow1 = vvdrive.trajectorySequenceBuilder(fwdHighCmbr.end())
                 .back(2)
-                .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.extArmPos(robot.extArmFloorTuck, armEPower))
-                .turn(-90)
+                .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.extArmPos(robot.extArmFLoorPick, armEPower))
+                .turn(Math.toRadians(-90))
                 .forward(24)
                 .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.armPos(robot.floorArm, armEPower))
                 .waitSeconds(0)
@@ -135,7 +135,7 @@ public class  vvHighBskt extends LinearOpMode {
                 .build();
         TrajectorySequence yellow2 = vvdrive.trajectorySequenceBuilder(yellow1Drop.end()) //Also Blue Back
                 .back(5)
-                .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.extArmPos(robot.extArmFloorTuck, armEPower))
+                .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.extArmPos(robot.extArmFLoorPick, armEPower))
                 .turn(45)
                 .forward(30)
                 .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.armPos(robot.floorArm, armEPower))
@@ -153,7 +153,7 @@ public class  vvHighBskt extends LinearOpMode {
                 .build();
         TrajectorySequence ascentPark = vvdrive.trajectorySequenceBuilder(yellow2Drop.end())
                 .back(48)
-                .UNSTABLE_addTemporalMarkerOffset(-3, () -> robot.extArmPos(robot.extArmFloorTuck, armEPower))
+                .UNSTABLE_addTemporalMarkerOffset(-3, () -> robot.extArmPos(robot.extArmFLoorPick, armEPower))
                 .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.armPos(robot.floorArm, armEPower))
                 .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.moveWristFloor())
                 .waitSeconds(0)
