@@ -100,18 +100,10 @@ public class vvTeleOp extends LinearOpMode {
                     robot.extArmPos(robot.extArmFLoorPick,robot.extArmEPower);
                     robot.moveWristFloor();
                 }
-
-                if (armBump>0.8) {
-                    robot.armPos(robot.arm.getCurrentPosition()+armBumpInc,robot.armEPower);
-                }
-                if (armBump<-0.8) {
-                    robot.armPos(robot.arm.getCurrentPosition()-armBumpInc,robot.armEPower);
-                }
-                if (extBump>0.8) {
-                    robot.extArmPos(robot.arm.getCurrentPosition()+extBumpInc,robot.extArmEPower);
-                }
-                if (extBump<-0.8) {
-                    robot.extArmPos(robot.arm.getCurrentPosition()-extBumpInc,robot.extArmEPower);
+                if (gamepad2.b) { //Wall pick
+                    robot.armPos(robot.armWall, robot.armEPower);
+                    robot.extArmPos(robot.extArmLowCe,robot.extArmEPower);
+                    robot.moveWristWall();
                 }
 
                 if (gamepad2.dpad_up) { //High Basket
@@ -139,6 +131,19 @@ public class vvTeleOp extends LinearOpMode {
                     robot.armPos(robot.armFloorSub, robot.armEPower);
                     robot.moveWristFloor();
                     robot.extArmPos(robot.extArmFloorSub, robot.extArmEPower);
+                }
+
+                if (armBump>0.8) {
+                    robot.armPos(robot.arm.getCurrentPosition()+armBumpInc,robot.armEPower);
+                }
+                if (armBump<-0.8) {
+                    robot.armPos(robot.arm.getCurrentPosition()-armBumpInc,robot.armEPower);
+                }
+                if (extBump>0.8) {
+                    robot.extArmPos(robot.arm.getCurrentPosition()+extBumpInc,robot.extArmEPower);
+                }
+                if (extBump<-0.8) {
+                    robot.extArmPos(robot.arm.getCurrentPosition()-extBumpInc,robot.extArmEPower);
                 }
 
                 // Retrieve Rotational Angles and Velocities

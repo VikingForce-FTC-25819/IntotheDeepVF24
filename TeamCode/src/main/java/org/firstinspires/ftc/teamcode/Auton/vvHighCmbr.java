@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode.Auton;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -9,7 +11,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDir
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 //import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.Core.vvHardware;
-import org.firstinspires.ftc.teamcode.Core.vvHardwareRR;
+import org.firstinspires.ftc.teamcode.Core.vvHardwareITDRR;
 import org.firstinspires.ftc.teamcode.Core.vvRoadRunnerDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.vision.VisionPortal;
@@ -25,10 +27,11 @@ import java.util.Objects;
      * Start the robot on the furthest tile edge from the truss (left side)
      *
      */
-    @Autonomous(name = "vvHighCmbr", group = "1 - Blue Auton")
+@Disabled
+    @Autonomous(name = "vvHighCmbr", group = "2 - Auton", preselectTeleOp="vvTeleOp")
 
     public class vvHighCmbr extends LinearOpMode {
-        vvHardwareRR robot = new vvHardwareRR(this);
+        vvHardwareITDRR robot = new vvHardwareITDRR(this);
 
         private ElapsedTime runtime = new ElapsedTime();
 
@@ -81,14 +84,13 @@ import java.util.Objects;
 
             vvdrive.setPoseEstimate(startPose);
 
-            TrajectorySequence purpleDropTopBlue = vvdrive.trajectorySequenceBuilder(startPose) //Also Red Back
-                    .forward(35)
-                    .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.movePickUp(autonPickupLow, pickUpPwr))
-                    .back(10)
-                    .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.armPos(armIdle + 5, armEPower))
-                    .waitSeconds(1)
+            TrajectorySequence fwdHighChmber = vvdrive.trajectorySequenceBuilder(startPose) //Also Red Back
+                    .splineToConstantHeading(new Vector2d(46, -30), Math.toRadians(0))
+                    .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.armPos(robot.armHighCa, armEPower))
+                    .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.moveWristHighCw())
+                    .UNSTABLE_addTemporalMarkerOffset(-2, () -> robot.extArmPos(robot.extArmHighCe,robot.extArmEPower))
                     .build();
-            TrajectorySequence purpleDropLeftBlue = vvdrive.trajectorySequenceBuilder(startPose)
+            /* TrajectorySequence  = vvdrive.trajectorySequenceBuilder(startPose)
                     .forward(30)
                     .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.movePickUp(autonPickupLow, pickUpPwr))
                     .turn(Math.toRadians(60))
@@ -216,7 +218,7 @@ import java.util.Objects;
                     .UNSTABLE_addTemporalMarkerOffset(-0.8, () -> robot.movePickUp(autonPickupIdle, pickUpPwr))
                     .UNSTABLE_addTemporalMarkerOffset(-0.2, () -> robot.armPos(armIdle, armEPower))
                     .build();
-
+*/
             robot.init();
             //initTfod();
             String spikeLoc;
@@ -244,98 +246,28 @@ import java.util.Objects;
                     Pose2d poseEstimate = vvdrive.getPoseEstimate();
                     vvdrive.update();
 
-                    if (Objects.equals(spikeLoc, "LEFT")) {
-                        robot.movePickUp(5, pickUpPwr);
-                        sleep(500);
-                        robot.armPos(armStart, armEPower);
-                        sleep(500);
-                        vvdrive.followTrajectorySequence(purpleDropLeftRed);
-                        telemetry.addData("Parallel Position: ", poseEstimate.getX());
-                        telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
-                        telemetry.update();
-                        robot.rightWheel.setPower(-0.9);
-                        sleep(1000);
-                        robot.rightWheel.setPower(0);
-                        robot.movePickUp(autonPickupLow, pickUpPwr);
-                        sleep(500);
-                        vvdrive.followTrajectorySequence(yellowBackDropLeftBlue);
-                        robot.leftWheel.setPower(0.9);
-                        sleep(1000);
-                        robot.leftWheel.setPower(0);
-                        vvdrive.followTrajectorySequence(blueLeftEnd);
-                        telemetry.addData("Parallel Position: ", poseEstimate.getX());
-                        telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
-                        telemetry.update();
-                    }
-                    if (Objects.equals(spikeLoc, "CENTER")) {
-                        robot.movePickUp(5, pickUpPwr);
-                        sleep(500);
-                        robot.armPos(armStart, armEPower);
-                        sleep(500);
-                        vvdrive.followTrajectorySequence(purpleDropTopRed);
-                        robot.movePickUp(autonPickupLow, pickUpPwr);
-                        telemetry.addData("Parallel Position: ", poseEstimate.getX());
-                        telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
-                        telemetry.update();
-                        robot.rightWheel.setPower(-0.9);
-                        sleep(1000);
-                        robot.rightWheel.setPower(0);
-                        vvdrive.followTrajectorySequence(yellowBackDropTopBlue);
-                        telemetry.addData("Parallel Position: ", poseEstimate.getX());
-                        telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
-                        telemetry.update();
-                        robot.leftWheel.setPower(0.9);
-                        sleep(1000);
-                        robot.leftWheel.setPower(0);
-                        vvdrive.followTrajectorySequence(blueTopEnd);
-                        telemetry.addData("Parallel Position: ", poseEstimate.getX());
-                        telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
-                        telemetry.update();
-                    }
-                    if (Objects.equals(spikeLoc, "RIGHT")) {
-                        robot.movePickUp(5, pickUpPwr);
-                        sleep(500);
-                        robot.armPos(armStart, armEPower);
-                        sleep(500);
-                        vvdrive.followTrajectorySequence(purpleDropRightRed);
-                        telemetry.addData("Parallel Position: ", poseEstimate.getX());
-                        telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
-                        telemetry.update();
-                        robot.rightWheel.setPower(-0.9);
-                        sleep(1000);
-                        robot.rightWheel.setPower(0);
-                        vvdrive.followTrajectorySequence(yellowBackDropRightBlue);
-                        robot.leftWheel.setPower(0.9);
-                        sleep(1000);
-                        robot.leftWheel.setPower(0);
-                        vvdrive.followTrajectorySequence(blueRightEnd);
-                        telemetry.addData("Parallel Position: ", poseEstimate.getX());
-                        telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
-                        telemetry.update();
-                    }
-                    if (Objects.equals(spikeLoc, "NOTFOUND")) {//Right is the default
-                        robot.movePickUp(5, pickUpPwr);
-                        sleep(500);
-                        robot.armPos(armStart, armEPower);
-                        sleep(500);
-                        vvdrive.followTrajectorySequence(purpleDropLeftRed);
-                        telemetry.addData("Parallel Position: ", poseEstimate.getX());
-                        telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
-                        telemetry.update();
-                        robot.rightWheel.setPower(-0.9);
-                        sleep(1000);
-                        robot.rightWheel.setPower(0);
-                        robot.movePickUp(autonPickupLow, pickUpPwr);
-                        sleep(500);
-                        vvdrive.followTrajectorySequence(yellowBackDropLeftBlue);
-                        robot.leftWheel.setPower(0.9);
-                        sleep(1000);
-                        robot.leftWheel.setPower(0);
-                        vvdrive.followTrajectorySequence(blueLeftEnd);
-                        telemetry.addData("Parallel Position: ", poseEstimate.getX());
-                        telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
-                        telemetry.update();
-                    }
+                    //robot.movePickUp(5, pickUpPwr);
+                    sleep(500);
+                    robot.armPos(armStart, armEPower);
+                    sleep(500);
+                    //vvdrive.followTrajectorySequence(purpleDropLeftRed);
+                    telemetry.addData("Parallel Position: ", poseEstimate.getX());
+                    telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
+                    telemetry.update();
+                    //robot.rightWheel.setPower(-0.9);
+                    sleep(1000);
+                    //robot.rightWheel.setPower(0);
+                    //robot.movePickUp(autonPickupLow, pickUpPwr);
+                    sleep(500);
+                    //vvdrive.followTrajectorySequence(yellowBackDropLeftBlue);
+                    //robot.leftWheel.setPower(0.9);
+                    sleep(1000);
+                    //robot.leftWheel.setPower(0);
+                    //vvdrive.followTrajectorySequence(blueLeftEnd);
+                    telemetry.addData("Parallel Position: ", poseEstimate.getX());
+                    telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
+                    telemetry.update();
+
                     break;
                 }
             }

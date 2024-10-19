@@ -63,21 +63,23 @@ public class vvHardwareITD {
     public static final double lowCW = 0.5 ;
     public static final double highBw = 0.3 ;
     public static final double lowBw = 0.4 ;
+    public static final double lowWallCw = 0.4 ;
 
     final public int floorArm = 0;// -84
     final public double armEPower = 0.5;
     final public int armLowCa = 550; //
     final public int armHighCa = 1200; //
     final public int armLowBa = 1450;
-    final public int armHighBa = 2209;
+    final public int armHighBa = 2159;
     final public int armFloorSub = 400;
+    final public int armWall = 450;
     final public int extArmHighBe = 2000;
     final public int extArmLowBe = 838;
     final public int extArmHighCe = 1200;
     final public int extArmLowCe = 50;
-    final public int extArmFloorSub= 1350;
+    final public int extArmFloorSub= 1450;
     final public int extArmFLoorPick = 290;
-    final public double extArmEPower = 0.5;
+    final public double extArmEPower = 0.4;
 
     static final double FORWARD_SPEED = 0.3;
     static final double TURN_SPEED = 0.5;
@@ -119,7 +121,7 @@ public class vvHardwareITD {
 
         wrist.scaleRange(0,1);
         wrist.setDirection(Servo.Direction.FORWARD);
-        wrist.setPosition(0.9);
+        wrist.setPosition(floorCarry);
 
         claw.scaleRange(0,1);
         claw.setDirection(Servo.Direction.FORWARD);
@@ -324,6 +326,7 @@ public class vvHardwareITD {
     public void moveWristHighBw() {
         wrist.setPosition(highBw);
     }
+    public void moveWristWall() {wrist.setPosition(lowWallCw);}
     /**
      * Set the claw servo to close
      *
