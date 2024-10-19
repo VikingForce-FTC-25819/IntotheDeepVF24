@@ -37,6 +37,7 @@ public class vvHardwareITD {
     public DcMotorEx extend;
     public Servo wrist;
     public Servo claw;
+    public Servo rgb;
 
     public IMU imu;
     public DcMotor parallelEncoder;
@@ -57,12 +58,12 @@ public class vvHardwareITD {
     public static final double clawOpen       =  0.65 ;
     public static final double ARM_UP_POWER    =  0.45 ;
     public static final double ARM_DOWN_POWER  = 0.45 ;
-    public static final double floorPick = 0.3 ;
+    public static final double floorPick = 0.1 ;
     public static final double floorCarry = 0.9 ;
     public static final double highCw  = 0.4 ;
     public static final double lowCW = 0.5 ;
-    public static final double highBw = 0.3 ;
-    public static final double lowBw = 0.4 ;
+    public static final double highBw = 0.2 ;
+    public static final double lowBw = 0.3 ;
     public static final double lowWallCw = 0.4 ;
 
     final public int floorArm = 0;// -84
@@ -72,10 +73,13 @@ public class vvHardwareITD {
     final public int armLowBa = 1450;
     final public int armHighBa = 2159;
     final public int armFloorSub = 400;
-    final public int armWall = 450;
+    final public int armWall = 400;
+    final public int armAscent = 2500;
+    final public int extArmAscentGrab = 400;
+    final public int extArmAscentLift = 50;
     final public int extArmHighBe = 2000;
     final public int extArmLowBe = 838;
-    final public int extArmHighCe = 1200;
+    final public int extArmHighCe = 600;
     final public int extArmLowCe = 50;
     final public int extArmFloorSub= 1450;
     final public int extArmFLoorPick = 290;
@@ -118,6 +122,7 @@ public class vvHardwareITD {
         // Define Servos
         claw = myOpMode.hardwareMap.get(Servo.class,"claw");
         wrist = myOpMode.hardwareMap.get(Servo.class,"wrist");
+        rgb = myOpMode.hardwareMap.get(Servo.class,"rgb");
 
         wrist.scaleRange(0,1);
         wrist.setDirection(Servo.Direction.FORWARD);
@@ -126,6 +131,10 @@ public class vvHardwareITD {
         claw.scaleRange(0,1);
         claw.setDirection(Servo.Direction.FORWARD);
         claw.setPosition(clawClose);
+
+        rgb.scaleRange(0,1);
+        rgb.setDirection(Servo.Direction.FORWARD);
+        rgb.setPosition(0.7);
 
         // Retrieve the IMU from the hardware map
         imu = myOpMode.hardwareMap.get(IMU.class, "imu");
@@ -334,12 +343,15 @@ public class vvHardwareITD {
      */
     public void openClaw() {
        claw.setPosition(clawOpen);
+       rgb.setPosition(0.2);
     }
     public void closeClaw() {
         claw.setPosition(clawClose);
+        rgb.setPosition(0.522);
     }
     public void longClaw() {
         claw.setPosition(clawLong);
+        rgb.setPosition(0.388);
     }
 
 }

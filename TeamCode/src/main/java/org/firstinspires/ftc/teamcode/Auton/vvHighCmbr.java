@@ -85,53 +85,57 @@ import java.util.Objects;
             vvdrive.setPoseEstimate(startPose);
 
             TrajectorySequence fwdHighChmber = vvdrive.trajectorySequenceBuilder(startPose) //Also Red Back
-                    .splineToConstantHeading(new Vector2d(46, -30), Math.toRadians(0))
-                    .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.armPos(robot.armHighCa, armEPower))
-                    .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.moveWristHighCw())
-                    .UNSTABLE_addTemporalMarkerOffset(-2, () -> robot.extArmPos(robot.extArmHighCe,robot.extArmEPower))
+                    .forward(26)
+                    .UNSTABLE_addTemporalMarkerOffset(-2, () -> {
+                        robot.armPos(robot.armHighCa, robot.armEPower);
+                        robot.moveWristHighCw();
+                        robot.extArmPos(robot.extArmHighCe, robot.extArmEPower);
+                    })
+                    .waitSeconds(0.5)
                     .build();
-            /* TrajectorySequence  = vvdrive.trajectorySequenceBuilder(startPose)
-                    .forward(30)
-                    .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.movePickUp(autonPickupLow, pickUpPwr))
-                    .turn(Math.toRadians(60))
-                    .UNSTABLE_addTemporalMarkerOffset(-0.5, () -> robot.armPos(armIdle + 5, armEPower))
-                    .forward(9)
-                    .waitSeconds(1)
-                    .back(3)
+            TrajectorySequence sample1Pick  = vvdrive.trajectorySequenceBuilder(startPose)
+                     .turn(Math.toRadians(180))
+                    .strafeLeft(48)
+                    .forward(24)
+                     .UNSTABLE_addTemporalMarkerOffset(-1, () -> {
+                         robot.armPos(robot.armWall, robot.armEPower);
+                         robot.moveWristWall();
+                     })
                     .build();
-            TrajectorySequence purpleDropRightBlue = vvdrive.trajectorySequenceBuilder(startPose)
-                    .forward(38)
-                    .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.movePickUp(autonPickupLow, pickUpPwr))
-                    .turn(Math.toRadians(-45))
-                    .UNSTABLE_addTemporalMarkerOffset(-0.5, () -> robot.armPos(armIdle + 5, armEPower))
-                    .back(4)
-                    .waitSeconds(1)
+            TrajectorySequence sample1drop = vvdrive.trajectorySequenceBuilder(startPose)
+                    .strafeRight(48)
+                    .turn(Math.toRadians(180))
+                    .forward (24)
+                    .UNSTABLE_addTemporalMarkerOffset(-2, () -> {
+                        robot.armPos(robot.armHighCa, robot.armEPower);
+                        robot.moveWristWall();
+                        robot.extArmPos(robot.extArmHighCe,robot.extArmEPower );
+                    })
                     .build();
-            TrajectorySequence purpleDropTopRed = vvdrive.trajectorySequenceBuilder(startPose) //Also Blue Back
-                    .forward(33)
-                    .UNSTABLE_addTemporalMarkerOffset(-1.5, () -> robot.movePickUp(autonPickupIdle - 5, pickUpPwr))
-                    .back(8)
-                    .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.armPos(armIdle + 5, armEPower))
-                    .waitSeconds(1)
+            TrajectorySequence sample2Pick = vvdrive.trajectorySequenceBuilder(startPose) //Also Blue Back
+                    .turn(Math.toRadians(180))
+                    .strafeLeft(48)
+                    .forward(24)
+                    .UNSTABLE_addTemporalMarkerOffset(-1, () -> {
+                        robot.armPos(robot.armWall, robot.armEPower);
+                        robot.moveWristWall();
+                    })
                     .build();
-            TrajectorySequence purpleDropLeftRed = vvdrive.trajectorySequenceBuilder(startPose)
-                    .forward(27)
-                    .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.movePickUp(autonPickupLow, pickUpPwr))
-                    .turn(Math.toRadians(60))
-                    .UNSTABLE_addTemporalMarkerOffset(-0.5, () -> robot.armPos(armIdle + 5, armEPower))
-                    .forward(9)
-                    .waitSeconds(1)
-                    .back(9)
+            TrajectorySequence sample2Drop = vvdrive.trajectorySequenceBuilder(startPose)
+                    .strafeRight(48)
+                    .turn(Math.toRadians(180))
+                    .forward (24)
+                    .UNSTABLE_addTemporalMarkerOffset(-2, () -> {
+                        robot.armPos(robot.armHighCa, robot.armEPower);
+                        robot.moveWristWall();
+                        robot.extArmPos(robot.extArmHighCe,robot.extArmEPower );
+                    })
                     .build();
-            TrajectorySequence purpleDropRightRed = vvdrive.trajectorySequenceBuilder(startPose)
-                    .forward(22)
-                    .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.movePickUp(autonPickupLow, pickUpPwr))
-                    .turn(Math.toRadians(-50))
-                    .UNSTABLE_addTemporalMarkerOffset(-0.5, () -> robot.armPos(armIdle + 5, armEPower))
-                    .forward(6)
-                    .waitSeconds(1)
+            TrajectorySequence park = vvdrive.trajectorySequenceBuilder(startPose)
+                    .strafeLeft(48)
+                    .back(24)
                     .build();
-            TrajectorySequence yellowBackDropTopBlue = vvdrive.trajectorySequenceBuilder(purpleDropTopRed.end())
+           /* TrajectorySequence yellowBackDropTopBlue = vvdrive.trajectorySequenceBuilder(purpleDropTopRed.end())
                     .back(3)
                     .turn(Math.toRadians(90))
                     .forward(44)
@@ -219,6 +223,7 @@ import java.util.Objects;
                     .UNSTABLE_addTemporalMarkerOffset(-0.2, () -> robot.armPos(armIdle, armEPower))
                     .build();
 */
+
             robot.init();
             //initTfod();
             String spikeLoc;

@@ -49,12 +49,12 @@ public class vvHardwareITDRR {
     public static final double clawOpen       =  0.65 ;
     public static final double ARM_UP_POWER    =  0.45 ;
     public static final double ARM_DOWN_POWER  = 0.45 ;
-    public static final double floorPick = 0.3 ;
+    public static final double floorPick = 0.1 ;
     public static final double floorCarry = 0.9 ;
-    public static final double highCw  = 0.4 ;
+    public static final double highCw  = 0.3 ;
     public static final double lowCW = 0.5 ;
-    public static final double highBw = 0.3 ;
-    public static final double lowBw = 0.4 ;
+    public static final double highBw = 0.2 ;
+    public static final double lowBw = 0.3 ;
     public static final double lowWallCw = 0.4 ;
 
     final public int floorArm = 0;// -84
@@ -67,7 +67,7 @@ public class vvHardwareITDRR {
     final public int armWall = 450;
     final public int extArmHighBe = 2000;
     final public int extArmLowBe = 838;
-    final public int extArmHighCe = 1200;
+    final public int extArmHighCe = 600;
     final public int extArmLowCe = 50;
     final public int extArmFloorSub= 1450;
     final public int extArmFLoorPick = 290;
@@ -160,9 +160,9 @@ public class vvHardwareITDRR {
         arm.setPower(armEPower);
     }
     public void extArmPos(int extArmPosition, double extArmEPower) {
-        arm.setTargetPosition(extArmPosition);
-        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        arm.setPower(extArmEPower);
+        extend.setTargetPosition(extArmPosition);
+        extend.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        extend.setPower(extArmEPower);
     }
     public void moveWristFloor() {
         wrist.setPosition(floorPick);

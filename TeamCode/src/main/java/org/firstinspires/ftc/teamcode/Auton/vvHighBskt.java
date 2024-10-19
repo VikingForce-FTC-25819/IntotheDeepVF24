@@ -43,25 +43,25 @@ public class  vvHighBskt extends LinearOpMode {
         vvdrive.setPoseEstimate(startPose);
 
         TrajectorySequence fwdHighCmbr = vvdrive.trajectorySequenceBuilder(startPose) //Tile Start Position
-                .forward(25)
+                .forward(26)
                 .UNSTABLE_addTemporalMarkerOffset(-2, () -> {
                     robot.armPos(robot.armHighCa, robot.armEPower);
                     robot.moveWristHighCw();
-                    robot.extArmPos(robot.extArmHighCe, robot.armEPower);
+                    robot.extArmPos(robot.extArmHighCe, robot.extArmEPower);
                 })
                 .waitSeconds(0.5)
                 .build();
         TrajectorySequence yellow1 = vvdrive.trajectorySequenceBuilder(fwdHighCmbr.end())
                 .back(8)
-                .UNSTABLE_addTemporalMarkerOffset(-2, () -> robot.extArmPos(0, robot.armEPower))
+                .UNSTABLE_addTemporalMarkerOffset(0, () -> robot.extArmPos(0, robot.armEPower))
                 .strafeLeft(56)
-                .forward(4)
                 .UNSTABLE_addTemporalMarkerOffset(-1, () -> {
                     robot.armPos(robot.floorArm, robot.armEPower);
                     robot.moveWristFloor();
                     robot.extArmPos(robot.extArmFLoorPick, robot.extArmEPower);
                 })
-                .waitSeconds(0.5)
+                .waitSeconds(1)
+                .forward(4)
                 .build();
         TrajectorySequence yellow1Drop = vvdrive.trajectorySequenceBuilder(yellow1.end())
                 .turn(Math.toRadians(135))
@@ -70,7 +70,7 @@ public class  vvHighBskt extends LinearOpMode {
                     robot.moveWristHighBw();
                 })
                 .forward(22)
-                .UNSTABLE_addTemporalMarkerOffset(-3, () -> robot.extArmPos(robot.extArmHighBe, robot.extArmEPower))
+                .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.extArmPos(robot.extArmHighBe, robot.extArmEPower))
                 .waitSeconds(1)
                 .build();
         TrajectorySequence yellow2 = vvdrive.trajectorySequenceBuilder(yellow1Drop.end()) //Also Blue Back
@@ -134,10 +134,12 @@ public class  vvHighBskt extends LinearOpMode {
                 robot.openClaw();
                 sleep(500);
                 vvdrive.followTrajectorySequence(yellow1);
-                sleep(500);
+                //robot.extArmPos(robot.extArmFLoorPick, robot.extArmEPower);
                 robot.closeClaw();
                 sleep(250);
                 vvdrive.followTrajectorySequence(yellow1Drop);
+                //robot.extArmPos(robot.extArmHighBe, robot.extArmEPower);
+                sleep(500);
                 robot.openClaw();
                 sleep(500);
                 vvdrive.followTrajectorySequence(yellow2);
@@ -149,6 +151,10 @@ public class  vvHighBskt extends LinearOpMode {
                 vvdrive.followTrajectorySequence(ascentPark);
                 robot.closeClaw();
                 sleep(500);
+                robot.armPos(0,robot.armEPower);
+                robot.moveWristCarry();
+                robot.extArmPos(0,robot.extArmEPower);
+                sleep(1000);
                 telemetry.addData("Parallel Position: ", poseEstimate.getX());
                 telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
                 telemetry.update();

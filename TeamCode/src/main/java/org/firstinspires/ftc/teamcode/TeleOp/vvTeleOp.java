@@ -73,9 +73,28 @@ public class vvTeleOp extends LinearOpMode {
                     drivePower = Math.max(drivePower - 0.05, 0.1);
                 }
 
-                if (gamepad1.b) {
+                if (gamepad1.dpad_up) { //ascent grab
+                    robot.extArmPos(robot.extArmAscentGrab,robot.extArmEPower);
+                    robot.armPos(robot.armAscent, robot.armEPower);
+                    robot.moveWristCarry();
+                }
+                if (gamepad1.dpad_down) { //ascent lift
+                    robot.extArmPos(robot.extArmAscentLift,robot.extArmEPower+0.3);
+                    robot.armPos(robot.armAscent, robot.armEPower);
+                    robot.moveWristCarry();
+                }
+
+                if (gamepad1.x) { //wrist drop
+                    robot.moveWristFloor();
+                }
+                if (gamepad1.b) { //floor pick
+                    robot.extArmPos(robot.extArmFLoorPick,robot.extArmEPower+0.3);
                     robot.armPos(robot.floorArm, robot.armEPower);
-                    robot.extArmPos(robot.extArmFLoorPick,robot.extArmEPower);
+                    robot.moveWristCarry();
+                }
+                if (gamepad1.options) { //reset
+                    robot.armPos(0, robot.armEPower);
+                    robot.extArmPos(0,robot.extArmEPower);
                     robot.moveWristCarry();
                 }
 

@@ -42,7 +42,7 @@ public class  vvSnglBskt extends LinearOpMode {
         vvdrive.setPoseEstimate(startPose);
 
         TrajectorySequence fwdHighCmbr = vvdrive.trajectorySequenceBuilder(startPose) //Tile Start Position
-                .forward(25)
+                .forward(30)
                 .UNSTABLE_addTemporalMarkerOffset(-2, () -> {
                     robot.armPos(robot.armHighCa, robot.armEPower);
                     robot.moveWristHighCw();
@@ -53,8 +53,8 @@ public class  vvSnglBskt extends LinearOpMode {
         TrajectorySequence yellow1 = vvdrive.trajectorySequenceBuilder(fwdHighCmbr.end())
                 .back(8)
                 .UNSTABLE_addTemporalMarkerOffset(-2, () -> robot.extArmPos(0, robot.extArmEPower))
-                .strafeLeft(56)
-                .forward(4)
+                .strafeLeft(36)
+                .forward(8)
                 .UNSTABLE_addTemporalMarkerOffset(-1, () -> {
                     robot.armPos(robot.floorArm, robot.armEPower);
                     robot.moveWristFloor();
@@ -63,7 +63,7 @@ public class  vvSnglBskt extends LinearOpMode {
                 .waitSeconds(0.5)
                 .build();
         TrajectorySequence yellow1Drop = vvdrive.trajectorySequenceBuilder(yellow1.end())
-                .turn(Math.toRadians(135))
+                .turn(Math.toRadians(160))
                 .UNSTABLE_addTemporalMarkerOffset(-1, () -> {
                     robot.armPos(robot.armHighBa, robot.armEPower);
                     robot.moveWristHighBw();
@@ -73,7 +73,7 @@ public class  vvSnglBskt extends LinearOpMode {
                 .waitSeconds(1)
                 .build();
         TrajectorySequence pickSpecimen = vvdrive.trajectorySequenceBuilder(yellow1Drop.end()) //Also Blue Back
-                .back(8)
+                .back(16)
                 .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.extArmPos(0, robot.extArmEPower))
                 .turn(Math.toRadians(135))
                 .forward(60)
@@ -86,7 +86,7 @@ public class  vvSnglBskt extends LinearOpMode {
                 .waitSeconds(0)
                 .build();
         TrajectorySequence observPark = vvdrive.trajectorySequenceBuilder(pickSpecimen.end())
-                .splineToConstantHeading(new Vector2d(48,-65),Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(48,-51),Math.toRadians(0))
                 .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.extArmPos(robot.extArmFLoorPick, robot.extArmEPower))
                 .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.armPos(robot.floorArm, robot.armEPower))
                 .waitSeconds(0)
@@ -124,6 +124,10 @@ public class  vvSnglBskt extends LinearOpMode {
                 robot.closeClaw();
                 vvdrive.followTrajectorySequence(observPark);
                 robot.openClaw();
+                robot.armPos(0,robot.armEPower);
+                robot.moveWristCarry();
+                robot.extArmPos(0,robot.extArmEPower);
+                sleep(1000);
                 telemetry.addData("Parallel Position: ", poseEstimate.getX());
                 telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
                 telemetry.update();
