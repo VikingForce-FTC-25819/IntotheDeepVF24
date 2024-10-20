@@ -22,10 +22,9 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Hello Android Studio: Linear OpMode TeleOp", group="Linear OpMode")
+@TeleOp(name="VF TeleOp - Coach", group="1")
 public class HelloAndroidStudioTeleOpMode extends LinearOpMode {
 
-    // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor backLeft = null;
 
@@ -35,6 +34,15 @@ public class HelloAndroidStudioTeleOpMode extends LinearOpMode {
 
     private DcMotor frontLeft = null;
 
+    // start at 50% power
+    private double powerFactor = 0.5;
+
+    /* multiplication factor used to control acceleration - a higher factor means faster
+     * acceleration, a lower number means slower acceleration.  A factor higher than .5 accelerates
+     * so fast that we have only two effective speeds because of the speed the loop runs in
+     */
+    public static final double ACCELERATION_FACTOR = 0.003;
+
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
@@ -43,14 +51,15 @@ public class HelloAndroidStudioTeleOpMode extends LinearOpMode {
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        backLeft = hardwareMap.get(DcMotor.class, "back left");
-        backRight = hardwareMap.get(DcMotor.class, "back right");
-        frontLeft = hardwareMap.get(DcMotor.class, "front left");
-        frontRight = hardwareMap.get(DcMotor.class, "front right");
+        backLeft = hardwareMap.get(DcMotor.class, "RLM");
+        backRight = hardwareMap.get(DcMotor.class, "RRM");
+        frontLeft = hardwareMap.get(DcMotor.class, "FLM");
+        frontRight = hardwareMap.get(DcMotor.class, "FRM");
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // Pushing the left stick forward MUST make robot go forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
+        // because we have four motors we need set all 4 motor directions
         frontRight.setDirection(DcMotor.Direction.FORWARD);
         frontLeft.setDirection((DcMotorSimple.Direction.REVERSE));
         backLeft.setDirection(DcMotor.Direction.REVERSE);
@@ -69,22 +78,25 @@ public class HelloAndroidStudioTeleOpMode extends LinearOpMode {
             double backLeftPower;
             double backRightPower;
 
-            // Choose to drive using either Tank Mode, or POV Mode
-            // Comment out the method that's not used.  The default below is POV.
+
+            // set up the left bumper button to decelerate and right bumper to accelerate
+            if (gamepad1.left_bumper) {
+                powerFactor = Math.max(powerFactor - ACCELERATION_FACTOR, 0.1);
+            }
+            if (gamepad1.right_bumper) {
+                powerFactor = Math.min(powerFactor + ACCELERATION_FACTOR, 1.0);
+            }
 
             // POV Mode uses left stick to go forward, and right stick to turn.
             // - This uses basic math to combine motions and is easier to drive straight.
             double drive = -gamepad1.left_stick_y;
             double turn  =  gamepad1.right_stick_x;
-            frontLeftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
-            frontRightPower = Range.clip(drive - turn, -1.0, 1.0) ;
-            backLeftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
-            backRightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
 
-            // Tank Mode uses one stick to control each wheel.
-            // - This requires no math, but it is hard to drive forward slowly and keep straight.
-            // leftPower  = -gamepad1.left_stick_y ;
-            // rightPower = -gamepad1.right_stick_y ;
+
+            frontLeftPower   = powerFactor * (Range.clip(drive + turn, -1.0, 1.0)) ;
+            frontRightPower  = powerFactor * (Range.clip(drive - turn, -1.0, 1.0)) ;
+            backLeftPower    = powerFactor * (Range.clip(drive + turn, -1.0, 1.0)) ;
+            backRightPower   = powerFactor * (Range.clip(drive - turn, -1.0, 1.0)) ;
 
             // Send calculated power to wheels
             frontRight.setPower(frontRightPower);
@@ -95,7 +107,8 @@ public class HelloAndroidStudioTeleOpMode extends LinearOpMode {
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Motors", "frontLeft (%.2f), frontRight (%.2f), backLeft (%.2f), backRight (%.2f)", frontLeftPower, frontRightPower, backLeftPower, backRightPower);
+            telemetry.addData("Motors", "frontLeft (%.2f), frontRight (%.2f), backLeft (%.2f), backRight (%.2f)"
+                    , frontLeftPower, frontRightPower, backLeftPower, backRightPower);
             telemetry.update();
         }
     }
