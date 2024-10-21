@@ -42,7 +42,7 @@ public class  vvSnglBskt extends LinearOpMode {
         vvdrive.setPoseEstimate(startPose);
 
         TrajectorySequence fwdHighCmbr = vvdrive.trajectorySequenceBuilder(startPose) //Tile Start Position
-                .forward(30)
+                .forward(26)
                 .UNSTABLE_addTemporalMarkerOffset(-2, () -> {
                     robot.armPos(robot.armHighCa, robot.armEPower);
                     robot.moveWristHighCw();
