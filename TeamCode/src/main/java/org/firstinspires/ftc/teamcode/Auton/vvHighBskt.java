@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Auton;
 import android.util.Size;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+//import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -20,9 +21,11 @@ import org.firstinspires.ftc.vision.VisionPortal;
 import java.util.List;
 import java.util.Objects;
 
+// Auton with 1 high chamber, 2 high baskets and park
+
 /*
- * High Basket Sequence, two yellow picks to basket
- * Start the robot on the X tile line against the wall
+ * High Basket Sequence
+ * Start the robot on the X tile line against the wall-
  *
  */
 @Autonomous(name = "vvHighBskt", group = "1 - Auton", preselectTeleOp="vvTeleOp")

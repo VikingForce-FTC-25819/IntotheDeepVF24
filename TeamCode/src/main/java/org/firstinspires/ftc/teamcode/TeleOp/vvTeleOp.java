@@ -73,15 +73,21 @@ public class vvTeleOp extends LinearOpMode {
                     drivePower = Math.max(drivePower - 0.05, 0.1);
                 }
 
-                if (gamepad1.dpad_up) { //ascent grab
+                if (gamepad1.dpad_up) { //arm ascent grab
                     robot.extArmPos(robot.extArmAscentGrab,robot.extArmEPower);
                     robot.armPos(robot.armAscent, robot.armEPower);
                     robot.moveWristCarry();
                 }
-                if (gamepad1.dpad_down) { //ascent lift
+                if (gamepad1.dpad_down) { //arm ascent lift
                     robot.extArmPos(robot.extArmAscentLift,robot.extArmEPower+0.3);
                     robot.armPos(robot.armAscent, robot.armEPower);
                     robot.moveWristCarry();
+                }
+                if (gamepad1.dpad_left) { //lift to grab position
+                    robot.liftUp();
+                }
+                if (gamepad1.dpad_right) { //lift to down position, for robot lift
+                    robot.liftDown();
                 }
 
                 if (gamepad1.x) { //wrist drop
@@ -172,19 +178,19 @@ public class vvTeleOp extends LinearOpMode {
 // Adding telemetry readouts
                 telemetry.addData(">", "Robot Running");
                 telemetry.addData("Drive Power", drivePower);
-                telemetry.addData("Y", driveY);
-                telemetry.addData("strafe", strafe);
-                telemetry.addData("turn", turn);
+                //telemetry.addData("Y", driveY);
+                //telemetry.addData("strafe", strafe);
+                //telemetry.addData("turn", turn);
                 telemetry.addData("Y Encoder",y);
                 telemetry.addData("X Encoder",x);
                 telemetry.addData("Yaw (Z)", "%.2f Deg. (Heading)", orientation.getYaw(AngleUnit.DEGREES));
-                //telemetry.addData("Arm Power", armPower);
                 telemetry.addData("Arm Position", robot.arm.getCurrentPosition());
                 telemetry.addData("Extend Position", robot.extend.getCurrentPosition());
+                telemetry.addData("Left Lift Position", robot.leftLift.getCurrentPosition());
+                telemetry.addData("Right Lift Position", robot.rightLift.getCurrentPosition());
                 telemetry.addData("Wrist", wristPos);
                 telemetry.addData("Claw", clawPos);
-
-
+                
                 telemetry.update();
 
                 // Pace this loop so jaw action is reasonable speed.

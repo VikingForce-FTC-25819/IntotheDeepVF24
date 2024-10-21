@@ -1,9 +1,10 @@
 package org.firstinspires.ftc.teamcode.Auton;
 
+import android.util.Size;
+
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
+//import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -20,59 +21,19 @@ import org.firstinspires.ftc.vision.VisionPortal;
 import java.util.List;
 import java.util.Objects;
 
-// Auton with 2 high chamber and parK
+// Auton with 2 high chamber and park
 
     /*
-     * Auton Blue - Backstage Side
-     * Start the robot on the furthest tile edge from the truss (left side)
+     * Auton Blue Sequence
+     * Start the robot on the x tile line against the wall
      *
      */
-@Disabled
     @Autonomous(name = "vvHighCmbr", group = "2 - Auton", preselectTeleOp="vvTeleOp")
 
     public class vvHighCmbr extends LinearOpMode {
         vvHardwareITDRR robot = new vvHardwareITDRR(this);
 
         private ElapsedTime runtime = new ElapsedTime();
-
-        static final double FORWARD_SPEED = 0.3;
-        static final double TURN_SPEED = 0.5;
-        // the amount of time the pickup takes to activate in seconds
-        final double pickupTime = 1;
-        // the amount of time the arm takes to raise in seconds
-        final double armTime = 2;
-        final int armIdle = 0;
-        final int armLow = 120; // the low encoder position for the arm, front place
-        final int armHigh = 401; // the high-overhead encoder position for the arm
-        final int armStart = 25;
-        double armEPower = 0.8;
-        double pickUpPwr = 0.7;
-        final int autonPickupIdle = -30; // the idle position for the pickup motor 109
-        final int autonPickupHigh = -5; // the placing position for the pickup motor in the high position 148
-        final int autonPickupLow = -27; // the placing position for the pickup motor in the low/forward position 5
-
-        private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
-
-        // TFOD_MODEL_ASSET points to a model file stored in the project Asset location,
-        // this is only used for Android Studio when using models in Assets.
-        private static final String TFOD_MODEL_ASSET = "vvCenterStage7Nov.tflite";
-        // TFOD_MODEL_FILE points to a model file stored onboard the Robot Controller's storage,
-        // this is used when uploading models directly to the RC using the model upload interface.
-        //private static final String TFOD_MODEL_FILE = "/sdcard/FIRST/tflitemodels/vvCenterStage7Nov.tflite";
-        // Define the labels recognized in the model for TFOD (must be in training order!)
-        private final String[] LABELS = {
-                "BlueProp", "Pixel", "RedProp"
-        };
-
-        /**
-         * The variable to store our instance of the TensorFlow Object Detection processor.
-         */
-        //private TfodProcessor tfod;
-
-        /**
-         * The variable to store our instance of the vision portal.
-         */
-        private VisionPortal visionPortal;
 
         @Override
         public void runOpMode() {
@@ -94,6 +55,7 @@ import java.util.Objects;
                     .waitSeconds(0.5)
                     .build();
             TrajectorySequence sample1Pick  = vvdrive.trajectorySequenceBuilder(startPose)
+                    .back(6)
                      .turn(Math.toRadians(180))
                     .strafeLeft(48)
                     .forward(24)
@@ -225,50 +187,45 @@ import java.util.Objects;
 */
 
             robot.init();
-            //initTfod();
-            String spikeLoc;
 
             // Wait for the DS start button to be touched.
             telemetry.addData(">", "Robot Ready");
             telemetry.addData("DS preview on/off", "3 dots, Camera Stream");
-            telemetry.addData(">", "Touch Play to start OpMode");
-            telemetry.update();
 
             waitForStart();
 
             if (opModeIsActive()) {
                 while (opModeIsActive()) {
 
-                    //telemetryTfod();
-                    spikeLoc = "Blue";
-                    // Push telemetry to the Driver Station.
-                    //telemetry.addData("Location Heading", spikeLoc);
-                    telemetry.update();
-
-                    // Share the CPU.
-                    sleep(200);
-
                     Pose2d poseEstimate = vvdrive.getPoseEstimate();
                     vvdrive.update();
 
-                    //robot.movePickUp(5, pickUpPwr);
-                    sleep(500);
-                    robot.armPos(armStart, armEPower);
-                    sleep(500);
-                    //vvdrive.followTrajectorySequence(purpleDropLeftRed);
+
+
                     telemetry.addData("Parallel Position: ", poseEstimate.getX());
                     telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
                     telemetry.update();
-                    //robot.rightWheel.setPower(-0.9);
-                    sleep(1000);
-                    //robot.rightWheel.setPower(0);
-                    //robot.movePickUp(autonPickupLow, pickUpPwr);
+                    vvdrive.followTrajectorySequence(fwdHighChmber);
                     sleep(500);
-                    //vvdrive.followTrajectorySequence(yellowBackDropLeftBlue);
-                    //robot.leftWheel.setPower(0.9);
-                    sleep(1000);
-                    //robot.leftWheel.setPower(0);
-                    //vvdrive.followTrajectorySequence(blueLeftEnd);
+                    robot.extArmPos(robot.armHighCa-100,robot.armEPower );
+                    robot.openClaw();
+                    vvdrive.followTrajectorySequence(sample1Pick);
+                    sleep(500);
+                    robot.closeClaw();
+                    robot.armPos(robot.armWall+50,robot.armEPower );
+                    vvdrive.followTrajectorySequence(sample1drop);
+                    sleep(500);
+                    robot.extArmPos(robot.armHighCa-100,robot.armEPower );
+                    robot.openClaw();
+                    sleep(500);
+                    vvdrive.followTrajectorySequence(sample2Pick);
+                    sleep(500);
+                    robot.closeClaw();
+                    robot.armPos(robot.armWall+50,robot.armEPower );
+                    vvdrive.followTrajectorySequence(sample2Drop);
+                    sleep(500);
+                    robot.extArmPos(robot.armHighCa-100,robot.armEPower );
+                    robot.openClaw();
                     telemetry.addData("Parallel Position: ", poseEstimate.getX());
                     telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
                     telemetry.update();
