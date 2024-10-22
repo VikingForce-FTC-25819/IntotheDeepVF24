@@ -62,7 +62,6 @@ public class VfAutoDriveByOdometry extends LinearOpMode {
     // public static final int BACKWARD_DISTANCE_INCHES = 34;
     // Starting at edge of third tile closest to net zone
     //public static final int BACKWARD_DISTANCE_INCHES = 58;
-
     // Starting at edge of fourth tile closest to net zone
     public static final int BACKWARD_DISTANCE_INCHES = 82;
     private static final double INITIAL_PAUSE_SECONDS = 3.0;
