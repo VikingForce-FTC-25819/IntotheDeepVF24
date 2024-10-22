@@ -53,8 +53,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @Autonomous(name="VF Simple Auton - Coach", group="1")
 public class HelloOdometryBasedAutonomousOpMode extends LinearOpMode {
 
-    public static final int FORWARD_DISTANCE_INCHES = 36;
-    public static final int BACKWARD_DISTANCE_INCHES = 120;
+    public static final int FORWARD_DISTANCE_INCHES = 15;
+    public static final int BACKWARD_DISTANCE_INCHES = 85;
     private static final double INITIAL_PAUSE_SECONDS = 3.0;
     private static final double TRANSITION_PAUSE_SECONDS = 3.0;
     private DcMotor         backLeft   = null;
