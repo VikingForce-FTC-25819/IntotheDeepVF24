@@ -29,6 +29,7 @@ public class vvHardwareITDRR {
     public DcMotorEx extend;
     public Servo wrist;
     public Servo claw;
+    public Servo rgb;
 
     public IMU imu;
     public DcMotor parallelEncoder;
@@ -58,13 +59,15 @@ public class vvHardwareITDRR {
     public static final double lowWallCw = 0.4 ;
 
     final public int floorArm = 0;// -84
-    final public double armEPower = 0.5;
     final public int armLowCa = 550; //
     final public int armHighCa = 1200; //
     final public int armLowBa = 1450;
     final public int armHighBa = 2159;
+    final public int armRearBa = 3000;
     final public int armFloorSub = 400;
-    final public int armWall = 450;
+    final public int armWall = 400;
+    final public int armAscent = 2500;
+    final public double armEPower = 0.5;
     final public int extArmHighBe = 2000;
     final public int extArmLowBe = 838;
     final public int extArmHighCe = 600;
@@ -107,6 +110,7 @@ public class vvHardwareITDRR {
         // Define Servos
         claw = myOpMode.hardwareMap.get(Servo.class,"claw");
         wrist = myOpMode.hardwareMap.get(Servo.class,"wrist");
+        rgb = myOpMode.hardwareMap.get(Servo.class,"rgb");
 
         wrist.scaleRange(0,1);
         wrist.setDirection(Servo.Direction.FORWARD);
@@ -115,6 +119,10 @@ public class vvHardwareITDRR {
         claw.scaleRange(0,1);
         claw.setDirection(Servo.Direction.FORWARD);
         claw.setPosition(clawClose);
+
+        rgb.scaleRange(0,1);
+        rgb.setDirection(Servo.Direction.FORWARD);
+        rgb.setPosition(0.7);
 
         //Set the motor directions
 

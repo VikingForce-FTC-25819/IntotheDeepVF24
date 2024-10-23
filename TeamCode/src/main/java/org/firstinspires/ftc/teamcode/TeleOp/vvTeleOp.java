@@ -73,20 +73,20 @@ public class vvTeleOp extends LinearOpMode {
                     drivePower = Math.max(drivePower - 0.05, 0.1);
                 }
 
-                if (gamepad1.dpad_up) { //arm ascent grab
+                if (gamepad1.dpad_left) { //arm ascent grab
                     robot.extArmPos(robot.extArmAscentGrab,robot.extArmEPower);
                     robot.armPos(robot.armAscent, robot.armEPower);
                     robot.moveWristCarry();
                 }
-                if (gamepad1.dpad_down) { //arm ascent lift
+                if (gamepad1.dpad_right) { //arm ascent lift
                     robot.extArmPos(robot.extArmAscentLift,robot.extArmEPower+0.3);
                     robot.armPos(robot.armAscent, robot.armEPower);
                     robot.moveWristCarry();
                 }
-                if (gamepad1.dpad_left) { //lift to grab position
+                if (gamepad1.dpad_up) { //lift to grab position
                     robot.liftUp();
                 }
-                if (gamepad1.dpad_right) { //lift to down position, for robot lift
+                if (gamepad1.dpad_down) { //lift to down position, for robot lift
                     robot.liftDown();
                 }
                 if (gamepad1.x) { //wrist drop
@@ -130,6 +130,12 @@ public class vvTeleOp extends LinearOpMode {
                     robot.moveWristWall();
                 }
 
+                if (gamepad2.y) { //Submersible pick
+                    robot.armPos(robot.armFloorSub, robot.armEPower);
+                    robot.moveWristFloor();
+                    robot.extArmPos(robot.extArmFloorSub, robot.extArmEPower);
+                }
+
                 if (gamepad2.dpad_up) { //High Basket
                     robot.armPos(robot.armHighBa, robot.armEPower);
                     robot.extArmPos(robot.extArmHighBe, robot.extArmEPower);
@@ -151,10 +157,10 @@ public class vvTeleOp extends LinearOpMode {
                     robot.moveWristLowCW();
                 }
 
-                if (gamepad2.y) { //Submersible pick
-                    robot.armPos(robot.armFloorSub, robot.armEPower);
-                    robot.moveWristFloor();
-                    robot.extArmPos(robot.extArmFloorSub, robot.extArmEPower);
+                if (gamepad2.options) { //backward basket drop
+                    robot.armPos(robot.armRearBa, robot.armEPower);
+                    robot.extArmPos(robot.extArmHighBe,robot.extArmEPower);
+                    robot.moveWristHighBw();
                 }
 
                 if (armBump>0.8) {

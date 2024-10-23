@@ -125,6 +125,7 @@ public class  vvSnglBskt extends LinearOpMode {
                 robot.armPos(0,robot.armEPower);
                 robot.moveWristCarry();
                 robot.extArmPos(0,robot.extArmEPower);
+                robot.rgb.setPosition(0.277);
                 sleep(1000);
                 telemetry.addData("Parallel Position: ", poseEstimate.getX());
                 telemetry.addData("Perpendicular Position: ", poseEstimate.getY());

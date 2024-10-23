@@ -62,7 +62,7 @@ public class vvHardwareITD {
     public static final double ARM_DOWN_POWER  = 0.45 ;
     public static final double floorPick = 0.1 ;
     public static final double floorCarry = 0.9 ;
-    public static final double highCw  = 0.4 ;
+    public static final double highCw  = 0.3 ;
     public static final double lowCW = 0.5 ;
     public static final double highBw = 0.2 ;
     public static final double lowBw = 0.3 ;
@@ -73,6 +73,7 @@ public class vvHardwareITD {
     final public int armHighCa = 1200; //
     final public int armLowBa = 1450;
     final public int armHighBa = 2159;
+    final public int armRearBa = 3000;
     final public int armFloorSub = 400;
     final public int armWall = 400;
     final public int armAscent = 2500;
@@ -88,7 +89,7 @@ public class vvHardwareITD {
     final public double extArmEPower = 0.4;
 
     final public double liftEPower = 0.5;
-    final public int liftHigh = 1100;
+    final public int liftHigh = 2000;
     final public int liftLow = 50;
 
     static final double FORWARD_SPEED = 0.3;
@@ -375,11 +376,11 @@ public class vvHardwareITD {
      */
     public void openClaw() {
        claw.setPosition(clawOpen);
-       rgb.setPosition(0.2);
+       rgb.setPosition(0.277);
     }
     public void closeClaw() {
         claw.setPosition(clawClose);
-        rgb.setPosition(0.522);
+        rgb.setPosition(0.5);
     }
     public void longClaw() {
         claw.setPosition(clawLong);
