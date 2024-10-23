@@ -70,7 +70,7 @@ public class vvHardwareITDRR {
     final public int extArmHighCe = 600;
     final public int extArmLowCe = 50;
     final public int extArmFloorSub= 1450;
-    final public int extArmFLoorPick = 290;
+    final public int extArmFLoorPick = 200;
     final public double extArmEPower = 0.4;
 
     static final double FORWARD_SPEED = 0.3;

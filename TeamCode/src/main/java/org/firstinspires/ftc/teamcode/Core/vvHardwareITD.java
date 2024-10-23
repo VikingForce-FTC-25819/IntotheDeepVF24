@@ -77,7 +77,7 @@ public class vvHardwareITD {
     final public int armWall = 400;
     final public int armAscent = 2500;
     final public double armEPower = 0.5;
-    final public int extArmAscentGrab = 400;
+    final public int extArmAscentGrab = 1450;
     final public int extArmAscentLift = 50;
     final public int extArmHighBe = 2000;
     final public int extArmLowBe = 838;
@@ -88,7 +88,7 @@ public class vvHardwareITD {
     final public double extArmEPower = 0.4;
 
     final public double liftEPower = 0.5;
-    final public int liftHigh = 1500;
+    final public int liftHigh = 1100;
     final public int liftLow = 50;
 
     static final double FORWARD_SPEED = 0.3;

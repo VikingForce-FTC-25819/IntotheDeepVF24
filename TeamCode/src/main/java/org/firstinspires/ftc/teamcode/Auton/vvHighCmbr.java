@@ -45,55 +45,50 @@ import java.util.Objects;
 
             vvdrive.setPoseEstimate(startPose);
 
-            TrajectorySequence fwdHighChmber = vvdrive.trajectorySequenceBuilder(startPose) //Also Red Back
-                    .forward(26)
-                    .UNSTABLE_addTemporalMarkerOffset(-2, () -> {
-                        robot.armPos(robot.armHighCa, robot.armEPower);
-                        robot.moveWristHighCw();
-                        robot.extArmPos(robot.extArmHighCe, robot.extArmEPower);
-                    })
+            TrajectorySequence fwdHighChmbr = vvdrive.trajectorySequenceBuilder(startPose) //Also Red Back
+                    .forward(25)
                     .waitSeconds(0.5)
                     .build();
-            TrajectorySequence sample1Pick  = vvdrive.trajectorySequenceBuilder(startPose)
+            TrajectorySequence sample1Pick  = vvdrive.trajectorySequenceBuilder(fwdHighChmbr.end())
                     .back(6)
-                     .turn(Math.toRadians(180))
-                    .strafeLeft(48)
-                    .forward(24)
-                     .UNSTABLE_addTemporalMarkerOffset(-1, () -> {
-                         robot.armPos(robot.armWall, robot.armEPower);
-                         robot.moveWristWall();
-                     })
-                    .build();
-            TrajectorySequence sample1drop = vvdrive.trajectorySequenceBuilder(startPose)
-                    .strafeRight(48)
                     .turn(Math.toRadians(180))
-                    .forward (24)
+                    .strafeLeft(83)
+                    .UNSTABLE_addTemporalMarkerOffset(-2, () -> {
+                        robot.armPos(robot.armWall, robot.armEPower);
+                        robot.moveWristWall();
+                        robot.extArmPos(50,robot.extArmEPower); })
+                    .forward(10)
+                    .build();
+            TrajectorySequence sample1drop = vvdrive.trajectorySequenceBuilder(sample1Pick.end())
+                    .strafeRight(50)
+                    .turn(Math.toRadians(180))
+                    .forward (12)
                     .UNSTABLE_addTemporalMarkerOffset(-2, () -> {
                         robot.armPos(robot.armHighCa, robot.armEPower);
                         robot.moveWristWall();
                         robot.extArmPos(robot.extArmHighCe,robot.extArmEPower );
                     })
                     .build();
-            TrajectorySequence sample2Pick = vvdrive.trajectorySequenceBuilder(startPose) //Also Blue Back
+            TrajectorySequence sample2Pick = vvdrive.trajectorySequenceBuilder(sample1drop.end()) //Also Blue Back
                     .turn(Math.toRadians(180))
-                    .strafeLeft(48)
-                    .forward(24)
+                    .strafeLeft(53)
                     .UNSTABLE_addTemporalMarkerOffset(-1, () -> {
                         robot.armPos(robot.armWall, robot.armEPower);
                         robot.moveWristWall();
                     })
+                    .forward(10)
                     .build();
-            TrajectorySequence sample2Drop = vvdrive.trajectorySequenceBuilder(startPose)
+            TrajectorySequence sample2Drop = vvdrive.trajectorySequenceBuilder(sample2Pick.end())
                     .strafeRight(48)
                     .turn(Math.toRadians(180))
-                    .forward (24)
+                    .forward (12  )
                     .UNSTABLE_addTemporalMarkerOffset(-2, () -> {
                         robot.armPos(robot.armHighCa, robot.armEPower);
                         robot.moveWristWall();
                         robot.extArmPos(robot.extArmHighCe,robot.extArmEPower );
                     })
                     .build();
-            TrajectorySequence park = vvdrive.trajectorySequenceBuilder(startPose)
+            TrajectorySequence park = vvdrive.trajectorySequenceBuilder(sample2Drop.end())
                     .strafeLeft(48)
                     .back(24)
                     .build();
@@ -205,9 +200,13 @@ import java.util.Objects;
                     telemetry.addData("Parallel Position: ", poseEstimate.getX());
                     telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
                     telemetry.update();
-                    vvdrive.followTrajectorySequence(fwdHighChmber);
+                    robot.armPos(robot.armHighCa, robot.armEPower);
+                    robot.moveWristHighCw();
+                    robot.extArmPos(robot.extArmHighCe, robot.extArmEPower);
+                    vvdrive.followTrajectorySequence(fwdHighChmbr);
                     sleep(500);
-                    robot.extArmPos(robot.armHighCa-100,robot.armEPower );
+                    robot.armPos(robot.armHighCa-150,robot.armEPower );
+                    sleep(500);
                     robot.openClaw();
                     vvdrive.followTrajectorySequence(sample1Pick);
                     sleep(500);
@@ -215,7 +214,7 @@ import java.util.Objects;
                     robot.armPos(robot.armWall+50,robot.armEPower );
                     vvdrive.followTrajectorySequence(sample1drop);
                     sleep(500);
-                    robot.extArmPos(robot.armHighCa-100,robot.armEPower );
+                    robot.armPos(robot.armHighCa-100,robot.armEPower );
                     robot.openClaw();
                     sleep(500);
                     vvdrive.followTrajectorySequence(sample2Pick);
@@ -224,7 +223,7 @@ import java.util.Objects;
                     robot.armPos(robot.armWall+50,robot.armEPower );
                     vvdrive.followTrajectorySequence(sample2Drop);
                     sleep(500);
-                    robot.extArmPos(robot.armHighCa-100,robot.armEPower );
+                    robot.armPos(robot.armHighCa-100,robot.armEPower );
                     robot.openClaw();
                     telemetry.addData("Parallel Position: ", poseEstimate.getX());
                     telemetry.addData("Perpendicular Position: ", poseEstimate.getY());

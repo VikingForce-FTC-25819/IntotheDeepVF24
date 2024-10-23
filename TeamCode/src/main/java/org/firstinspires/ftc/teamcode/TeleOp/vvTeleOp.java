@@ -89,7 +89,6 @@ public class vvTeleOp extends LinearOpMode {
                 if (gamepad1.dpad_right) { //lift to down position, for robot lift
                     robot.liftDown();
                 }
-
                 if (gamepad1.x) { //wrist drop
                     robot.moveWristFloor();
                 }
