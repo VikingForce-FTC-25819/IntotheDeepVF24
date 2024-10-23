@@ -51,9 +51,10 @@ public class VfRobotTeleOp extends LinearOpMode {
             // POV Mode uses left stick to go forward, and right stick to turn.
             // - This uses basic math to combine motions and is easier to drive straight.
             double drive = -gamepad1.left_stick_y;
+            double strafe = gamepad1.left_stick_x;
             double turn  =  gamepad1.right_stick_x;
 
-            robot.teleOpDrive(drive, turn, powerFactor);
+            robot.teleOpDrive(drive, turn, strafe, powerFactor);
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());

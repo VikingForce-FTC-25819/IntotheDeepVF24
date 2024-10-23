@@ -51,10 +51,17 @@ public class VfHardware {
     }
 
     public void teleOpDrive(double drive, double turn, double powerFactor) {
-        double frontLeftPower   = powerFactor * (Range.clip(drive + turn, -1.0, 1.0)) ;
-        double frontRightPower  = powerFactor * (Range.clip(drive - turn, -1.0, 1.0)) ;
-        double backLeftPower    = powerFactor * (Range.clip(drive + turn, -1.0, 1.0)) ;
-        double backRightPower   = powerFactor * (Range.clip(drive - turn, -1.0, 1.0)) ;
+        teleOpDrive(drive, turn, 0, powerFactor);
+
+    }
+
+    public void teleOpDrive(double drive, double turn, double strafe, double powerFactor) {
+        strafe = strafe * 1.1; // Counteract imperfect strafing
+        double denominator = Math.max(Math.abs(drive) + Math.abs(strafe) + Math.abs(turn), 1);
+        double frontLeftPower = powerFactor * (drive + strafe + turn) / denominator;
+        double backLeftPower = powerFactor * (drive - strafe + turn) / denominator;
+        double frontRightPower = powerFactor * (drive - strafe - turn) / denominator;
+        double backRightPower = powerFactor * (drive + strafe - turn) / denominator;
 
         // Send calculated power to wheels
         frontRight.setPower(frontRightPower);
