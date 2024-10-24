@@ -103,6 +103,7 @@ public class  vvSnglBskt extends LinearOpMode {
                 Pose2d poseEstimate = vvdrive.getPoseEstimate();
                 vvdrive.update();
 
+                robot.rgb.setPosition(0.5);
                 robot.armPos(robot.armHighCa, robot.armEPower);
                 robot.moveWristHighCw();
                 robot.extArmPos(robot.extArmHighCe, robot.extArmEPower);
@@ -125,7 +126,7 @@ public class  vvSnglBskt extends LinearOpMode {
                 robot.armPos(0,robot.armEPower);
                 robot.moveWristCarry();
                 robot.extArmPos(0,robot.extArmEPower);
-                robot.rgb.setPosition(0.277);
+                robot.rgb.setPosition(0.28);
                 sleep(1000);
                 telemetry.addData("Parallel Position: ", poseEstimate.getX());
                 telemetry.addData("Perpendicular Position: ", poseEstimate.getY());

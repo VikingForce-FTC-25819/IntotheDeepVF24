@@ -60,9 +60,9 @@ import java.util.Objects;
                     .forward(10)
                     .build();
             TrajectorySequence sample1drop = vvdrive.trajectorySequenceBuilder(sample1Pick.end())
-                    .strafeRight(50)
+                    .strafeRight(60)
                     .turn(Math.toRadians(180))
-                    .forward (12)
+                    .forward (17)
                     .UNSTABLE_addTemporalMarkerOffset(-2, () -> {
                         robot.armPos(robot.armHighCa, robot.armEPower);
                         robot.moveWristWall();
@@ -75,6 +75,7 @@ import java.util.Objects;
                     .UNSTABLE_addTemporalMarkerOffset(-1, () -> {
                         robot.armPos(robot.armWall, robot.armEPower);
                         robot.moveWristWall();
+                        robot.extArmPos(50,robot.extArmEPower);
                     })
                     .forward(10)
                     .build();
@@ -106,39 +107,48 @@ import java.util.Objects;
                     Pose2d poseEstimate = vvdrive.getPoseEstimate();
                     vvdrive.update();
 
+                    robot.rgb.setPosition(0.5);
                     telemetry.addData("Parallel Position: ", poseEstimate.getX());
                     telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
                     telemetry.update();
                     robot.armPos(robot.armHighCa, robot.armEPower);
                     robot.moveWristHighCw();
                     robot.extArmPos(robot.extArmHighCe, robot.extArmEPower);
+                    sleep(500);
                     vvdrive.followTrajectorySequence(fwdHighChmbr);
                     sleep(500);
                     robot.armPos(robot.armHighCa-150,robot.armEPower );
-                    sleep(500);
+                    sleep(100);
                     robot.openClaw();
                     vvdrive.followTrajectorySequence(sample1Pick);
-                    sleep(500);
+                    sleep(100);
                     robot.closeClaw();
                     robot.armPos(robot.armWall+50,robot.armEPower );
                     vvdrive.followTrajectorySequence(sample1drop);
                     sleep(500);
-                    robot.armPos(robot.armHighCa-100,robot.armEPower );
-                    robot.openClaw();
-                    sleep(500);
-                    vvdrive.followTrajectorySequence(sample2Pick);
-                    sleep(500);
-                    robot.closeClaw();
-                    robot.armPos(robot.armWall+50,robot.armEPower );
-                    vvdrive.followTrajectorySequence(sample2Drop);
-                    sleep(500);
-                    robot.armPos(robot.armHighCa-100,robot.armEPower );
+                    robot.armPos(robot.armHighCa-150,robot.armEPower );
+                    sleep(100);
                     robot.openClaw();
                     robot.armPos(0,robot.armEPower);
+                    sleep(100);
+                    robot.closeClaw();
                     robot.moveWristCarry();
                     robot.extArmPos(0,robot.extArmEPower);
-                    robot.rgb.setPosition(0.277);
-                    sleep(1000);
+                    robot.rgb.setPosition(0.29);
+                    sleep(1000); //cutting due to time
+                    //vvdrive.followTrajectorySequence(sample2Pick);
+                    //sleep(500);
+                    //robot.closeClaw();
+                    //robot.armPos(robot.armWall+50,robot.armEPower );
+                    //vvdrive.followTrajectorySequence(sample2Drop);
+                    //sleep(500);
+                    //robot.armPos(robot.armHighCa-100,robot.armEPower );
+                    //robot.openClaw();
+                    //robot.armPos(0,robot.armEPower);
+                    //robot.moveWristCarry();
+                    //robot.extArmPos(0,robot.extArmEPower);
+                    //robot.rgb.setPosition(0.277);
+                    //sleep(1000);
                     telemetry.addData("Parallel Position: ", poseEstimate.getX());
                     telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
                     telemetry.update();

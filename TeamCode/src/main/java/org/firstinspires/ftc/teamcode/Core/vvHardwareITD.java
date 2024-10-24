@@ -76,7 +76,7 @@ public class vvHardwareITD {
     final public int armRearBa = 3000;
     final public int armFloorSub = 400;
     final public int armWall = 400;
-    final public int armAscent = 2500;
+    final public int armAscent = 1200;
     final public double armEPower = 0.5;
     final public int extArmAscentGrab = 1450;
     final public int extArmAscentLift = 50;
@@ -315,6 +315,10 @@ public class vvHardwareITD {
     public void moveExt(double extPower) {
         extend.setPower(extPower);
     }
+    public void moveLift(double liftPower) {
+        leftLift.setPower(liftPower);
+        rightLift.setPower(liftPower);
+    }
     /*
      * Pass the requested arm position and power to the arm drive motors
      *
@@ -376,7 +380,7 @@ public class vvHardwareITD {
      */
     public void openClaw() {
        claw.setPosition(clawOpen);
-       rgb.setPosition(0.277);
+       rgb.setPosition(0.29);
     }
     public void closeClaw() {
         claw.setPosition(clawClose);
