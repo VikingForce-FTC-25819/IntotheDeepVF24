@@ -31,8 +31,6 @@ package org.firstinspires.ftc.teamcode.Auton;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Core.VfHardware;
@@ -52,25 +50,25 @@ import org.firstinspires.ftc.teamcode.Core.VfHardware;
  *
  */
 
-@Autonomous(name="VF Auto Drive by Odometry - Coach", group="1")
-public class VfAutoDriveByOdometry extends LinearOpMode {
+@Autonomous(name="Super Simple Multi-Direction Auton", group="Concept")
+public class SuperSimpleMultiDirectionAuton extends LinearOpMode {
 
     //public static final int FORWARD_DISTANCE_INCHES = 98;
     public static final int FORWARD_DISTANCE_INCHES = 13;
+
+    public static final int STRAFE_DISTANCE = 2;
     // Starting at edge of tile closest to net zone
-    public static final int BACKWARD_DISTANCE_INCHES = 13;
+    public static final int BACKWARD_DISTANCE_INCHES = 36;
     // Starting at edge of second tile closest to net zone
     // public static final int BACKWARD_DISTANCE_INCHES = 34;
     // Starting at edge of third tile closest to net zone
     //public static final int BACKWARD_DISTANCE_INCHES = 58;
     // Starting at edge of fourth tile closest to net zone
     //public static final int BACKWARD_DISTANCE_INCHES = 13;
-    private static final double INITIAL_PAUSE_SECONDS = 3.0;
-    private static final double TRANSITION_PAUSE_SECONDS = 3.0;
+    private static final double INITIAL_PAUSE_SECONDS = 1.0;
+    private static final double TRANSITION_PAUSE_SECONDS = 1.0;
 
-    private ElapsedTime     runtime = new ElapsedTime();
     static final double     SPEED = 0.3;
-    static final double     TURN_SPEED    = 0.5;
 
     @Override
     public void runOpMode() {
@@ -86,12 +84,19 @@ public class VfAutoDriveByOdometry extends LinearOpMode {
         // Wait for INITIAL_PAUSE_SECONDS of time before doing anything
         robot.pause(INITIAL_PAUSE_SECONDS);
 
-        // Drive Forward for FORWARD_DISTANCE_INCHES
-        robot.autoDrive(BACKWARD_DISTANCE_INCHES, SPEED, AutonDirection.forward);
+        robot.autoDrive(STRAFE_DISTANCE, SPEED, AutonDirection.right);
 
         robot.pause(TRANSITION_PAUSE_SECONDS);
 
-        robot.autoDrive(FORWARD_DISTANCE_INCHES, SPEED, AutonDirection.reverse);
+        robot.autoDrive(FORWARD_DISTANCE_INCHES, SPEED, AutonDirection.forward);
+
+        robot.pause(TRANSITION_PAUSE_SECONDS);
+
+        robot.autoDrive(BACKWARD_DISTANCE_INCHES, SPEED, AutonDirection.reverse);
+
+        robot.pause(TRANSITION_PAUSE_SECONDS);
+
+        robot.autoDrive(STRAFE_DISTANCE, SPEED, AutonDirection.left);
 
         robot.stop();
 

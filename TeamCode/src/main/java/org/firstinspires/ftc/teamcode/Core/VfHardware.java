@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.Auton.AutonDirection;
 
 public class VfHardware {
     private final OpMode opMode;
@@ -48,6 +49,10 @@ public class VfHardware {
         frontLeft.setDirection((DcMotorSimple.Direction.REVERSE));
         backLeft.setDirection(DcMotor.Direction.REVERSE);
         backRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     public void teleOpDrive(double drive, double turn, double powerFactor) {
@@ -71,62 +76,53 @@ public class VfHardware {
 
     }
 
-    public void autoDriveForward(int inches, double speed) {
-        parallelSensor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        parallelSensor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); // these 2 lines needed to zero out the odometry sensor
-        frontLeft.setPower(speed);
-        frontRight.setPower(speed);
-        backLeft.setPower(speed);
-        backRight.setPower(speed);
-        ElapsedTime runtime = new ElapsedTime();
-        // our odometry pod is reversed in orientation so going forward gives a negative value
-        // this is why we need to use a negative sign in our comparison
-        // we want to drive forwards until our current position is larger than our desired forward distance
-        // so we drive until our current position is no longer <= our desired distance
-        while (-parallelSensor.getCurrentPosition() <= inches * encTicksPerInches) {
-            telemetry.addData("Distance", "Forward: %4.1f Inches", -parallelSensor.getCurrentPosition()/encInchesPerTicks);
-            telemetry.addData("Path", "%4.1f S Elapsed", runtime.seconds());
-            telemetry.update();
-        }
-    }
+    public void autoDrive(int inches, double speed, AutonDirection autonDirection) {
 
-    public void autoDrive(int inches, double speed, boolean reverse) {
         double ticksToTravel = inches * encTicksPerInches;
-        // for reverse we need to reverse the speed and ticks to travel
-        if (reverse) {
-            speed = -speed;
+        DcMotor sensorToUse;
+        // for reverse we need to reverse the speed
+        switch (autonDirection) {
+            case left:
+                frontRight.setPower(speed);
+                backLeft.setPower(speed);
+                frontLeft.setPower(-speed);
+                backRight.setPower(-speed);
+                sensorToUse = perpendicularSensor;
+                break;
+            case right:
+                frontRight.setPower(-speed);
+                backLeft.setPower(-speed);
+                frontLeft.setPower(speed);
+                backRight.setPower(speed);
+                sensorToUse = perpendicularSensor;
+                break;
+            case forward:
+                frontRight.setPower(speed);
+                backLeft.setPower(speed);
+                frontLeft.setPower(speed);
+                backRight.setPower(speed);
+                sensorToUse = parallelSensor;
+                break;
+            case reverse:
+                frontRight.setPower(-speed);
+                backLeft.setPower(-speed);
+                frontLeft.setPower(-speed);
+                backRight.setPower(-speed);
+                sensorToUse = parallelSensor;
+                break;
+            default:
+                throw new IllegalArgumentException("autonDirection is not defined: " + autonDirection);
         }
-        parallelSensor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        parallelSensor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); // these 2 lines needed to zero out the odometry sensor
-        frontLeft.setPower(speed);
-        frontRight.setPower(speed);
-        backLeft.setPower(speed);
-        backRight.setPower(speed);
+        // Reset the encoder on the proper deadwheel
+        sensorToUse.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        sensorToUse.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         ElapsedTime runtime = new ElapsedTime();
 
         // our odometry pod is reversed in orientation so going forward gives a negative value, while
         // going backward gives a positive value - using the absolute value here allows us to ignore this.
-        while (Math.abs(parallelSensor.getCurrentPosition()) <= ticksToTravel) {
-            telemetry.addData("Distance", "Forward: %4.1f Inches", -parallelSensor.getCurrentPosition() / encInchesPerTicks);
-            telemetry.addData("Path", "%4.1f S Elapsed", runtime.seconds());
-            telemetry.update();
-        }
-    }
-
-    public void autoDriveBackward(int inches, double speed) {
-        parallelSensor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        parallelSensor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); // these 2 lines needed to zero out the odometry sensor
-        frontLeft.setPower(-speed);
-        frontRight.setPower(-speed);
-        backLeft.setPower(-speed);
-        backRight.setPower(-speed);
-        ElapsedTime runtime = new ElapsedTime();
-        // our odometry pod is reversed in orientation so going backward gives a positive value
-        // on the parallel sensor - this is why we need to use a pos sign in our comparison
-        // we want to drive backwards until our current position is larger than our desired backward distance
-        // so we drive until our current position is no longer <= our desired distance
-        while (parallelSensor.getCurrentPosition() <= inches * encTicksPerInches) {
-            telemetry.addData("Distance", "Forward: %4.1f Inches", -parallelSensor.getCurrentPosition() / encInchesPerTicks);
+        while (Math.abs(sensorToUse.getCurrentPosition()) <= ticksToTravel) {
+            telemetry.addData("Distance", "traveled: %4.1f Inches", sensorToUse.getCurrentPosition() / encInchesPerTicks);
             telemetry.addData("Path", "%4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
