@@ -31,7 +31,6 @@ package org.firstinspires.ftc.teamcode.Auton;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Core.VfHardware;
 
@@ -56,7 +55,7 @@ public class SuperSimpleMultiDirectionAuton extends LinearOpMode {
     //public static final int FORWARD_DISTANCE_INCHES = 98;
     public static final int FORWARD_DISTANCE_INCHES = 13;
 
-    public static final int STRAFE_DISTANCE = 2;
+    public static final int STRAFE_DISTANCE = 12;
     // Starting at edge of tile closest to net zone
     public static final int BACKWARD_DISTANCE_INCHES = 36;
     // Starting at edge of second tile closest to net zone
@@ -75,7 +74,8 @@ public class SuperSimpleMultiDirectionAuton extends LinearOpMode {
         VfHardware robot = new VfHardware(this);
 
         // Send telemetry message to signify robot waiting;
-        telemetry.addData("Status", "Ready to run");    //
+        telemetry.addData("Status", "Not ready to run");    //
+
         telemetry.update();
 
         // Wait for the game to start (driver presses START)

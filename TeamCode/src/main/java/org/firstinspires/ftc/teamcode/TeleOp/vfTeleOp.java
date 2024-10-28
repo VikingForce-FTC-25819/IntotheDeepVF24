@@ -4,7 +4,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Core.ArmAngle;
 import org.firstinspires.ftc.teamcode.Core.VfHardware;
 
 
@@ -12,8 +11,8 @@ import org.firstinspires.ftc.teamcode.Core.VfHardware;
  * This is a teleop class in linearOpMode using a hardware abstraction to reduce the class complexity.
  */
 
-@TeleOp(name="VF Robot TeleOp - Coach", group="1")
-public class VfRobotTeleOp extends LinearOpMode {
+@TeleOp(name="VF Robot Tele Op 1", group="1")
+public class vfTeleOp extends LinearOpMode {
 
     private final ElapsedTime runtime = new ElapsedTime();
 
@@ -52,58 +51,10 @@ public class VfRobotTeleOp extends LinearOpMode {
             // POV Mode uses left stick to go forward, and right stick to turn.
             // - This uses basic math to combine motions and is easier to drive straight.
             double drive = -gamepad1.left_stick_y;
-            double strafe = gamepad1.left_stick_x;
             double turn  =  gamepad1.right_stick_x;
+            double strafe = gamepad1.left_stick_x;
 
             robot.teleOpDrive(drive, turn, strafe, powerFactor);
-
-            if (gamepad1.y) {
-                robot.autoLift();
-            }
-
-            if (gamepad2.a) {
-                robot.collectSample();
-            }
-
-            if (gamepad2.b) {
-                robot.deposit();
-            }
-
-            if (gamepad2.x) {
-                robot.stopIntake();
-            }
-
-            if (gamepad2.dpad_up) {
-                robot.raiseForHighSpecimenHang();
-            }
-
-            if (gamepad2.dpad_down) {
-                robot.raiseToEnterSubmersible();
-            }
-
-            if (gamepad2.dpad_left) {
-                robot.raiseForLowBasket();
-            }
-
-            if (gamepad2.dpad_up) {
-                robot.raiseArmForLowHang();
-            }
-
-            if (gamepad2.y) {
-                robot.liftRobot();
-            }
-
-            if (gamepad2.right_bumper) {
-                robot.adjustArmAngle(ArmAngle.UP);
-            }
-
-            if (gamepad2.left_bumper) {
-                robot.adjustArmAngle(ArmAngle.DOWN);
-            }
-
-            if (gamepad1.x) {
-                robot.storeRobot();
-            }
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
