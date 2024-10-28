@@ -6,12 +6,13 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Core.VfHardware;
 
+
 /*
  * This is a teleop class in linearOpMode using a hardware abstraction to reduce the class complexity.
  */
 
-@TeleOp(name="VF Robot Tele Op", group="1")
-public class VfTeleOp extends LinearOpMode {
+@TeleOp(name="VF Robot Tele Op 1", group="1")
+public class vfTeleOp extends LinearOpMode {
 
     private final ElapsedTime runtime = new ElapsedTime();
 
@@ -51,8 +52,9 @@ public class VfTeleOp extends LinearOpMode {
             // - This uses basic math to combine motions and is easier to drive straight.
             double drive = -gamepad1.left_stick_y;
             double turn  =  gamepad1.right_stick_x;
+            double strafe = gamepad1.left_stick_x;
 
-            robot.teleOpDrive(drive, turn, powerFactor);
+            robot.teleOpDrive(drive, turn, strafe, powerFactor);
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
@@ -62,3 +64,5 @@ public class VfTeleOp extends LinearOpMode {
         }
     }
 }
+
+
