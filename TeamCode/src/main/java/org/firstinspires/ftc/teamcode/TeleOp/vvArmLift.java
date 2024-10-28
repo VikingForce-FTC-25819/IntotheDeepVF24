@@ -2,9 +2,6 @@ package org.firstinspires.ftc.teamcode.TeleOp;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AngularVelocity;
@@ -18,9 +15,9 @@ import org.firstinspires.ftc.teamcode.Core.vvHardwareITD;
  * Also need the telemetry to read all sensor values
  */
 
-@TeleOp(name="vvTeleOp", group="1-TeleOp")
+@TeleOp(name="vvArmLift", group="Concept")
 
-public class vvTeleOp extends LinearOpMode {
+public class vvArmLift extends LinearOpMode {
 
     //vvHardware class external pull
     vvHardwareITD   robot       = new vvHardwareITD(this);
@@ -35,6 +32,9 @@ public class vvTeleOp extends LinearOpMode {
         double drivePower = 0.5; //global drive power level
         double armBump = 0;
         double extBump = 0;
+        double armPower = 0;
+        double extPower = 0;
+        double liftPower = 0;
         int armBumpInc = 50;
         int extBumpInc = 100;
         int extLoc = 0;
@@ -58,8 +58,11 @@ public class vvTeleOp extends LinearOpMode {
                 driveY = -gamepad1.left_stick_y;
                 strafe = gamepad1.left_stick_x * 1;
                 turn = gamepad1.right_stick_x;
-                armBump = -gamepad2.left_stick_y;
-                extBump = -gamepad2.right_stick_y;
+                //armBump = -gamepad2.left_stick_y;
+                //extBump = -gamepad2.right_stick_y;
+                armPower = -gamepad2.left_stick_y;
+                extPower = -gamepad2.left_stick_x;
+                liftPower = -gamepad2.right_stick_y;
 
                 y = robot.parallelEncoder.getCurrentPosition();
                 x = robot.perpendicularEncoder.getCurrentPosition(); //parallel, forward encoder distance is 0
@@ -104,10 +107,11 @@ public class vvTeleOp extends LinearOpMode {
                 }
 
                 // Methods called for motion
-                robot.driveRobot(drivePower, driveY, strafe, turn);
+                robot.driveRobotFC(drivePower, driveY, strafe, turn);
 
-                //robot.moveArm(armPower);
-                //robot.moveExt(extPower);
+                robot.moveArm(armPower);
+                robot.moveExt(extPower);
+                robot.moveLift(liftPower);
 
                 wristPos = robot.wrist.getPosition();
                 clawPos = robot.claw.getPosition();
@@ -163,10 +167,10 @@ public class vvTeleOp extends LinearOpMode {
                     robot.moveWristHighBw();
                 }
 
-                if (armBump>0.8) {
+                if (armBump >0.8) {
                     robot.armPos(robot.arm.getCurrentPosition()+armBumpInc,robot.armEPower);
                 }
-                if (armBump<-0.8) {
+                if (armBump <-0.8) {
                     robot.armPos(robot.arm.getCurrentPosition()-armBumpInc,robot.armEPower);
                 }
                 if (extBump>0.8) {

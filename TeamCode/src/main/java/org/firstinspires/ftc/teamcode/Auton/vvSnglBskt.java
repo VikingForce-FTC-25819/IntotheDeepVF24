@@ -42,41 +42,36 @@ public class  vvSnglBskt extends LinearOpMode {
         vvdrive.setPoseEstimate(startPose);
 
         TrajectorySequence fwdHighCmbr = vvdrive.trajectorySequenceBuilder(startPose) //Tile Start Position
-                .forward(30)
-                .UNSTABLE_addTemporalMarkerOffset(-2, () -> {
-                    robot.armPos(robot.armHighCa, robot.armEPower);
-                    robot.moveWristHighCw();
-                    robot.extArmPos(robot.extArmHighCe, robot.extArmEPower);
-                })
+                .forward(25)
                 .waitSeconds(0.5)
                 .build();
         TrajectorySequence yellow1 = vvdrive.trajectorySequenceBuilder(fwdHighCmbr.end())
                 .back(8)
-                .UNSTABLE_addTemporalMarkerOffset(-2, () -> robot.extArmPos(0, robot.extArmEPower))
-                .strafeLeft(36)
-                .forward(8)
+                .UNSTABLE_addTemporalMarkerOffset(0, () -> robot.extArmPos(0, robot.armEPower))
+                .strafeLeft(63)
                 .UNSTABLE_addTemporalMarkerOffset(-1, () -> {
                     robot.armPos(robot.floorArm, robot.armEPower);
                     robot.moveWristFloor();
                     robot.extArmPos(robot.extArmFLoorPick, robot.extArmEPower);
                 })
-                .waitSeconds(0.5)
+                .waitSeconds(1)
+                .forward(8)
                 .build();
         TrajectorySequence yellow1Drop = vvdrive.trajectorySequenceBuilder(yellow1.end())
-                .turn(Math.toRadians(160))
+                .turn(Math.toRadians(150))
                 .UNSTABLE_addTemporalMarkerOffset(-1, () -> {
                     robot.armPos(robot.armHighBa, robot.armEPower);
                     robot.moveWristHighBw();
                 })
-                .forward(22)
-                .UNSTABLE_addTemporalMarkerOffset(-3, () -> robot.extArmPos(robot.extArmHighBe, robot.extArmEPower))
+                .forward(24)
+                .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.extArmPos(robot.extArmHighBe, robot.extArmEPower))
                 .waitSeconds(1)
                 .build();
         TrajectorySequence pickSpecimen = vvdrive.trajectorySequenceBuilder(yellow1Drop.end()) //Also Blue Back
-                .back(16)
+                .back(32)
                 .UNSTABLE_addTemporalMarkerOffset(-1, () -> robot.extArmPos(0, robot.extArmEPower))
                 .turn(Math.toRadians(135))
-                .forward(60)
+                .forward(80)
                 .UNSTABLE_addTemporalMarkerOffset(-1, () -> {
                     robot.armPos(robot.armWall, robot.armEPower);
                     robot.moveWristWall();
@@ -108,11 +103,15 @@ public class  vvSnglBskt extends LinearOpMode {
                 Pose2d poseEstimate = vvdrive.getPoseEstimate();
                 vvdrive.update();
 
+                robot.rgb.setPosition(0.5);
+                robot.armPos(robot.armHighCa, robot.armEPower);
+                robot.moveWristHighCw();
+                robot.extArmPos(robot.extArmHighCe, robot.extArmEPower);
                 vvdrive.followTrajectorySequence(fwdHighCmbr);
                 telemetry.addData("Parallel Position: ", poseEstimate.getX());
                 telemetry.addData("Perpendicular Position: ", poseEstimate.getY());
                 telemetry.update();
-                robot.armPos(robot.armHighCa,robot.armEPower);
+                robot.armPos(robot.armHighCa-100,robot.armEPower);
                 robot.openClaw();
                 vvdrive.followTrajectorySequence(yellow1);
                 robot.armPos(robot.extArmFLoorPick,robot.armEPower);
@@ -127,6 +126,7 @@ public class  vvSnglBskt extends LinearOpMode {
                 robot.armPos(0,robot.armEPower);
                 robot.moveWristCarry();
                 robot.extArmPos(0,robot.extArmEPower);
+                robot.rgb.setPosition(0.28);
                 sleep(1000);
                 telemetry.addData("Parallel Position: ", poseEstimate.getX());
                 telemetry.addData("Perpendicular Position: ", poseEstimate.getY());

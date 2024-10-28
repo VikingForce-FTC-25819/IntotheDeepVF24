@@ -75,6 +75,7 @@ public class SuperSimpleMultiDirectionAuton extends LinearOpMode {
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Not ready to run");    //
+
         telemetry.update();
 
         // Wait for the game to start (driver presses START)
