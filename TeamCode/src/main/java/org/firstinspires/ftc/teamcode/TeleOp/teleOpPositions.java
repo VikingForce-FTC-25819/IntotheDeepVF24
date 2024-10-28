@@ -1,6 +1,7 @@
 
 package org.firstinspires.ftc.teamcode.TeleOp;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -22,7 +23,7 @@ import org.firstinspires.ftc.teamcode.Core.vvHardware;
 
 
 @TeleOp(name="teleOpPosition", group="1-TeleOp")
-
+@Disabled
 public class teleOpPositions extends LinearOpMode {
 
     //vvHardware class external pull
