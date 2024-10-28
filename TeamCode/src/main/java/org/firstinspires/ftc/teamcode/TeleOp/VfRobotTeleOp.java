@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.Core.ArmAngle;
 import org.firstinspires.ftc.teamcode.Core.VfHardware;
 
 
@@ -55,6 +56,54 @@ public class VfRobotTeleOp extends LinearOpMode {
             double turn  =  gamepad1.right_stick_x;
 
             robot.teleOpDrive(drive, turn, strafe, powerFactor);
+
+            if (gamepad1.y) {
+                robot.autoLift();
+            }
+
+            if (gamepad2.a) {
+                robot.collectSample();
+            }
+
+            if (gamepad2.b) {
+                robot.deposit();
+            }
+
+            if (gamepad2.x) {
+                robot.stopIntake();
+            }
+
+            if (gamepad2.dpad_up) {
+                robot.raiseForHighSpecimenHang();
+            }
+
+            if (gamepad2.dpad_down) {
+                robot.raiseToEnterSubmersible();
+            }
+
+            if (gamepad2.dpad_left) {
+                robot.raiseForLowBasket();
+            }
+
+            if (gamepad2.dpad_up) {
+                robot.raiseArmForLowHang();
+            }
+
+            if (gamepad2.y) {
+                robot.liftRobot();
+            }
+
+            if (gamepad2.right_bumper) {
+                robot.adjustArmAngle(ArmAngle.UP);
+            }
+
+            if (gamepad2.left_bumper) {
+                robot.adjustArmAngle(ArmAngle.DOWN);
+            }
+
+            if (gamepad1.x) {
+                robot.storeRobot();
+            }
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
