@@ -50,14 +50,14 @@ import org.firstinspires.ftc.teamcode.Core.VfHardware;
  */
 
 @Autonomous(name="Auton 1", group="Concept")
-public class SuperSimpleMultiDirectionAuton extends LinearOpMode {
+public class vfAuton1 extends LinearOpMode {
 
     //public static final int FORWARD_DISTANCE_INCHES = 98;
-    public static final int FORWARD_DISTANCE_INCHES = 13;
+    public static final int FORWARD_DISTANCE_INCHES = 25;
 
-    public static final int STRAFE_DISTANCE = 12;
+    public static final int STRAFE_DISTANCE = 3;
     // Starting at edge of tile closest to net zone
-    public static final int BACKWARD_DISTANCE_INCHES = 36;
+    public static final int BACKWARD_DISTANCE_INCHES = 95;
     // Starting at edge of second tile closest to net zone
     // public static final int BACKWARD_DISTANCE_INCHES = 34;
     // Starting at edge of third tile closest to net zone
