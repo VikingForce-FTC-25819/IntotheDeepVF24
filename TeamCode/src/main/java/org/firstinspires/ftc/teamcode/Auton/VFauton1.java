@@ -1,3 +1,4 @@
+
 /* Copyright (c) 2017 FIRST. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -49,54 +50,30 @@ import org.firstinspires.ftc.teamcode.Core.VfHardware;
  *
  */
 
-@Autonomous(name="Super Simple Multi-Direction Auton", group="Concept")
-public class SuperSimpleMultiDirectionAuton extends LinearOpMode {
-
-    //public static final int FORWARD_DISTANCE_INCHES = 98;
-    public static final int FORWARD_DISTANCE_INCHES = 13;
-
-    public static final int STRAFE_DISTANCE = 12;
-    // Starting at edge of tile closest to net zone
-    public static final int BACKWARD_DISTANCE_INCHES = 36;
-    // Starting at edge of second tile closest to net zone
-    // public static final int BACKWARD_DISTANCE_INCHES = 34;
-    // Starting at edge of third tile closest to net zone
-    //public static final int BACKWARD_DISTANCE_INCHES = 58;
-    // Starting at edge of fourth tile closest to net zone
-    //public static final int BACKWARD_DISTANCE_INCHES = 13;
-    private static final double INITIAL_PAUSE_SECONDS = 1.0;
-    private static final double TRANSITION_PAUSE_SECONDS = 1.0;
-
-    static final double     SPEED = 0.3;
+@Autonomous(name="VF auton 1", group="1")
+public class VFauton1 extends LinearOpMode {
 
     @Override
     public void runOpMode() {
         VfHardware robot = new VfHardware(this);
 
         // Send telemetry message to signify robot waiting;
-        telemetry.addData("Status", "Not ready to run");    //
-
+        telemetry.addData("Status", "Ready to run");    //
         telemetry.update();
 
-        // Wait for the game to start (driver presses START)
         waitForStart();
 
-        // Wait for INITIAL_PAUSE_SECONDS of time before doing anything
-        robot.pause(INITIAL_PAUSE_SECONDS);
+        robot.pause(3);
 
-        robot.autoDrive(STRAFE_DISTANCE, SPEED, AutonDirection.right);
+        robot.autoDrive(4, .2, AutonDirection.right);
 
-        robot.pause(TRANSITION_PAUSE_SECONDS);
+        robot.pause(.5);
 
-        robot.autoDrive(FORWARD_DISTANCE_INCHES, SPEED, AutonDirection.forward);
+        robot.autoDrive(2, .2, AutonDirection.forward);
 
-        robot.pause(TRANSITION_PAUSE_SECONDS);
+        robot.pause(1);
 
-        robot.autoDrive(BACKWARD_DISTANCE_INCHES, SPEED, AutonDirection.reverse);
-
-        robot.pause(TRANSITION_PAUSE_SECONDS);
-
-        robot.autoDrive(STRAFE_DISTANCE, SPEED, AutonDirection.left);
+        robot.autoDrive(100,.2, AutonDirection.reverse);
 
         robot.stop();
 
@@ -105,4 +82,7 @@ public class SuperSimpleMultiDirectionAuton extends LinearOpMode {
         sleep(1000);
     }
 }
+
+
+
 

@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.Core.VfHardware;
  * This is a teleop class in linearOpMode using a hardware abstraction to reduce the class complexity.
  */
 
-@TeleOp(name="VF Robot TeleOp - Coach", group="1")
+@TeleOp(name="VF TeleOp", group="1")
 public class VfRobotTeleOp extends LinearOpMode {
 
     private final ElapsedTime runtime = new ElapsedTime();
@@ -93,13 +93,13 @@ public class VfRobotTeleOp extends LinearOpMode {
                 robot.liftRobot();
             }
 
-            if (gamepad2.right_bumper) {
-                robot.adjustArmAngle(ArmAngle.UP);
-            }
-
-            if (gamepad2.left_bumper) {
-                robot.adjustArmAngle(ArmAngle.DOWN);
-            }
+//            if (gamepad2.right_bumper) {
+//                robot.adjustArmAngle(ArmAngle.UP);
+//            }
+//
+//            if (gamepad2.left_bumper) {
+//                robot.adjustArmAngle(ArmAngle.DOWN);
+//            }
 
             if (gamepad1.x) {
                 robot.storeRobot();

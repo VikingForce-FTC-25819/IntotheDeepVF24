@@ -54,10 +54,10 @@ public class VfHardware {
     as far from the starting position, decrease it. */
 
     final double ARM_COLLAPSED_INTO_ROBOT  = 0;
-    final double ARM_COLLECT               = 250 * ARM_TICKS_PER_DEGREE;
-    final double ARM_CLEAR_BARRIER         = 230 * ARM_TICKS_PER_DEGREE;
-    final double ARM_SCORE_SPECIMEN        = 160 * ARM_TICKS_PER_DEGREE;
-    final double ARM_SCORE_SAMPLE_IN_LOW   = 160 * ARM_TICKS_PER_DEGREE;
+    final double ARM_COLLECT               = 237 * ARM_TICKS_PER_DEGREE;
+    final double ARM_CLEAR_BARRIER         = 220 * ARM_TICKS_PER_DEGREE;
+    final double ARM_SCORE_SPECIMEN        = 150 * ARM_TICKS_PER_DEGREE;
+    final double ARM_SCORE_SAMPLE_IN_LOW   = 150 * ARM_TICKS_PER_DEGREE;
     final double ARM_ATTACH_HANGING_HOOK   = 120 * ARM_TICKS_PER_DEGREE;
     final double ARM_WINCH_ROBOT           = 15  * ARM_TICKS_PER_DEGREE;
 
@@ -67,11 +67,10 @@ public class VfHardware {
     final double INTAKE_DEPOSIT    =  0.5;
 
     /* Variables to store the positions that the wrist should be set to when folding in, or folding out. */
-    final double WRIST_FOLDED_IN   = 0.8333;
-    final double WRIST_FOLDED_OUT  = 0.5;
+    final double WRIST_FOLDED_IN   = 0.8633;
+    final double WRIST_FOLDED_OUT  = 0.53;
 
-    /* A number in degrees that the triggers can adjust the arm position by */
-    final double FUDGE_FACTOR = 15 * ARM_TICKS_PER_DEGREE;
+    final double WRIST_FOLDED_IN_OPP   = 0.2033;
 
     public static double WHEEL_DIAMETER = 1.88976;
     public static final double TICKS_PER_REV = 2000;
@@ -122,7 +121,7 @@ public class VfHardware {
 
         /* Make sure that the intake is off, and the wrist is folded in. */
         intake.setPower(INTAKE_OFF);
-        wrist.setPosition(WRIST_FOLDED_IN);
+        wrist.setPosition(WRIST_FOLDED_IN_OPP);
 
         /* Send telemetry message to signify robot waiting */
         telemetry.addLine("Robot Ready.");
@@ -217,15 +216,15 @@ public class VfHardware {
     }
 
     public void startIntake() {
-        intake.setPower(-1.0);
+        intake.setPower(INTAKE_COLLECT);
     }
 
     public void stopIntake() {
-        intake.setPower(0.0);
+        intake.setPower(INTAKE_OFF);
     }
 
     public void deposit() {
-        intake.setPower(0.5);
+        intake.setPower(INTAKE_DEPOSIT);
     }
 
     public void collectSample() {
@@ -237,6 +236,7 @@ public class VfHardware {
 
     public void raiseForLowBasket() {
         intake.setPower(INTAKE_OFF);
+        wrist.setPosition(WRIST_FOLDED_OUT);
         armPosition = ARM_SCORE_SAMPLE_IN_LOW;
         moveArmToPosition();
     }
@@ -257,7 +257,7 @@ public class VfHardware {
         this.stop();
         armPosition = ARM_COLLAPSED_INTO_ROBOT;
         intake.setPower(INTAKE_OFF);
-        wrist.setPosition(WRIST_FOLDED_IN);
+        wrist.setPosition(WRIST_FOLDED_IN_OPP);
         moveArmToPosition();
     }
 
