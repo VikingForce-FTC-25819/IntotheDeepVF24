@@ -69,11 +69,15 @@ public class VFauton1 extends LinearOpMode {
 
         robot.pause(.5);
 
-        robot.autoDrive(2, .2, AutonDirection.forward);
+        robot.autoDrive(15, .2, AutonDirection.forward);
 
         robot.pause(1);
 
         robot.autoDrive(100,.2, AutonDirection.reverse);
+
+        robot.pause(.5);
+
+        robot.autoDrive(2,.2, AutonDirection.left);
 
         robot.stop();
 

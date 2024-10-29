@@ -58,10 +58,10 @@ public class VfHardware {
     final double ARM_COLLAPSED_INTO_ROBOT  = 0;
     final double ARM_COLLECT               = 237 * ARM_TICKS_PER_DEGREE;
     final double ARM_CLEAR_BARRIER         = 220 * ARM_TICKS_PER_DEGREE;
-    final double ARM_SCORE_SPECIMEN        = 150 * ARM_TICKS_PER_DEGREE;
-    final double ARM_SCORE_SAMPLE_IN_LOW   = 150 * ARM_TICKS_PER_DEGREE;
-    final double ARM_ATTACH_HANGING_HOOK   = 120 * ARM_TICKS_PER_DEGREE;
-    final double ARM_WINCH_ROBOT           = 15  * ARM_TICKS_PER_DEGREE;
+    final double ARM_SCORE_SPECIMEN        = 145 * ARM_TICKS_PER_DEGREE;
+    final double ARM_SCORE_SAMPLE_IN_LOW   = 140 * ARM_TICKS_PER_DEGREE;
+    final double ARM_ATTACH_HANGING_HOOK   = 110 * ARM_TICKS_PER_DEGREE;
+    final double ARM_WINCH_ROBOT           = 10  * ARM_TICKS_PER_DEGREE;
 
     /* Variables to store the speed the intake servo should be set at to intake, and deposit game elements. */
     final double INTAKE_COLLECT    = -1.0;
