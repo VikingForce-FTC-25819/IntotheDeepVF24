@@ -40,6 +40,7 @@ public class VfRobotTeleOp extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+            telemetry.addData("Status", "Run Time: " + runtime.toString());
 
             // set up the left bumper button to decelerate and right bumper to accelerate
             if (gamepad1.left_bumper) {
@@ -93,21 +94,12 @@ public class VfRobotTeleOp extends LinearOpMode {
                 robot.liftRobot();
             }
 
-//            if (gamepad2.right_bumper) {
-//                robot.adjustArmAngle(ArmAngle.UP);
-//            }
-//
-//            if (gamepad2.left_bumper) {
-//                robot.adjustArmAngle(ArmAngle.DOWN);
-//            }
+            robot.adjustArmAngle(gamepad2.right_trigger + (-gamepad2.left_trigger));
 
             if (gamepad1.x) {
                 robot.storeRobot();
             }
-
-            // Show the elapsed game time and wheel power.
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Drive Parameters", "drive: %s, turn: %s, power: %s", drive, turn, powerFactor);
+            telemetry.addData("trigger values: ", "%4.2f -- %4.2f", gamepad2.right_trigger, gamepad2.left_trigger);
             telemetry.update();
 
         }

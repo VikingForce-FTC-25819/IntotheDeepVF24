@@ -27,6 +27,8 @@ public class VfHardware {
 
     private double armPosition;
 
+    private double armAngleAdjustment;
+
     /* This constant is the number of encoder ticks for each degree of rotation of the arm.
    To find this, we first need to consider the total gear reduction powering our arm.
    First, we have an external 20t:100t (5:1) reduction created by two spur gears.
@@ -125,7 +127,7 @@ public class VfHardware {
 
         /* Send telemetry message to signify robot waiting */
         telemetry.addLine("Robot Ready.");
-        telemetry.update();
+
     }
 
     public void teleOpDrive(double drive, double turn, double strafe, double powerFactor) {
@@ -141,6 +143,8 @@ public class VfHardware {
         frontLeft.setPower(frontLeftPower);
         backRight.setPower(backRightPower);
         backLeft.setPower(backLeftPower);
+        // Show the wheel power.
+        telemetry.addData("Drive Parameters", "drive: %s, turn: %s, power: %s", drive, turn, powerFactor);
 
     }
 
@@ -192,7 +196,7 @@ public class VfHardware {
         while (Math.abs(sensorToUse.getCurrentPosition()) <= ticksToTravel) {
             telemetry.addData("Distance", "traveled: %4.1f Inches", sensorToUse.getCurrentPosition() / encInchesPerTicks);
             telemetry.addData("Path", "%4.1f S Elapsed", runtime.seconds());
-            telemetry.update();
+
         }
     }
 
@@ -204,7 +208,7 @@ public class VfHardware {
         ElapsedTime runtime = new ElapsedTime();
         while (runtime.seconds() < pauseTimeSeconds) {
             telemetry.addData("Pausing: %4.1f S Elapsed", runtime.seconds());
-            telemetry.update();
+
         }
     }
 
@@ -288,21 +292,15 @@ public class VfHardware {
         this.liftRobot();
     }
 
-    public void adjustArmAngle(ArmAngle armAngle) {
+    public void adjustArmAngle(double adjustment) {
+        telemetry.addData("Arm adjustment: %4.2f", adjustment);
         // 15 degree adjustment - this can be increased or decreased
-        double armAngleAdjustment = 15 * ARM_TICKS_PER_DEGREE;
-        if (armAngle == ArmAngle.UP) {
-            armPosition = armPosition + armAngleAdjustment;
-        } else if (armAngle == ArmAngle.DOWN) {
-            armPosition = armPosition  - armAngleAdjustment;
-        } else {
-            throw new IllegalArgumentException("ArmAngle not defined: " + armAngle);
-        }
+        armAngleAdjustment = 15 * ARM_TICKS_PER_DEGREE * adjustment;
         moveArmToPosition();
     }
 
     private void moveArmToPosition() {
-        arm.setTargetPosition((int) armPosition);
+        arm.setTargetPosition((int) (armPosition + armAngleAdjustment));
 
         ((DcMotorEx) arm).setVelocity(2100);
         arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -314,7 +312,6 @@ public class VfHardware {
         /* send telemetry to the driver of the arm's current position and target position */
         telemetry.addData("armTarget: ", arm.getTargetPosition());
         telemetry.addData("arm Encoder: ", arm.getCurrentPosition());
-        telemetry.update();
 
     }
 
