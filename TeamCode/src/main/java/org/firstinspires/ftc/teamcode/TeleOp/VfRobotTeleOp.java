@@ -74,7 +74,7 @@ public class VfRobotTeleOp extends LinearOpMode {
                 robot.stopIntake();
             }
 
-            if (gamepad2.dpad_up) {
+            if (gamepad2.dpad_right) {
                 robot.raiseForHighSpecimenHang();
             }
 
