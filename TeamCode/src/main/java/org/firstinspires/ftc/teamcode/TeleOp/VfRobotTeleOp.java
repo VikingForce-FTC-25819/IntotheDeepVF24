@@ -99,6 +99,7 @@ public class VfRobotTeleOp extends LinearOpMode {
             if (gamepad1.x) {
                 robot.storeRobot();
             }
+
             telemetry.addData("trigger values: ", "%4.2f -- %4.2f", gamepad2.right_trigger, gamepad2.left_trigger);
             telemetry.update();
 

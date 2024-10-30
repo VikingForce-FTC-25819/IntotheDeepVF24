@@ -56,7 +56,7 @@ public class VfHardware {
     as far from the starting position, decrease it. */
 
     final double ARM_COLLAPSED_INTO_ROBOT  = 0;
-    final double ARM_COLLECT               = 235 * ARM_TICKS_PER_DEGREE;
+    final double ARM_COLLECT               = 234 * ARM_TICKS_PER_DEGREE;
     final double ARM_CLEAR_BARRIER         = 220 * ARM_TICKS_PER_DEGREE;
     final double ARM_SCORE_SPECIMEN        = 145 * ARM_TICKS_PER_DEGREE;
     final double ARM_SCORE_SAMPLE_IN_LOW   = 140 * ARM_TICKS_PER_DEGREE;

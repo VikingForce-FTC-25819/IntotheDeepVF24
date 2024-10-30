@@ -85,13 +85,13 @@ public class VFauton5 extends LinearOpMode {
         // Wait for INITIAL_PAUSE_SECONDS of time before doing anything
         robot.pause(3);
 
-        robot.autoDrive(10,0.4, AutonDirection.forward);
+        robot.autoDrive(5,0.4, AutonDirection.forward);
 
         robot.raiseForHighSpecimenHang();
 
         robot.pause(0.5);
 
-        robot.autoDrive(35, 0.4, AutonDirection.forward);
+        robot.autoDrive(15, 0.4, AutonDirection.forward);
 
         robot.pause(0.5);
 
@@ -102,11 +102,11 @@ public class VFauton5 extends LinearOpMode {
 
         robot.deposit();
 
-        robot.autoDrive(40,0.4, AutonDirection.reverse);
+        robot.autoDrive(2,0.4, AutonDirection.reverse);
 
         robot.pause(0.5);
 
-        robot.autoDrive(45,0.4, AutonDirection.right);
+        robot.autoDrive(20,0.4, AutonDirection.right);
 
        //+   robot.autoDrive(STRAFE_DISTANCE, SPEED, AutonDirection.left);
 
