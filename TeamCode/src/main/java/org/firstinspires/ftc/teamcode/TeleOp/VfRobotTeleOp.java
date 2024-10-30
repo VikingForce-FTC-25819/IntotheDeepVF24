@@ -58,9 +58,9 @@ public class VfRobotTeleOp extends LinearOpMode {
 
             robot.teleOpDrive(drive, turn, strafe, powerFactor);
 
-            if (gamepad1.y) {
-                robot.autoLift();
-            }
+//            if (gamepad1.y) {
+//                robot.autoLift();
+//            }
 
             if (gamepad2.a) {
                 robot.collectSample();
