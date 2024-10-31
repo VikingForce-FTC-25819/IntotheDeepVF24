@@ -14,6 +14,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.Auton.AutonDirection;
 
 public class VfHardware {
+    private static final double ARM_ANGLE_ADJUSTMENT_FACTOR = 3;
+
+    private static final double WRIST_ANGLE_ADJUSTMENT_FACTOR = 0.01;
     private final Telemetry telemetry;
     private final DcMotor backLeft;
     private final DcMotor backRight;
@@ -298,7 +301,15 @@ public class VfHardware {
         armAngleAdjustment = 15 * ARM_TICKS_PER_DEGREE * adjustment;
         moveArmToPosition();
     }
+    public void adjustArmAngleContinuous(double adjustment) {
+        telemetry.addData("Arm adjustment: %4.2f", adjustment * ARM_ANGLE_ADJUSTMENT_FACTOR * ARM_TICKS_PER_DEGREE);
+        armPosition = armPosition + adjustment* ARM_ANGLE_ADJUSTMENT_FACTOR * ARM_TICKS_PER_DEGREE;
+        moveArmToPosition();
+    }
 
+    public void adjustWristAngleContinuous(double adjustment) {
+        wrist.setPosition(wrist.getPosition() + adjustment * WRIST_ANGLE_ADJUSTMENT_FACTOR);
+    }
     private void moveArmToPosition() {
         arm.setTargetPosition((int) (armPosition + armAngleAdjustment));
 

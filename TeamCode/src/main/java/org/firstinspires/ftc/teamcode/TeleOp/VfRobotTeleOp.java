@@ -96,6 +96,10 @@ public class VfRobotTeleOp extends LinearOpMode {
 
             robot.adjustArmAngle(gamepad2.right_trigger + (-gamepad2.left_trigger));
 
+            robot.adjustArmAngleContinuous(gamepad2.left_stick_y);
+
+            robot.adjustWristAngleContinuous(gamepad2.right_stick_x);
+
             if (gamepad1.x) {
                 robot.storeRobot();
             }
