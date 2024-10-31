@@ -69,10 +69,10 @@ public class VfHardware {
     final double INTAKE_DEPOSIT    =  0.5;
 
     /* Variables to store the positions that the wrist should be set to when folding in, or folding out. */
-    final double WRIST_FOLDED_IN   = 0.8633;
-    final double WRIST_FOLDED_OUT  = 0.53;
+    final double WRIST_FOLDED_IN   = 0.833;
+    final double WRIST_FOLDED_OUT  = 0.5;
 
-    final double WRIST_FOLDED_IN_OPP   = 0.2033;
+    final double WRIST_FOLDED_IN_OPP   = 0.1667;
 
     public static double WHEEL_DIAMETER = 1.88976;
     public static final double TICKS_PER_REV = 2000;

@@ -63,25 +63,28 @@ public class VFauton2 extends LinearOpMode {
 
         waitForStart();
 
-        robot.pause(3);
+        robot.pause(1);
 
         // Off the wall 2 inches
         robot.autoDrive(2, .2, AutonDirection.right);
 
-        robot.pause(.5);
+        robot.pause(.2);
 
         // Push the sample into net zone
-        robot.autoDrive(20, .2, AutonDirection.forward);
+        robot.autoDrive(22, .3, AutonDirection.forward);
 
-        robot.pause(1);
+        robot.pause(.2);
+
+        robot.autoDrive(3, .3, AutonDirection.reverse);
+        robot.pause(.2);
 
         // Off the wall another 3 inches
-        robot.autoDrive(20, .2, AutonDirection.right);
+        robot.autoDrive(18, .3, AutonDirection.right);
 
         robot.pause(.5);
 
         // Reverse 35 inches
-        robot.autoDrive(100,.2, AutonDirection.reverse);
+        robot.autoDrive(100,.4, AutonDirection.reverse);
 
         robot.pause(.5);
 
