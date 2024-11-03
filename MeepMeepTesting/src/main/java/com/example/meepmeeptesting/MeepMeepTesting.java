@@ -20,23 +20,16 @@ public class MeepMeepTesting {
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(30, 30, Math.toRadians(180), Math.toRadians(180), 14)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(-12, -65, Math.toRadians(90)))
-                                .forward(25)
-                                .back(8)
-                                .strafeLeft(63)
-                                .forward(8)
-                                .turn(Math.toRadians(150))
-                                .forward(24)
-                                .back(32)
-                                .turn(Math.toRadians(135))
-                                .forward(80)
-                                .turn(Math.toRadians(-90))
-                                .splineToConstantHeading(new Vector2d(48,-51),Math.toRadians(0))
+                        drive.trajectorySequenceBuilder(new Pose2d(-27, -63, Math.toRadians(90)))
+                                .lineToLinearHeading(new Pose2d(-50, -50, Math.toRadians(225)))
+                                .lineToLinearHeading(new Pose2d(-50, -40, Math.toRadians(90)))
+                                .strafeRight(88)
+                                .back(23)
                                 .build()
                 );
 
         Image img = null;
-        try { img = ImageIO.read(new File("C:\\Users\\Adambots 1\\Documents\\field-2024-official.png")); }
+        try { img = ImageIO.read(new File("C:\\Users\\Adambots2\\vf\\field-2024-official.png")); }
         catch(IOException e) {}
 
         meepMeep.setBackground(img)

@@ -303,7 +303,7 @@ public class VfHardware {
     }
     public void adjustArmAngleContinuous(double adjustment) {
         telemetry.addData("Arm adjustment: %4.2f", adjustment * ARM_ANGLE_ADJUSTMENT_FACTOR * ARM_TICKS_PER_DEGREE);
-        armPosition = armPosition + adjustment* ARM_ANGLE_ADJUSTMENT_FACTOR * ARM_TICKS_PER_DEGREE;
+        armPosition = armPosition + adjustment * ARM_ANGLE_ADJUSTMENT_FACTOR * ARM_TICKS_PER_DEGREE;
         moveArmToPosition();
     }
 
