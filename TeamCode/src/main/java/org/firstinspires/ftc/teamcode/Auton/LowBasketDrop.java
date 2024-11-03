@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Core.VfHardware;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
@@ -15,6 +16,8 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 @Config
 @Autonomous(group = "2")
 public class LowBasketDrop extends LinearOpMode {
+
+    private final ElapsedTime runtime = new ElapsedTime();
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -27,21 +30,31 @@ public class LowBasketDrop extends LinearOpMode {
 
         drive.setPoseEstimate(start);
 
-        Trajectory trajectoryScore = drive.trajectoryBuilder(start)
+        Trajectory moveOffWall = drive.trajectoryBuilder(start)
+                .forward(20)
+                .build();
+
+        Trajectory trajectoryScore = drive.trajectoryBuilder(moveOffWall.end())
                 .lineToLinearHeading(new Pose2d(-50, -50, Math.toRadians(225)))
                 .build();
 
         Trajectory observationZone = drive.trajectoryBuilder(trajectoryScore.end())
-                .lineToLinearHeading(new Pose2d(95, -63, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(65, -63, Math.toRadians(90)))
                 .build();
 
         waitForStart();
-
+        drive.followTrajectory(moveOffWall);
+        for (int i = 0; i < 2; i++) {
+            robot.raiseForLowBasket();
+        }
         drive.followTrajectory(trajectoryScore);
-        robot.pause(1);
-        robot.raiseForHighSpecimenHang();
-        waitForIt();
+        runtime.reset();
+        while (runtime.seconds() <= 5) {
+            robot.deposit();
+        }
+        robot.storeRobot();
         drive.followTrajectory(observationZone);
+
         telemetry.update();
 
 
