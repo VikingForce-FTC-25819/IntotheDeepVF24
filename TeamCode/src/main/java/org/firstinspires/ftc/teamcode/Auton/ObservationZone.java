@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.Auton;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -15,7 +14,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
  */
 @Config
 @Autonomous(group = "2")
-public class LowBasketDrop extends LinearOpMode {
+public class ObservationZone extends LinearOpMode {
 
     private final ElapsedTime runtime = new ElapsedTime();
 
@@ -26,43 +25,20 @@ public class LowBasketDrop extends LinearOpMode {
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
-        Pose2d start = new Pose2d(-16, -63, Math.toRadians(90));
+        Pose2d start = new Pose2d(24, -63, Math.toRadians(90));
 
         drive.setPoseEstimate(start);
 
         Trajectory moveOffWall = drive.trajectoryBuilder(start)
-                .forward(15)
+                .forward(5)
                 .build();
 
-        Trajectory trajectoryScore = drive.trajectoryBuilder(moveOffWall.end())
-                .lineToLinearHeading(new Pose2d(-54, -54, Math.toRadians(225)))
-                .build();
-
-        Trajectory getClearOfParkedRobots = drive.trajectoryBuilder(trajectoryScore.end())
-                .lineToLinearHeading(new Pose2d(-35, -35, Math.toRadians(90)))
-                .build();
-
-        Trajectory moveTowardsPark = drive.trajectoryBuilder(getClearOfParkedRobots.end())
-                .lineToLinearHeading(new Pose2d(60, -35, Math.toRadians(90)))
-                .build();
-
-        Trajectory observationZone = drive.trajectoryBuilder(moveTowardsPark.end())
+        Trajectory observationZone = drive.trajectoryBuilder(moveOffWall.end())
                 .lineToLinearHeading(new Pose2d(60, -60, Math.toRadians(90)))
                 .build();
 
         waitForStart();
         drive.followTrajectory(moveOffWall);
-        //for (int i = 0; i < 2; i++) {
-            robot.raiseForLowBasket();
-        //}
-        drive.followTrajectory(trajectoryScore);
-        runtime.reset();
-        while (runtime.seconds() <= 5) {
-            robot.deposit();
-        }
-        robot.storeRobot();
-        drive.followTrajectory(getClearOfParkedRobots);
-        drive.followTrajectory(moveTowardsPark);
         drive.followTrajectory(observationZone);
 
         telemetry.update();

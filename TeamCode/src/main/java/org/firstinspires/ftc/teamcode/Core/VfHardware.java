@@ -128,6 +128,7 @@ public class VfHardware {
         intake.setPower(INTAKE_OFF);
         wrist.setPosition(WRIST_FOLDED_IN_OPP);
 
+        this.storeRobot();
         /* Send telemetry message to signify robot waiting */
         telemetry.addLine("Robot Ready.");
 
