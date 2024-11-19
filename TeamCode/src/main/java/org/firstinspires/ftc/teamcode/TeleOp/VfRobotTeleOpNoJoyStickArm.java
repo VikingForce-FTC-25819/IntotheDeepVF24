@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.TeleOp;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -12,6 +13,7 @@ import org.firstinspires.ftc.teamcode.Core.VfHardware;
  */
 
 @TeleOp(name="VF TeleOp - no arm joystic", group="1")
+@Disabled
 public class VfRobotTeleOpNoJoyStickArm extends LinearOpMode {
 
     private final ElapsedTime runtime = new ElapsedTime();

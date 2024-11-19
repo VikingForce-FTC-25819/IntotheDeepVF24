@@ -8,14 +8,13 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Core.Robot;
-import org.firstinspires.ftc.teamcode.Core.VfHardware;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 /*
  */
 @Config
 @Autonomous(group = "2")
-public class ObservationZone extends LinearOpMode {
+public class RightStartHighBasket extends LinearOpMode {
 
     private final ElapsedTime runtime = new ElapsedTime();
 
@@ -26,20 +25,37 @@ public class ObservationZone extends LinearOpMode {
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
-        Pose2d start = new Pose2d(24, -63, Math.toRadians(90));
+        Pose2d start = new Pose2d(16, -63, Math.toRadians(90));
 
         drive.setPoseEstimate(start);
 
         Trajectory moveOffWall = drive.trajectoryBuilder(start)
-                .forward(5)
+                .forward(3)
                 .build();
 
-        Trajectory observationZone = drive.trajectoryBuilder(moveOffWall.end())
+        Trajectory trajectoryScore = drive.trajectoryBuilder(moveOffWall.end())
+                .lineToLinearHeading(new Pose2d(-59, -54, Math.toRadians(225)))
+                .build();
+
+        Trajectory observationZone = drive.trajectoryBuilder(trajectoryScore.end())
                 .lineToLinearHeading(new Pose2d(60, -60, Math.toRadians(90)))
                 .build();
 
         waitForStart();
+        runtime.reset();
+        while (runtime.seconds() <= 3) {
+            // do nothing for 3 seconds
+        }
         drive.followTrajectory(moveOffWall);
+        for (int i = 0; i < 2; i++) {
+            robot.raiseForHighBasket();
+        }
+        drive.followTrajectory(trajectoryScore);
+        runtime.reset();
+        while (runtime.seconds() <= 2.5) {
+            robot.deposit();
+        }
+        robot.storeRobot();
         drive.followTrajectory(observationZone);
 
         telemetry.update();

@@ -2,11 +2,13 @@ package org.firstinspires.ftc.teamcode.Auton;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.Core.Robot;
 import org.firstinspires.ftc.teamcode.Core.VfHardware;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
@@ -14,14 +16,14 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
  */
 @Config
 @Autonomous(group = "2")
-public class LowBasketDropSlideBehind extends LinearOpMode {
+public class HighBasketDrop extends LinearOpMode {
 
     private final ElapsedTime runtime = new ElapsedTime();
 
     @Override
     public void runOpMode() throws InterruptedException {
 
-        VfHardware robot = new VfHardware(this);
+        Robot robot = new Robot(this);
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
@@ -34,24 +36,34 @@ public class LowBasketDropSlideBehind extends LinearOpMode {
                 .build();
 
         Trajectory trajectoryScore = drive.trajectoryBuilder(moveOffWall.end())
-                .lineToLinearHeading(new Pose2d(-54, -54, Math.toRadians(225)))
+                .lineToLinearHeading(new Pose2d(-59, -54, Math.toRadians(225)))
                 .build();
 
-        Trajectory observationZone = drive.trajectoryBuilder(trajectoryScore.end())
+        Trajectory getClearOfParkedRobots = drive.trajectoryBuilder(trajectoryScore.end())
+                .lineToLinearHeading(new Pose2d(-40, -40, Math.toRadians(90)))
+                .build();
+
+        Trajectory moveTowardsPark = drive.trajectoryBuilder(getClearOfParkedRobots.end())
+                .lineToLinearHeading(new Pose2d(60, -40, Math.toRadians(90)))
+                .build();
+
+        Trajectory observationZone = drive.trajectoryBuilder(moveTowardsPark.end())
                 .lineToLinearHeading(new Pose2d(60, -60, Math.toRadians(90)))
                 .build();
 
         waitForStart();
         drive.followTrajectory(moveOffWall);
-        for (int i = 0; i < 2; i++) {
-            robot.raiseForLowBasket();
-        }
+        //for (int i = 0; i < 2; i++) {
+            robot.raiseForHighBasket();
+        //}
         drive.followTrajectory(trajectoryScore);
         runtime.reset();
         while (runtime.seconds() <= 5) {
             robot.deposit();
         }
         robot.storeRobot();
+        drive.followTrajectory(getClearOfParkedRobots);
+        drive.followTrajectory(moveTowardsPark);
         drive.followTrajectory(observationZone);
 
         telemetry.update();

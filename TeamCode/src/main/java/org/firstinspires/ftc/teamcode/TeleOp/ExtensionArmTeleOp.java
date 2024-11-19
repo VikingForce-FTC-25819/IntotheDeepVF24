@@ -1,11 +1,10 @@
 package org.firstinspires.ftc.teamcode.TeleOp;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Core.ArmAngle;
+import org.firstinspires.ftc.teamcode.Core.Robot;
 import org.firstinspires.ftc.teamcode.Core.VfHardware;
 
 
@@ -13,9 +12,8 @@ import org.firstinspires.ftc.teamcode.Core.VfHardware;
  * This is a teleop class in linearOpMode using a hardware abstraction to reduce the class complexity.
  */
 
-@TeleOp(name="VF TeleOp", group="1")
-@Disabled
-public class VfRobotTeleOp extends LinearOpMode {
+@TeleOp(name="Extension Arm TeleOp", group="1")
+public class ExtensionArmTeleOp extends LinearOpMode {
 
     private final ElapsedTime runtime = new ElapsedTime();
 
@@ -30,7 +28,7 @@ public class VfRobotTeleOp extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        VfHardware robot = new VfHardware(this);
+        Robot robot = new Robot(this);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -76,16 +74,8 @@ public class VfRobotTeleOp extends LinearOpMode {
                 robot.stopIntake();
             }
 
-            if (gamepad2.dpad_right) {
-                robot.raiseForHighSpecimenHang();
-            }
-
-            if (gamepad2.dpad_down) {
-                robot.raiseToEnterSubmersible();
-            }
-
             if (gamepad2.dpad_left) {
-                robot.raiseForLowBasket();
+                robot.raiseForHighBasket();
             }
 
             if (gamepad2.dpad_up) {
@@ -99,6 +89,8 @@ public class VfRobotTeleOp extends LinearOpMode {
             robot.adjustArmAngle(gamepad2.right_trigger + (-gamepad2.left_trigger));
 
             robot.adjustArmAngleContinuous(gamepad2.left_stick_y);
+
+            robot.adjustSlideContinuous(gamepad2.right_stick_y);
 
             robot.adjustWristAngleContinuous(gamepad2.right_stick_x);
 
