@@ -68,8 +68,8 @@ public class Robot {
     final double ARM_WINCH_ROBOT           = 2  * ARM_TICKS_PER_DEGREE;
 
     /* Variables to store the speed the intake servo should be set at to intake, and deposit game elements. */
-    final double CLAW_OPEN    = 0.0;
-    final double CLAW_CLOSED        =  0.9;
+    final double CLAW_OPEN    = 0.7;
+    final double CLAW_CLOSED        =  0.1;
 
     /* Variables to store the positions that the wrist should be set to when folding in, or folding out. */
     final double WRIST_FOLDED_OUT  = 0.5;
@@ -311,6 +311,12 @@ public class Robot {
         telemetry.addData("Arm adjustment: %4.2f", adjustment * ARM_ANGLE_ADJUSTMENT_FACTOR * ARM_TICKS_PER_DEGREE);
         // subtract the adjustment to get the desired direction from a human perspective
         armPosition = armPosition - adjustment * ARM_ANGLE_ADJUSTMENT_FACTOR * ARM_TICKS_PER_DEGREE;
+        if (armPosition < ARM_COLLAPSED_INTO_ROBOT) {
+            armPosition = ARM_COLLAPSED_INTO_ROBOT;
+        }
+        if (armPosition > ARM_ATTACH_HANGING_HOOK) {
+            armPosition = ARM_ATTACH_HANGING_HOOK;
+        }
         moveArmToPosition();
     }
 
@@ -318,6 +324,13 @@ public class Robot {
         // subtract the adjustment to get the desired direction from a human perspective
         wrist.setPosition(wrist.getPosition() - adjustment * WRIST_ANGLE_ADJUSTMENT_FACTOR);
     }
+
+//    public void adjustClawContinuous(double adjustment) {
+//        // subtract the adjustment to get the desired direction from a human perspective
+//
+//        telemetry.addData("Claw adjustment to : %4.2f", -adjustment * SLIDE_ADJUSTMENT_FACTOR * SLIDE_TICKS_PER_MM);
+//        claw.setPosition(clawPosition - adjustment);
+//    }
 
     public void adjustSlideContinuous(float adjustment) {
         telemetry.addData("Slide adjustment: %4.2f", -adjustment * SLIDE_ADJUSTMENT_FACTOR * SLIDE_TICKS_PER_MM);
