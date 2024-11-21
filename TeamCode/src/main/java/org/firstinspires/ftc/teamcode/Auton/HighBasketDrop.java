@@ -39,7 +39,11 @@ public class HighBasketDrop extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(-59, -54, Math.toRadians(225)))
                 .build();
 
-        Trajectory getClearOfParkedRobots = drive.trajectoryBuilder(trajectoryScore.end())
+        Trajectory backUpBeforeStoringClaw = drive.trajectoryBuilder(trajectoryScore.end())
+                .back(4)
+                .build();
+
+        Trajectory getClearOfParkedRobots = drive.trajectoryBuilder(backUpBeforeStoringClaw.end())
                 .lineToLinearHeading(new Pose2d(-40, -40, Math.toRadians(90)))
                 .build();
 
@@ -53,14 +57,13 @@ public class HighBasketDrop extends LinearOpMode {
 
         waitForStart();
         drive.followTrajectory(moveOffWall);
-        //for (int i = 0; i < 2; i++) {
-            robot.raiseForHighBasket();
-        //}
+        robot.raiseForHighBasket();
         drive.followTrajectory(trajectoryScore);
         runtime.reset();
-        while (runtime.seconds() <= 5) {
+        while (runtime.seconds() <= .5) {
             robot.deposit();
         }
+        drive.followTrajectory(backUpBeforeStoringClaw);
         robot.storeRobot();
         drive.followTrajectory(getClearOfParkedRobots);
         drive.followTrajectory(moveTowardsPark);

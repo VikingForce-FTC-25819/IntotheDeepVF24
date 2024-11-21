@@ -69,7 +69,7 @@ public class Robot {
 
     /* Variables to store the speed the intake servo should be set at to intake, and deposit game elements. */
     final double CLAW_OPEN    = 0.7;
-    final double CLAW_CLOSED        =  0.1;
+    final double CLAW_CLOSED        =  0.0;
 
     /* Variables to store the positions that the wrist should be set to when folding in, or folding out. */
     final double WRIST_FOLDED_OUT  = 0.5;

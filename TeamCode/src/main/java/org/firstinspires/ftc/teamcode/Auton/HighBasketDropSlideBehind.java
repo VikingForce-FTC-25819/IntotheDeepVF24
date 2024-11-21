@@ -37,20 +37,23 @@ public class HighBasketDropSlideBehind extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(-59, -54, Math.toRadians(225)))
                 .build();
 
-        Trajectory observationZone = drive.trajectoryBuilder(trajectoryScore.end())
+        Trajectory backUpBeforeStoringClaw = drive.trajectoryBuilder(trajectoryScore.end())
+                .back(4)
+                .build();
+
+        Trajectory observationZone = drive.trajectoryBuilder(backUpBeforeStoringClaw.end())
                 .lineToLinearHeading(new Pose2d(60, -60, Math.toRadians(90)))
                 .build();
 
         waitForStart();
         drive.followTrajectory(moveOffWall);
-        for (int i = 0; i < 2; i++) {
-            robot.raiseForHighBasket();
-        }
+        robot.raiseForHighBasket();
         drive.followTrajectory(trajectoryScore);
         runtime.reset();
-        while (runtime.seconds() <= 5) {
+        while (runtime.seconds() <= .5) {
             robot.deposit();
         }
+        drive.followTrajectory(backUpBeforeStoringClaw);
         robot.storeRobot();
         drive.followTrajectory(observationZone);
 
