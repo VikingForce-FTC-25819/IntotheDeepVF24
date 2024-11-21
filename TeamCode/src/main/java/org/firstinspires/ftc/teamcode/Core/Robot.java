@@ -28,7 +28,7 @@ public class Robot {
     private final DcMotor arm;
 
     private final DcMotor slide;
-    private final CRServo intake;
+    private final Servo claw;
     private final Servo wrist;
 
     private double armPosition;
@@ -68,13 +68,12 @@ public class Robot {
     final double ARM_WINCH_ROBOT           = 2  * ARM_TICKS_PER_DEGREE;
 
     /* Variables to store the speed the intake servo should be set at to intake, and deposit game elements. */
-    final double INTAKE_COLLECT    = -1.0;
-    final double INTAKE_OFF        =  0.0;
-    final double INTAKE_DEPOSIT    =  0.5;
+    final double CLAW_OPEN    = 0.0;
+    final double CLAW_CLOSED        =  0.9;
 
     /* Variables to store the positions that the wrist should be set to when folding in, or folding out. */
     final double WRIST_FOLDED_OUT  = 0.5;
-    final double WRIST_FOLDED_IN   = 0.90;
+    final double WRIST_FOLDED_IN   = 0.1;
 
     public static double WHEEL_DIAMETER = 1.88976;
     public static final double TICKS_PER_REV = 2000;
@@ -139,11 +138,11 @@ public class Robot {
 
 
         /* Define and initialize servos.*/
-        intake = hardwareMap.get(CRServo.class, "INTAKE");
+        claw = hardwareMap.get(Servo.class, "CLAW");
         wrist  = hardwareMap.get(Servo.class, "WRIST");
 
         /* Make sure that the intake is off, and the wrist is folded in. */
-        intake.setPower(INTAKE_OFF);
+        claw.setPosition(CLAW_CLOSED);
         wrist.setPosition(WRIST_FOLDED_IN);
 
         this.storeRobot();
@@ -241,29 +240,29 @@ public class Robot {
         backRight.setPower(0);
     }
 
-    public void startIntake() {
-        intake.setPower(INTAKE_COLLECT);
+    public void openClaw() {
+        claw.setPosition(CLAW_OPEN);
     }
 
-    public void stopIntake() {
-        intake.setPower(INTAKE_OFF);
+    public void closeClaw() {
+        claw.setPosition(CLAW_CLOSED);
     }
 
     public void deposit() {
-        intake.setPower(INTAKE_DEPOSIT);
+        claw.setPosition(CLAW_OPEN);
     }
 
     public void collectSample() {
         armPosition = ARM_COLLECT;
         slidePosition = SLIDE_COLLECT;
         wrist.setPosition(WRIST_FOLDED_OUT);
-        intake.setPower(INTAKE_COLLECT);
+        claw.setPosition(CLAW_OPEN);
         moveSlideToPosition();
         moveArmToPosition();
     }
 
     public void raiseForHighBasket() {
-        intake.setPower(INTAKE_OFF);
+        claw.setPosition(CLAW_CLOSED);
         wrist.setPosition(WRIST_FOLDED_OUT);
         armPosition = ARM_SCORE_SAMPLE_IN_HIGH;
         slidePosition = SLIDE_SCORING_IN_HIGH_BASKET;
@@ -275,7 +274,7 @@ public class Robot {
         this.stop();
         armPosition = ARM_COLLAPSED_INTO_ROBOT;
         slidePosition = SLIDE_COLLAPSED;
-        intake.setPower(INTAKE_OFF);
+        claw.setPosition(CLAW_CLOSED);
         wrist.setPosition(WRIST_FOLDED_IN);
         moveSlideToPosition();
         while (slide.getCurrentPosition() > SLIDE_SAFE_TO_STORE) {
@@ -288,7 +287,7 @@ public class Robot {
 
     public void raiseArmForLowHang() {
         armPosition = ARM_ATTACH_HANGING_HOOK;
-        intake.setPower(INTAKE_OFF);
+        claw.setPosition(CLAW_CLOSED);
         wrist.setPosition(WRIST_FOLDED_IN);
         slidePosition = SLIDE_COLLAPSED;
         moveSlideToPosition();
@@ -297,7 +296,7 @@ public class Robot {
 
     public void liftRobot() {
         armPosition = ARM_WINCH_ROBOT;
-        intake.setPower(INTAKE_OFF);
+        claw.setPosition(CLAW_CLOSED);
         wrist.setPosition(WRIST_FOLDED_IN);
         moveArmToPosition(ARM_SPEED_HANG);
     }
@@ -310,17 +309,26 @@ public class Robot {
     }
     public void adjustArmAngleContinuous(double adjustment) {
         telemetry.addData("Arm adjustment: %4.2f", adjustment * ARM_ANGLE_ADJUSTMENT_FACTOR * ARM_TICKS_PER_DEGREE);
-        armPosition = armPosition + adjustment * ARM_ANGLE_ADJUSTMENT_FACTOR * ARM_TICKS_PER_DEGREE;
+        // subtract the adjustment to get the desired direction from a human perspective
+        armPosition = armPosition - adjustment * ARM_ANGLE_ADJUSTMENT_FACTOR * ARM_TICKS_PER_DEGREE;
         moveArmToPosition();
     }
 
     public void adjustWristAngleContinuous(double adjustment) {
-        wrist.setPosition(wrist.getPosition() + adjustment * WRIST_ANGLE_ADJUSTMENT_FACTOR);
+        // subtract the adjustment to get the desired direction from a human perspective
+        wrist.setPosition(wrist.getPosition() - adjustment * WRIST_ANGLE_ADJUSTMENT_FACTOR);
     }
 
     public void adjustSlideContinuous(float adjustment) {
         telemetry.addData("Slide adjustment: %4.2f", -adjustment * SLIDE_ADJUSTMENT_FACTOR * SLIDE_TICKS_PER_MM);
+        // subtract the adjustment to get the desired direction from a human perspective
         slidePosition = slidePosition - adjustment * SLIDE_ADJUSTMENT_FACTOR * SLIDE_TICKS_PER_MM;
+        if (slidePosition > 2200) {
+            slidePosition = 2200;
+        }
+        if (slidePosition < 65) {
+            slidePosition = 65;
+        }
         moveSlideToPosition();
     }
     private void moveArmToPosition() {

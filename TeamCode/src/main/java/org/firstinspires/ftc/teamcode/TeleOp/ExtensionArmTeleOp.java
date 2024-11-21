@@ -71,7 +71,7 @@ public class ExtensionArmTeleOp extends LinearOpMode {
             }
 
             if (gamepad2.x) {
-                robot.stopIntake();
+                robot.closeClaw();
             }
 
             if (gamepad2.dpad_left) {
