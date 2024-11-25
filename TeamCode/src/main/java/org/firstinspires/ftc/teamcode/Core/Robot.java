@@ -62,16 +62,16 @@ public class Robot {
     as far from the starting position, decrease it. */
 
     final double ARM_COLLAPSED_INTO_ROBOT  = 0;
-    final double ARM_COLLECT               = 4 * ARM_TICKS_PER_DEGREE;
-    final double ARM_SCORE_SAMPLE_IN_HIGH   = 85 * ARM_TICKS_PER_DEGREE;
+    double ARM_COLLECT               = 4 * ARM_TICKS_PER_DEGREE;
+    double ARM_SCORE_SAMPLE_IN_HIGH   = 85 * ARM_TICKS_PER_DEGREE;
 
     final double ARM_SCORE_HIGH_SPECIMEN   = 60 * ARM_TICKS_PER_DEGREE;
-    final double ARM_ATTACH_HANGING_HOOK   = 125 * ARM_TICKS_PER_DEGREE;
-    final double ARM_WINCH_ROBOT           = 2  * ARM_TICKS_PER_DEGREE;
+    double ARM_ATTACH_HANGING_HOOK   = 125 * ARM_TICKS_PER_DEGREE;
+    double ARM_WINCH_ROBOT           = 2  * ARM_TICKS_PER_DEGREE;
 
     /* Variables to store the speed the intake servo should be set at to intake, and deposit game elements. */
-    final double CLAW_OPEN    = 0.0;
-    final double CLAW_CLOSED        =  1.0;
+    double CLAW_OPEN    = 0.0;
+    double CLAW_CLOSED        =  1.0;
 
     /* Variables to store the positions that the wrist should be set to when folding in, or folding out. */
     final double WRIST_FOLDED_OUT  = 0.5;
@@ -387,4 +387,17 @@ public class Robot {
 
     }
 
+    public void disableChassis() {
+        this.frontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+    }
+
+    public void disableArm() {
+        ARM_COLLECT = 45 * ARM_TICKS_PER_DEGREE;
+        ARM_SCORE_SAMPLE_IN_HIGH   = 30 * ARM_TICKS_PER_DEGREE;
+        ARM_ATTACH_HANGING_HOOK   = 92 * ARM_TICKS_PER_DEGREE;
+        ARM_WINCH_ROBOT           = 70  * ARM_TICKS_PER_DEGREE;
+        CLAW_OPEN = 0.5;
+        CLAW_CLOSED = 0.4;
+
+    }
 }

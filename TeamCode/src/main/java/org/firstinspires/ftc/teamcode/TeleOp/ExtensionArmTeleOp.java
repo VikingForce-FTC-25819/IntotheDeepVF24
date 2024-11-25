@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Core.Robot;
 import org.firstinspires.ftc.teamcode.Core.VfHardware;
 
+import java.util.Random;
+
 
 /*
  * This is a teleop class in linearOpMode using a hardware abstraction to reduce the class complexity.
@@ -29,6 +31,15 @@ public class ExtensionArmTeleOp extends LinearOpMode {
     @Override
     public void runOpMode() {
         Robot robot = new Robot(this);
+
+        if (this.enableArmChaos()) {
+            robot.disableArm();
+        }
+
+        if (this.enableChassisChaos()) {
+            robot.disableChassis();
+        }
+
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -102,6 +113,30 @@ public class ExtensionArmTeleOp extends LinearOpMode {
             telemetry.update();
 
         }
+    }
+
+    private boolean enableArmChaos() {
+        if (beChaotic()) {
+            telemetry.addData("Arm Chaos Enabled", "Good Luck!!");
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean enableChassisChaos() {
+        if (beChaotic()) {
+            telemetry.addData("Chassis Chaos Enabled", "Good Luck!!");
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean beChaotic() {
+        Random random = new Random();
+        int randomNumber = random.nextInt(3); // Generates a random number between 0 (inclusive) and 3 (exclusive)
+        return randomNumber == 0; // Returns true if the random number is 0 (which happens 1/5 of the time)
     }
 }
 
