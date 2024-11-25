@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 /*
  */
 @Config
-@Autonomous(group = "2")
+@Autonomous(group = "1")
 public class ObservationZone extends LinearOpMode {
 
     private final ElapsedTime runtime = new ElapsedTime();

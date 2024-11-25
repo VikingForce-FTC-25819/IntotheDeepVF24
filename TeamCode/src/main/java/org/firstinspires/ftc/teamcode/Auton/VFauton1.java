@@ -31,6 +31,7 @@
 package org.firstinspires.ftc.teamcode.Auton;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Core.VfHardware;
@@ -51,6 +52,7 @@ import org.firstinspires.ftc.teamcode.Core.VfHardware;
  */
 
 @Autonomous(name="VF auton 1", group="1")
+@Disabled
 public class VFauton1 extends LinearOpMode {
 
     @Override

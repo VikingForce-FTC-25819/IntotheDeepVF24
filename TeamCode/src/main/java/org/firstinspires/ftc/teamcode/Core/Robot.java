@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.Core;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -17,7 +16,8 @@ public class Robot {
     private static final double ARM_ANGLE_ADJUSTMENT_FACTOR = 3;
 
     private static final double WRIST_ANGLE_ADJUSTMENT_FACTOR = 0.01;
-    private static final float SLIDE_ADJUSTMENT_FACTOR = 3;
+    private static final float SLIDE_ADJUSTMENT_FACTOR = 6;
+
     private final Telemetry telemetry;
     private final DcMotor backLeft;
     private final DcMotor backRight;
@@ -62,14 +62,16 @@ public class Robot {
     as far from the starting position, decrease it. */
 
     final double ARM_COLLAPSED_INTO_ROBOT  = 0;
-    final double ARM_COLLECT               = 3 * ARM_TICKS_PER_DEGREE;
+    final double ARM_COLLECT               = 4 * ARM_TICKS_PER_DEGREE;
     final double ARM_SCORE_SAMPLE_IN_HIGH   = 85 * ARM_TICKS_PER_DEGREE;
+
+    final double ARM_SCORE_HIGH_SPECIMEN   = 60 * ARM_TICKS_PER_DEGREE;
     final double ARM_ATTACH_HANGING_HOOK   = 125 * ARM_TICKS_PER_DEGREE;
     final double ARM_WINCH_ROBOT           = 2  * ARM_TICKS_PER_DEGREE;
 
     /* Variables to store the speed the intake servo should be set at to intake, and deposit game elements. */
-    final double CLAW_OPEN    = 0.7;
-    final double CLAW_CLOSED        =  0.0;
+    final double CLAW_OPEN    = 0.0;
+    final double CLAW_CLOSED        =  1.0;
 
     /* Variables to store the positions that the wrist should be set to when folding in, or folding out. */
     final double WRIST_FOLDED_OUT  = 0.5;
@@ -83,6 +85,8 @@ public class Robot {
     final double SLIDE_TICKS_PER_MM = (111132.0 / 289.0) / 120.0;
     final double SLIDE_COLLAPSED = 0 * SLIDE_TICKS_PER_MM;
     final double SLIDE_SCORING_IN_HIGH_BASKET = 600 * SLIDE_TICKS_PER_MM;
+
+    final double SLIDE_SCORE_HIGH_SPECIMEN = 0 * SLIDE_TICKS_PER_MM;
     final double SLIDE_COLLECT = 275 * SLIDE_TICKS_PER_MM;
 
     final double SLIDE_SAFE_TO_STORE = 50 * SLIDE_TICKS_PER_MM;
@@ -270,6 +274,15 @@ public class Robot {
         moveArmToPosition();
     }
 
+    public void raiseForSpecimenHang() {
+        claw.setPosition(CLAW_CLOSED);
+        wrist.setPosition(WRIST_FOLDED_OUT);
+        armPosition = ARM_SCORE_HIGH_SPECIMEN;
+        slidePosition = SLIDE_SCORE_HIGH_SPECIMEN;
+        moveSlideToPosition();
+        moveArmToPosition();
+    }
+
     public void storeRobot() {
         this.stop();
         armPosition = ARM_COLLAPSED_INTO_ROBOT;
@@ -336,8 +349,8 @@ public class Robot {
         telemetry.addData("Slide adjustment: %4.2f", -adjustment * SLIDE_ADJUSTMENT_FACTOR * SLIDE_TICKS_PER_MM);
         // subtract the adjustment to get the desired direction from a human perspective
         slidePosition = slidePosition - adjustment * SLIDE_ADJUSTMENT_FACTOR * SLIDE_TICKS_PER_MM;
-        if (slidePosition > 2200) {
-            slidePosition = 2200;
+        if (slidePosition > 1750) {
+            slidePosition = 1750;
         }
         if (slidePosition < 65) {
             slidePosition = 65;

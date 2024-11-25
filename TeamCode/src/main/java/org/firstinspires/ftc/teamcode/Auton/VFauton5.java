@@ -31,6 +31,7 @@
 package org.firstinspires.ftc.teamcode.Auton;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Core.VfHardware;
@@ -52,6 +53,7 @@ import org.firstinspires.ftc.teamcode.Core.ArmAngle;
  */
 
 @Autonomous(name="VF Auton 5", group="1")
+@Disabled
 public class VFauton5 extends LinearOpMode {
 
     //public static final int FORWARD_DISTANCE_INCHES = 98;
