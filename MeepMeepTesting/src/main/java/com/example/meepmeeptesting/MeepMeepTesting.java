@@ -29,7 +29,7 @@ public class MeepMeepTesting {
                 );
 
         Image img = null;
-        try { img = ImageIO.read(new File("C:\\Users\\Adambots2\\vf\\field-2024-official.png")); }
+        try { img = ImageIO.read(new File("/Users/davidcao/Downloads/field-2024-official.png")); }
         catch(IOException e) {}
 
         meepMeep.setBackground(img)
