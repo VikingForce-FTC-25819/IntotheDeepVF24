@@ -16,7 +16,7 @@ public class Robot {
     private static final double ARM_ANGLE_ADJUSTMENT_FACTOR = 3;
 
     private static final double WRIST_ANGLE_ADJUSTMENT_FACTOR = 0.01;
-    private static final float SLIDE_ADJUSTMENT_FACTOR = 6;
+    private static final float SLIDE_ADJUSTMENT_FACTOR = 9;
 
     private final Telemetry telemetry;
     private final DcMotor backLeft;
@@ -63,14 +63,20 @@ public class Robot {
 
     final double ARM_COLLAPSED_INTO_ROBOT  = 0;
     double ARM_COLLECT               = 4 * ARM_TICKS_PER_DEGREE;
-    double ARM_SCORE_SAMPLE_IN_HIGH   = 85 * ARM_TICKS_PER_DEGREE;
+    double ARM_SCORE_SAMPLE_IN_HIGH   = 86 * ARM_TICKS_PER_DEGREE;
+
+    double ARM_SAFELY_EXIT_HIGH_BASKET = 95 * ARM_TICKS_PER_DEGREE;
+
+    double ARM_PICK_SPECIMEN_FROM_WALL   = 26 * ARM_TICKS_PER_DEGREE;
+
+    double ARM_EXIT_SUBMERSIBLE   = 20 * ARM_TICKS_PER_DEGREE;
 
     final double ARM_SCORE_HIGH_SPECIMEN   = 60 * ARM_TICKS_PER_DEGREE;
     double ARM_ATTACH_HANGING_HOOK   = 125 * ARM_TICKS_PER_DEGREE;
     double ARM_WINCH_ROBOT           = 2  * ARM_TICKS_PER_DEGREE;
 
     /* Variables to store the speed the intake servo should be set at to intake, and deposit game elements. */
-    double CLAW_OPEN    = 0.0;
+    double CLAW_OPEN    = 0.25;
     double CLAW_CLOSED        =  1.0;
 
     /* Variables to store the positions that the wrist should be set to when folding in, or folding out. */
@@ -91,7 +97,9 @@ public class Robot {
 
     final double SLIDE_SAFE_TO_STORE = 50 * SLIDE_TICKS_PER_MM;
     double slidePosition = SLIDE_COLLAPSED;
-    private static final int ARM_SPEED_DEFAUlT = 1000;
+
+    private static final int ARM_SPEED_MANUAL = 1000;
+    private static final int ARM_SPEED_DEFAUlT = 1800;
 
     private static final int ARM_SPEED_HANG = 2100;
 
@@ -252,6 +260,18 @@ public class Robot {
         claw.setPosition(CLAW_CLOSED);
     }
 
+    public void closeClawAndRaise() {
+        claw.setPosition(CLAW_CLOSED);
+        ElapsedTime runtime = new ElapsedTime();
+        while (runtime.seconds() < .075) {
+            // be patient
+
+        }
+        armPosition = ARM_EXIT_SUBMERSIBLE;
+        moveArmToPosition(800);
+
+    }
+
     public void deposit() {
         claw.setPosition(CLAW_OPEN);
     }
@@ -274,10 +294,24 @@ public class Robot {
         moveArmToPosition();
     }
 
+    public void raiseArmForBasketExit() {
+        armPosition = ARM_SAFELY_EXIT_HIGH_BASKET;
+        moveArmToPosition();
+    }
+
     public void raiseForSpecimenHang() {
         claw.setPosition(CLAW_CLOSED);
         wrist.setPosition(WRIST_FOLDED_OUT);
         armPosition = ARM_SCORE_HIGH_SPECIMEN;
+        slidePosition = SLIDE_SCORE_HIGH_SPECIMEN;
+        moveSlideToPosition();
+        moveArmToPosition();
+    }
+
+    public void raiseForSpecimenCollect() {
+        claw.setPosition(CLAW_OPEN);
+        wrist.setPosition(WRIST_FOLDED_OUT);
+        armPosition = ARM_PICK_SPECIMEN_FROM_WALL;
         slidePosition = SLIDE_SCORE_HIGH_SPECIMEN;
         moveSlideToPosition();
         moveArmToPosition();
@@ -330,7 +364,7 @@ public class Robot {
         if (armPosition > ARM_ATTACH_HANGING_HOOK) {
             armPosition = ARM_ATTACH_HANGING_HOOK;
         }
-        moveArmToPosition();
+        moveArmToPosition(ARM_SPEED_MANUAL);
     }
 
     public void adjustWristAngleContinuous(double adjustment) {

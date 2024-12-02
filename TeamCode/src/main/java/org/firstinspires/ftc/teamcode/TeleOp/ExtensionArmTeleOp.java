@@ -20,7 +20,7 @@ public class ExtensionArmTeleOp extends LinearOpMode {
     private final ElapsedTime runtime = new ElapsedTime();
 
     // start at 50% power
-    private double powerFactor = 0.5;
+    private double powerFactor = 0.75;
 
     /* multiplication factor used to control acceleration - a higher factor means faster
      * acceleration, a lower number means slower acceleration.  A factor higher than .5 accelerates
@@ -32,13 +32,13 @@ public class ExtensionArmTeleOp extends LinearOpMode {
     public void runOpMode() {
         Robot robot = new Robot(this);
 
-        if (this.enableArmChaos()) {
-            robot.disableArm();
-        }
-
-        if (this.enableChassisChaos()) {
-            robot.disableChassis();
-        }
+//        if (this.enableArmChaos()) {
+//            robot.disableArm();
+//        }
+//
+//        if (this.enableChassisChaos()) {
+//            robot.disableChassis();
+//        }
 
 
         telemetry.addData("Status", "Initialized");
@@ -91,6 +91,10 @@ public class ExtensionArmTeleOp extends LinearOpMode {
 
             if (gamepad2.dpad_up) {
                 robot.raiseArmForLowHang();
+            }
+
+            if (gamepad2.dpad_down) {
+                robot.raiseForSpecimenCollect();
             }
 
             if (gamepad2.y) {

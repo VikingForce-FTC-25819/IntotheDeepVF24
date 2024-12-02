@@ -1,8 +1,4 @@
-package org.firstinspires.ftc.teamcode.drive;
-
-import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+package com.example.meepmeeptesting;
 
 /*
  * Constants shared between multiple drive types.
@@ -17,7 +13,6 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
  * These are not the only parameters; some are located in the localizer classes, drive base classes,
  * and op modes themselves.
  */
-@Config
 public class DriveConstants {
 
     /*
@@ -25,14 +20,6 @@ public class DriveConstants {
      */
     public static final double TICKS_PER_REV = 2000;
     public static final double MAX_RPM = 312;
-
-    /*
-     * Adjust the orientations here to match your robot. See the FTC SDK documentation for details.
-     */
-    public static RevHubOrientationOnRobot.LogoFacingDirection LOGO_FACING_DIR =
-            RevHubOrientationOnRobot.LogoFacingDirection.UP;
-    public static RevHubOrientationOnRobot.UsbFacingDirection USB_FACING_DIR =
-            RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
 
     /*
      * Set RUN_USING_ENCODER to true to enable built-in hub velocity control using drive encoders.
@@ -43,8 +30,6 @@ public class DriveConstants {
      * from DriveVelocityPIDTuner.
      */
     public static final boolean RUN_USING_ENCODER = false;
-    public static PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients(0, 0, 0,
-            getMotorVelocityF(MAX_RPM / 60 * TICKS_PER_REV));
 
     /*
      * These are physical constants that can be determined from your robot (including the track
@@ -99,8 +84,8 @@ public class DriveConstants {
      * You are free to raise this on your own if you would like. It is best determined through experimentation.
 
      */
-    public static double MAX_VEL = 48 ; //26.295 51.1394
-    public static double MAX_ACCEL = 48 ; //52.48180821614297 51.1394
+    public static double MAX_VEL = 48; //26.295 51.1394
+    public static double MAX_ACCEL = 48; //52.48180821614297 51.1394
     public static double MAX_ANG_VEL = Math.toRadians(208.5244); //141.64
     public static double MAX_ANG_ACCEL = Math.toRadians(184.02607784577722);
 
