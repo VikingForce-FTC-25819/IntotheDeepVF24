@@ -1,5 +1,10 @@
 package org.firstinspires.ftc.teamcode.Auton;
 
+import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ANG_VEL;
+import static org.firstinspires.ftc.teamcode.drive.DriveConstants.TRACK_WIDTH;
+import static org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive.getAccelerationConstraint;
+import static org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive.getVelocityConstraint;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
@@ -31,7 +36,7 @@ public class SpecimenHangRightSide extends LinearOpMode {
         drive.setPoseEstimate(start);
 
         Trajectory moveOffWall = drive.trajectoryBuilder(start)
-                .forward(5)
+                .lineToLinearHeading(new Pose2d(16, -58, Math.toRadians(90)))
                 .build();
 
         Trajectory alignToScore = drive.trajectoryBuilder(moveOffWall.end())
@@ -39,42 +44,40 @@ public class SpecimenHangRightSide extends LinearOpMode {
                 .build();
 
         Trajectory trajectoryScore = drive.trajectoryBuilder(alignToScore.end())
-                .forward(22)
+                .lineToLinearHeading(new Pose2d(8, -36, Math.toRadians(90)))
                 .build();
 
         Trajectory lockItIn = drive.trajectoryBuilder(trajectoryScore.end())
-                .forward(2,
+                .forward(1,
                         SampleMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(15))
                 .build();
 
         Trajectory backUpFromHang = drive.trajectoryBuilder(lockItIn.end())
-                .back(5)
+                .lineToLinearHeading(new Pose2d(8, -42, Math.toRadians(90)),
+                        getVelocityConstraint(35, MAX_ANG_VEL, TRACK_WIDTH),
+                        getAccelerationConstraint(35))
                 .build();
 
         Trajectory strafeRightClearOfSubmersible = drive.trajectoryBuilder(backUpFromHang.end())
-                .strafeRight(26)
+                .lineToLinearHeading(new Pose2d(38, -42, Math.toRadians(90)),
+                        getVelocityConstraint(35, MAX_ANG_VEL, TRACK_WIDTH),
+                        getAccelerationConstraint(35))
                 .build();
 
         Trajectory forwardOfSpikeMarks = drive.trajectoryBuilder(strafeRightClearOfSubmersible.end())
-                .forward(30)
+                .lineToLinearHeading(new Pose2d(38, -9, Math.toRadians(90)))
                 .build();
 
         Trajectory strafeToSpikeThree = drive.trajectoryBuilder(forwardOfSpikeMarks.end())
-                .strafeRight(13)
+                .lineToLinearHeading(new Pose2d(46, -9, Math.toRadians(90)))
                 .build();
 
-        Trajectory strafeToSpikeTwo = drive.trajectoryBuilder(forwardOfSpikeMarks.end())
-                .strafeRight(22)
-                .build();
 
         Trajectory pushToObservationZoneSpikeThree = drive.trajectoryBuilder(strafeToSpikeThree.end())
-                .back(48)
-                .build();
-
-
-        Trajectory pushToObservationZoneSpikeTwo = drive.trajectoryBuilder(strafeToSpikeTwo.end())
-                .back(48)
+                .back(48,
+                    getVelocityConstraint(35, MAX_ANG_VEL, TRACK_WIDTH),
+                    getAccelerationConstraint(35))
                 .build();
 
         Trajectory lineUpForSpecimenPickUp = drive.trajectoryBuilder(pushToObservationZoneSpikeThree.end())
@@ -82,44 +85,79 @@ public class SpecimenHangRightSide extends LinearOpMode {
                 .build();
 
         Trajectory pickUpSpecimenOne = drive.trajectoryBuilder(lineUpForSpecimenPickUp.end())
-                .forward(8)
+                .lineToLinearHeading(new Pose2d(48, -54, Math.toRadians(270)),
+                        getVelocityConstraint(35, MAX_ANG_VEL, TRACK_WIDTH),
+                        getAccelerationConstraint(35))
                 .build();
 
         Trajectory alignToScoreFromFirstPickUp = drive.trajectoryBuilder(pickUpSpecimenOne.end())
-                .lineToLinearHeading(new Pose2d(6, -58, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(-8, -58, Math.toRadians(90)),
+                        getVelocityConstraint(35, MAX_ANG_VEL, TRACK_WIDTH),
+                        getAccelerationConstraint(35))
                 .build();
 
-        Trajectory parkInObservation = drive.trajectoryBuilder(pushToObservationZoneSpikeTwo.end())
+        Trajectory trajectoryScoreFromFirstPickUp = drive.trajectoryBuilder(alignToScoreFromFirstPickUp.end())
+                .lineToLinearHeading(new Pose2d(-8, -36, Math.toRadians(90)))
+                .build();
+
+        Trajectory lockItInSecondSpecimen = drive.trajectoryBuilder(trajectoryScoreFromFirstPickUp.end())
+                .forward(1,
+                        SampleMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(15))
+                .build();
+
+        Trajectory backUpFromHangSecondSpecimen = drive.trajectoryBuilder(lockItInSecondSpecimen.end())
+                .lineToLinearHeading(new Pose2d(-8, -42, Math.toRadians(90)),
+                        getVelocityConstraint(35, MAX_ANG_VEL, TRACK_WIDTH),
+                        getAccelerationConstraint(35))
+                .build();
+
+        Trajectory parkInObservation = drive.trajectoryBuilder(backUpFromHangSecondSpecimen.end())
                 .lineToLinearHeading(new Pose2d(63, -60, Math.toRadians(90)))
                 .build();
         waitForStart();
         drive.followTrajectory(moveOffWall);
         safelyRaiseArmForHang(robot);
+        telemetry.update();
         drive.followTrajectory(alignToScore);
         drive.followTrajectory(trajectoryScore);
         safelyDepositSpecimen(robot, drive, lockItIn);
+        telemetry.update();
         drive.followTrajectory(backUpFromHang);
         drive.followTrajectory(strafeRightClearOfSubmersible);
         drive.followTrajectory(forwardOfSpikeMarks);
         drive.followTrajectory(pushToObservationZoneSpikeThree);
         drive.followTrajectory(lineUpForSpecimenPickUp);
         robot.raiseForSpecimenCollect();
-        drive.followTrajectory(pickUpSpecimenOne);
-        robot.closeClaw();
-        safelyRaiseArmForHang(robot);
+        telemetry.update();
+        safelyApproachSpecimen(drive, pickUpSpecimenOne);
+        collectSpecimenWithClaw(robot);
+        telemetry.update();
         drive.followTrajectory(alignToScoreFromFirstPickUp);
-        drive.followTrajectory(trajectoryScore);
-        safelyDepositSpecimen(robot, drive, lockItIn);
-        drive.followTrajectory(backUpFromHang);
-        robot.storeRobot();
-
-        robot.storeRobot();
+        drive.followTrajectory(trajectoryScoreFromFirstPickUp);
+        safelyDepositSpecimen(robot, drive, lockItInSecondSpecimen);
+        drive.followTrajectory(backUpFromHangSecondSpecimen);
+        safelyStoreRobot(robot);
         drive.followTrajectory(parkInObservation);
-
-
         telemetry.update();
 
 
+    }
+
+    private void safelyStoreRobot(Robot robot) {
+        runtime.reset();
+        while (runtime.seconds() <= 0.5) {
+            // wait to store robot so claw is safe
+        }
+        robot.storeRobot();
+    }
+
+    private void safelyApproachSpecimen(SampleMecanumDrive drive, Trajectory trajectory) {
+        runtime.reset();
+        while (runtime.seconds() <= 0.75) {
+            // wait for human player
+        }
+        drive.followTrajectory(trajectory);
     }
 
     private void safelyRaiseArmForHang(Robot robot) {
@@ -142,19 +180,12 @@ public class SpecimenHangRightSide extends LinearOpMode {
         }
     }
 
-    private void collectSampleWithClaw(Robot robot) {
-        runtime.reset();
-//        while (runtime.seconds() <= 1.5) {
-//            robot.collectSample();
-//        }
+    private void collectSpecimenWithClaw(Robot robot) {
         runtime.reset();
         while (runtime.seconds() <= 1) {
             robot.closeClaw();
         }
-        runtime.reset();
-        while (runtime.seconds() <= 1.5) {
-            robot.raiseForHighBasket();
-        }
+        safelyRaiseArmForHang(robot);
     }
 
     private static void waitForIt() {

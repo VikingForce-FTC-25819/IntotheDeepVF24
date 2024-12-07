@@ -30,7 +30,7 @@ public class ExtensionArmTeleOp extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        Robot robot = new Robot(this);
+        Robot robot = new Robot(this, false);
 
 //        if (this.enableArmChaos()) {
 //            robot.disableArm();

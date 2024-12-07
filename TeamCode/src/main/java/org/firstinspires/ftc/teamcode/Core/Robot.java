@@ -90,7 +90,7 @@ public class Robot {
 
     final double SLIDE_TICKS_PER_MM = (111132.0 / 289.0) / 120.0;
     final double SLIDE_COLLAPSED = 0 * SLIDE_TICKS_PER_MM;
-    final double SLIDE_SCORING_IN_HIGH_BASKET = 600 * SLIDE_TICKS_PER_MM;
+    final double SLIDE_SCORING_IN_HIGH_BASKET = 470 * SLIDE_TICKS_PER_MM;
 
     final double SLIDE_SCORE_HIGH_SPECIMEN = 0 * SLIDE_TICKS_PER_MM;
     final double SLIDE_COLLECT = 275 * SLIDE_TICKS_PER_MM;
@@ -104,6 +104,10 @@ public class Robot {
     private static final int ARM_SPEED_HANG = 2100;
 
     public Robot(OpMode opMode) {
+        this(opMode, true);
+    }
+
+    public Robot(OpMode opMode, boolean initializeClaw) {
         this.telemetry = opMode.telemetry;
         HardwareMap hardwareMap = opMode.hardwareMap;
         // Initialize the drive system variables.
@@ -153,11 +157,15 @@ public class Robot {
         claw = hardwareMap.get(Servo.class, "CLAW");
         wrist  = hardwareMap.get(Servo.class, "WRIST");
 
-        /* Make sure that the intake is off, and the wrist is folded in. */
-        claw.setPosition(CLAW_CLOSED);
-        wrist.setPosition(WRIST_FOLDED_IN);
+        if (initializeClaw) {
+            telemetry.addLine("setting Claw");
 
-        this.storeRobot();
+            /* Make sure that the intake is off, and the wrist is folded in. */
+            claw.setPosition(CLAW_CLOSED);
+            wrist.setPosition(WRIST_FOLDED_IN);
+
+            this.storeRobot();
+        }
         /* Send telemetry message to signify robot waiting */
         telemetry.addLine("Robot Ready.");
 
@@ -353,6 +361,8 @@ public class Robot {
         // 15 degree adjustment - this can be increased or decreased
         armAngleAdjustment = 15 * ARM_TICKS_PER_DEGREE * adjustment;
         moveArmToPosition();
+        // reset armAngleAdjustment to 0 - if not done this will affect other arm positions
+        armAngleAdjustment = 0;
     }
     public void adjustArmAngleContinuous(double adjustment) {
         telemetry.addData("Arm adjustment: %4.2f", adjustment * ARM_ANGLE_ADJUSTMENT_FACTOR * ARM_TICKS_PER_DEGREE);
@@ -383,11 +393,11 @@ public class Robot {
         telemetry.addData("Slide adjustment: %4.2f", -adjustment * SLIDE_ADJUSTMENT_FACTOR * SLIDE_TICKS_PER_MM);
         // subtract the adjustment to get the desired direction from a human perspective
         slidePosition = slidePosition - adjustment * SLIDE_ADJUSTMENT_FACTOR * SLIDE_TICKS_PER_MM;
-        if (slidePosition > 1750) {
-            slidePosition = 1750;
+        if (slidePosition > 460 * SLIDE_TICKS_PER_MM) {
+            slidePosition = 460 * SLIDE_TICKS_PER_MM;
         }
-        if (slidePosition < 65) {
-            slidePosition = 65;
+        if (slidePosition < 5 * SLIDE_TICKS_PER_MM) {
+            slidePosition = 5 * SLIDE_TICKS_PER_MM;
         }
         moveSlideToPosition();
     }
