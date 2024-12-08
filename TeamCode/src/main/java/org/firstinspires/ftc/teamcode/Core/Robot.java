@@ -172,7 +172,7 @@ public class Robot {
     }
 
     public void teleOpDrive(double drive, double turn, double strafe, double powerFactor) {
-        strafe = strafe * 1.1; // Counteract imperfect strafing
+        strafe = strafe * 1.5; // Counteract imperfect strafing
         double denominator = Math.max(Math.abs(drive) + Math.abs(strafe) + Math.abs(turn), 1);
         double frontLeftPower = powerFactor * (drive + strafe + turn) / denominator;
         double backLeftPower = powerFactor * (drive - strafe + turn) / denominator;
