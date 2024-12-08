@@ -1,5 +1,10 @@
 package com.example.meepmeeptesting;
 
+import static com.example.meepmeeptesting.DriveConstants.MAX_ACCEL;
+import static com.example.meepmeeptesting.DriveConstants.MAX_ANG_VEL;
+import static com.example.meepmeeptesting.DriveConstants.MAX_VEL;
+import static com.example.meepmeeptesting.DriveConstants.TRACK_WIDTH;
+
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.noahbres.meepmeep.MeepMeep;
@@ -18,18 +23,22 @@ public class MeepMeepTesting {
 
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
-                .setConstraints(30, 30, Math.toRadians(180), Math.toRadians(180), 14)
+                .setConstraints(MAX_VEL, MAX_ACCEL, MAX_ANG_VEL, DriveConstants.MAX_ANG_ACCEL, TRACK_WIDTH)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(-27, -63, Math.toRadians(90)))
-                                .lineToLinearHeading(new Pose2d(-50, -50, Math.toRadians(225)))
-                                .lineToLinearHeading(new Pose2d(-50, -40, Math.toRadians(90)))
-                                .strafeRight(88)
-                                .back(23)
+                        drive.trajectorySequenceBuilder(new Pose2d(8, -42, Math.toRadians(90)))
+//                                .setReversed(true)
+                                //.splineTo(new Vector2d(46, -9), Math.toRadians(270))
+//                                .splineToSplineHeading(new Pose2d(36, -9, Math.toRadians(270)), Math.toRadians(125)).setReversed(true)
+                                .splineToLinearHeading(new Pose2d(36, -34, Math.toRadians(270)), Math.toRadians(115))
+                                .setReversed(false)
+                                .lineToLinearHeading(new Pose2d(46, -9, Math.toRadians(270)))
+                                //.splineToLinearHeading(new Pose2d(46, -9, Math.toRadians(270)), Math.toRadians(270))
+                                //.splineToConstantHeading()
                                 .build()
                 );
 
         Image img = null;
-        try { img = ImageIO.read(new File("/Users/davidcao/Downloads/field-2024-official.png")); }
+        try { img = ImageIO.read(new File("C:\\Users\\Adambots2\\vf\\field-2024-official.png")); }
         catch(IOException e) {}
 
         meepMeep.setBackground(img)
