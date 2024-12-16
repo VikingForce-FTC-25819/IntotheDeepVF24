@@ -17,6 +17,8 @@ public class Robot {
 
     private static final double WRIST_ANGLE_ADJUSTMENT_FACTOR = 0.01;
     private static final float SLIDE_ADJUSTMENT_FACTOR = 9;
+    public static final int EXTENSION_ARM_LIMIT_MAX = 377;
+    public static final int EXTENSION_ARM_LIMIT_MIN = 5;
 
     private final Telemetry telemetry;
     private final DcMotor backLeft;
@@ -62,21 +64,25 @@ public class Robot {
     as far from the starting position, decrease it. */
 
     final double ARM_COLLAPSED_INTO_ROBOT  = 0;
-    double ARM_COLLECT               = 4 * ARM_TICKS_PER_DEGREE;
+    double ARM_COLLECT               = EXTENSION_ARM_LIMIT_MIN * ARM_TICKS_PER_DEGREE;
     double ARM_SCORE_SAMPLE_IN_HIGH   = 86 * ARM_TICKS_PER_DEGREE;
 
     double ARM_SAFELY_EXIT_HIGH_BASKET = 95 * ARM_TICKS_PER_DEGREE;
 
-    double ARM_PICK_SPECIMEN_FROM_WALL   = 26 * ARM_TICKS_PER_DEGREE;
+    double ARM_PICK_SPECIMEN_FROM_WALL   = 25.5 * ARM_TICKS_PER_DEGREE;
 
     double ARM_EXIT_SUBMERSIBLE   = 20 * ARM_TICKS_PER_DEGREE;
 
     final double ARM_SCORE_HIGH_SPECIMEN   = 60 * ARM_TICKS_PER_DEGREE;
     double ARM_ATTACH_HANGING_HOOK   = 125 * ARM_TICKS_PER_DEGREE;
+
+    double ARM_ANGLE_SAFE_TO_EXTEND_SLIDE = 60 * ARM_TICKS_PER_DEGREE;
     double ARM_WINCH_ROBOT           = 2  * ARM_TICKS_PER_DEGREE;
 
     /* Variables to store the speed the intake servo should be set at to intake, and deposit game elements. */
-    double CLAW_OPEN    = 0.25;
+    double CLAW_OPEN    = 0.00;
+
+    double CLAW_OPEN_SPECIMEN = 0.2;
     double CLAW_CLOSED        =  1.0;
 
     /* Variables to store the positions that the wrist should be set to when folding in, or folding out. */
@@ -141,7 +147,7 @@ public class Robot {
         slide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         /*This sets the maximum current that the control hub will apply to the arm before throwing a flag */
-        ((DcMotorEx) arm).setCurrentAlert(5, CurrentUnit.AMPS);
+        ((DcMotorEx) arm).setCurrentAlert(EXTENSION_ARM_LIMIT_MIN, CurrentUnit.AMPS);
         arm.setDirection(DcMotorSimple.Direction.FORWARD);
         arm.setTargetPosition(0);
         arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -317,7 +323,7 @@ public class Robot {
     }
 
     public void raiseForSpecimenCollect() {
-        claw.setPosition(CLAW_OPEN);
+        claw.setPosition(CLAW_OPEN_SPECIMEN);
         wrist.setPosition(WRIST_FOLDED_OUT);
         armPosition = ARM_PICK_SPECIMEN_FROM_WALL;
         slidePosition = SLIDE_SCORE_HIGH_SPECIMEN;
@@ -361,7 +367,14 @@ public class Robot {
         // 15 degree adjustment - this can be increased or decreased
         armAngleAdjustment = 15 * ARM_TICKS_PER_DEGREE * adjustment;
         moveArmToPosition();
-        // reset armAngleAdjustment to 0 - if not done this will affect other arm positions
+    }
+
+    public void adjustArmAngleJerking(double adjustment) {
+        telemetry.addData("Arm adjustment: %4.2f", adjustment);
+        // 15 degree adjustment - this can be increased or decreased
+        armAngleAdjustment = 15 * ARM_TICKS_PER_DEGREE * adjustment;
+        moveArmToPosition();
+        // reset armAngleAdjustment to 0 - this causes a jerk if called continuously w/adjustment
         armAngleAdjustment = 0;
     }
     public void adjustArmAngleContinuous(double adjustment) {
@@ -393,11 +406,17 @@ public class Robot {
         telemetry.addData("Slide adjustment: %4.2f", -adjustment * SLIDE_ADJUSTMENT_FACTOR * SLIDE_TICKS_PER_MM);
         // subtract the adjustment to get the desired direction from a human perspective
         slidePosition = slidePosition - adjustment * SLIDE_ADJUSTMENT_FACTOR * SLIDE_TICKS_PER_MM;
-        if (slidePosition > 460 * SLIDE_TICKS_PER_MM) {
-            slidePosition = 460 * SLIDE_TICKS_PER_MM;
+        double slideLimit = SLIDE_SCORING_IN_HIGH_BASKET;
+        if (armPosition <= ARM_ANGLE_SAFE_TO_EXTEND_SLIDE) {
+            slideLimit = EXTENSION_ARM_LIMIT_MAX;
         }
-        if (slidePosition < 5 * SLIDE_TICKS_PER_MM) {
-            slidePosition = 5 * SLIDE_TICKS_PER_MM;
+        if (slidePosition > slideLimit * SLIDE_TICKS_PER_MM) {
+            slidePosition = slideLimit * SLIDE_TICKS_PER_MM;
+            telemetry.addData("setting slide position to: ", slidePosition);
+        }
+        if (slidePosition < EXTENSION_ARM_LIMIT_MIN * SLIDE_TICKS_PER_MM) {
+            slidePosition = EXTENSION_ARM_LIMIT_MIN * SLIDE_TICKS_PER_MM;
+            telemetry.addData("setting slide position to: ", slidePosition);
         }
         moveSlideToPosition();
     }
@@ -442,6 +461,30 @@ public class Robot {
         ARM_WINCH_ROBOT           = 70  * ARM_TICKS_PER_DEGREE;
         CLAW_OPEN = 0.5;
         CLAW_CLOSED = 0.4;
+
+    }
+
+    public void resetArmAngle() {
+        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        sleep(20);
+        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+    }
+
+    public void resetSlide() {
+        slide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        sleep(20);
+        slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+    }
+
+
+    public final void sleep(long milliseconds) {
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException var4) {
+            Thread.currentThread().interrupt();
+        }
 
     }
 }

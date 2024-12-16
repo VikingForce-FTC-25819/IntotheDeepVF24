@@ -46,7 +46,7 @@ public class ScoreLotsInHighBasket extends LinearOpMode {
 
         Trajectory pickUpSpikeThree = drive.trajectoryBuilder(prepareForPickUpSpikeThree.end())
                 //.lineToLinearHeading(new Pose2d(-57, -44, Math.toRadians(90)))
-                .forward(5,
+                .forward(4,
                         SampleMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(15))
                 .build();
@@ -60,7 +60,7 @@ public class ScoreLotsInHighBasket extends LinearOpMode {
                 .build();
 
         Trajectory pickUpSpikeTwo = drive.trajectoryBuilder(prepareForPickUpSpikeTwo.end())
-                .forward(6,
+                .forward(5,
                         SampleMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(15))
                 .build();
@@ -75,7 +75,7 @@ public class ScoreLotsInHighBasket extends LinearOpMode {
                 .build();
 
         Trajectory pickUpSpikeOne = drive.trajectoryBuilder(prepareForPickUpSpikeOne.end())
-                .lineToLinearHeading(new Pose2d(-55, -44, Math.toRadians(130)),
+                .lineToLinearHeading(new Pose2d(-56, -43, Math.toRadians(130)),
                         SampleMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(15))
                 .build();

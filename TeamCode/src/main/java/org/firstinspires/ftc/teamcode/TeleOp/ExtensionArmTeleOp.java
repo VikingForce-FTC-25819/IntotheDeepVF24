@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Core.Robot;
-import org.firstinspires.ftc.teamcode.Core.VfHardware;
 
 import java.util.Random;
 
@@ -53,6 +52,15 @@ public class ExtensionArmTeleOp extends LinearOpMode {
         while (opModeIsActive()) {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
 
+            // give the driver ability to reset the arm angle to 0
+            if (gamepad1.start) {
+                robot.resetArmAngle();
+            }
+
+            // give the arm diver ability to reset the slide 0
+//            if (gamepad2.start) {
+//                robot.resetSlide();
+//            }
             // set up the left bumper button to decelerate and right bumper to accelerate
             if (gamepad1.left_bumper) {
                 powerFactor = Math.max(powerFactor - ACCELERATION_FACTOR, 0.1);

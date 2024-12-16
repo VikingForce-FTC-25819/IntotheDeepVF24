@@ -9,6 +9,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -20,16 +21,12 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
  */
 @Config
 @Autonomous(group = "1")
-public class SpecimenHangRightSide extends LinearOpMode {
+@Disabled
+public class SpecimenHangRightSideSweep extends LinearOpMode {
 
-    public static final int SPECIMEN_THREE_X_AXIS = 11;
-    public static final int SPECIMEN_TWO_X_AXIS = 7;
-    public static final int SPECIMEN_ONE_X_AXIS = 4;
-    public static final double SPECIMEN_COLLECT_Y_AXIS = -54.5;
-    public static final int SPECIMEN_COLLECT_X_AXIS = 48;
-    public static final int LOCK_IN_MAX_VEL = 35;
-    private static final int LOCK_IN_MAX_ACC = 35;
-    private static final double LOCK_IN_DISTANCE = 0.3;
+    public static final int SPECIMEN_THREE_X_AXIS = 13;
+    public static final int SPECIMEN_TWO_X_AXIS = 9;
+    public static final int SPECIMEN_ONE_X_AXIS = 5;
     private final ElapsedTime runtime = new ElapsedTime();
 
     @Override
@@ -48,9 +45,9 @@ public class SpecimenHangRightSide extends LinearOpMode {
                 .build();
 
         Trajectory lockItIn = drive.trajectoryBuilder(trajectoryScore.end())
-                .forward(LOCK_IN_DISTANCE,
-                        SampleMecanumDrive.getVelocityConstraint(LOCK_IN_MAX_VEL, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(LOCK_IN_MAX_ACC))
+                .forward(1,
+                        SampleMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(15))
                 .build();
 
         Trajectory backUpFromHang = drive.trajectoryBuilder(lockItIn.end())
@@ -62,30 +59,30 @@ public class SpecimenHangRightSide extends LinearOpMode {
                 .build();
 
         Trajectory forwardOfSpikeMarks = drive.trajectoryBuilder(splineRightOfSubmersible.end())
-                .lineToLinearHeading(new Pose2d(38, -13, Math.toRadians(270)))
+                .lineToLinearHeading(new Pose2d(38, -9, Math.toRadians(270)))
                 .build();
 
         Trajectory strafeToSpikeThree = drive.trajectoryBuilder(forwardOfSpikeMarks.end())
-                .lineToLinearHeading(new Pose2d(46, -13, Math.toRadians(270)))
+                .lineToLinearHeading(new Pose2d(46, -9, Math.toRadians(270)))
                 .build();
 
 
         Trajectory pushToObservationZoneSpikeThree = drive.trajectoryBuilder(strafeToSpikeThree.end())
-                .lineToLinearHeading(new Pose2d(SPECIMEN_COLLECT_X_AXIS, SPECIMEN_COLLECT_Y_AXIS, Math.toRadians(270)),
-                    getVelocityConstraint(LOCK_IN_MAX_VEL, MAX_ANG_VEL, TRACK_WIDTH),
-                    getAccelerationConstraint(LOCK_IN_MAX_ACC))
+                .forward(48,
+                    getVelocityConstraint(35, MAX_ANG_VEL, TRACK_WIDTH),
+                    getAccelerationConstraint(35))
                 .build();
 
         Trajectory lineUpForSpecimenPickUpOne = drive.trajectoryBuilder(pushToObservationZoneSpikeThree.end())
-                .lineToLinearHeading(new Pose2d(SPECIMEN_COLLECT_X_AXIS, SPECIMEN_COLLECT_Y_AXIS + 0.5, Math.toRadians(270)))
+                .lineToLinearHeading(new Pose2d(48, -43, Math.toRadians(270)))
                 .build();
 
         Trajectory pickUpSpecimenOne = drive.trajectoryBuilder(lineUpForSpecimenPickUpOne.end())
-                .lineToLinearHeading(new Pose2d(SPECIMEN_COLLECT_X_AXIS, SPECIMEN_COLLECT_Y_AXIS, Math.toRadians(270)))
+                .lineToLinearHeading(new Pose2d(48, -54, Math.toRadians(270)))
                 .build();
 
         Trajectory alignToScoreFromFirstPickUp = drive.trajectoryBuilder(pickUpSpecimenOne.end())
-                .lineToLinearHeading(new Pose2d(SPECIMEN_TWO_X_AXIS, -42, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(SPECIMEN_TWO_X_AXIS, -58, Math.toRadians(90)))
                 .build();
 
         Trajectory trajectoryScoreFromFirstPickUp = drive.trajectoryBuilder(alignToScoreFromFirstPickUp.end())
@@ -93,42 +90,42 @@ public class SpecimenHangRightSide extends LinearOpMode {
                 .build();
 
         Trajectory lockItInSecondSpecimen = drive.trajectoryBuilder(trajectoryScoreFromFirstPickUp.end())
-                .forward(LOCK_IN_DISTANCE,
-                        SampleMecanumDrive.getVelocityConstraint(LOCK_IN_MAX_VEL, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(LOCK_IN_MAX_ACC))
+                .forward(1,
+                        SampleMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(15))
                 .build();
 
         Trajectory backUpFromHangSecondSpecimen = drive.trajectoryBuilder(lockItInSecondSpecimen.end())
-                .lineToLinearHeading(new Pose2d(SPECIMEN_TWO_X_AXIS, -42, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(SPECIMEN_TWO_X_AXIS, -42, Math.toRadians(150)))
                 .build();
 
-        Trajectory lineUpForSpecimenPickUpTwo = drive.trajectoryBuilder(backUpFromHangSecondSpecimen.end())
-                .lineToLinearHeading(new Pose2d(SPECIMEN_COLLECT_X_AXIS, -52, Math.toRadians(270)))
+        Trajectory lineUpForSpecimenPickUpTwo = drive.trajectoryBuilder(pushToObservationZoneSpikeThree.end())
+                .lineToLinearHeading(new Pose2d(48, -52, Math.toRadians(270)))
                 .build();
 
-        Trajectory pickUpSpecimenTwo = drive.trajectoryBuilder(lineUpForSpecimenPickUpTwo.end())
-                .lineToLinearHeading(new Pose2d(SPECIMEN_COLLECT_X_AXIS, SPECIMEN_COLLECT_Y_AXIS, Math.toRadians(270)))
+        Trajectory pickUpSpecimenTwo = drive.trajectoryBuilder(lineUpForSpecimenPickUpOne.end())
+                .lineToLinearHeading(new Pose2d(48, -54, Math.toRadians(270)))
                 .build();
 
-        Trajectory alignToScoreFromSecondPickUp = drive.trajectoryBuilder(pickUpSpecimenTwo.end())
-                .lineToLinearHeading(new Pose2d(SPECIMEN_THREE_X_AXIS, -42, Math.toRadians(90)))
+        Trajectory alignToScoreFromSecondPickUp = drive.trajectoryBuilder(pickUpSpecimenOne.end())
+                .lineToLinearHeading(new Pose2d(SPECIMEN_THREE_X_AXIS, -58, Math.toRadians(90)))
                 .build();
 
-        Trajectory trajectoryScoreFromSecondPickUp = drive.trajectoryBuilder(alignToScoreFromSecondPickUp.end())
+        Trajectory trajectoryScoreFromSecondPickUp = drive.trajectoryBuilder(alignToScoreFromFirstPickUp.end())
                 .lineToLinearHeading(new Pose2d(SPECIMEN_THREE_X_AXIS, -36, Math.toRadians(90)))
                 .build();
 
-        Trajectory lockItInThirdSpecimen = drive.trajectoryBuilder(trajectoryScoreFromSecondPickUp.end())
-                .forward(LOCK_IN_DISTANCE,
-                        SampleMecanumDrive.getVelocityConstraint(LOCK_IN_MAX_VEL, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(LOCK_IN_MAX_ACC))
+        Trajectory lockItInThirdSpecimen = drive.trajectoryBuilder(trajectoryScoreFromFirstPickUp.end())
+                .forward(1,
+                        SampleMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(15))
                 .build();
 
-        Trajectory backUpFromHangThirdSpecimen = drive.trajectoryBuilder(lockItInThirdSpecimen.end())
+        Trajectory backUpFromHangThirdSpecimen = drive.trajectoryBuilder(lockItInSecondSpecimen.end())
                 .lineToLinearHeading(new Pose2d(SPECIMEN_THREE_X_AXIS, -42, Math.toRadians(90)))
                 .build();
 
-        Trajectory parkInObservation = drive.trajectoryBuilder(backUpFromHangThirdSpecimen.end())
+        Trajectory parkInObservation = drive.trajectoryBuilder(backUpFromHangSecondSpecimen.end())
                 .lineToLinearHeading(new Pose2d(63, -60, Math.toRadians(90)))
                 .build();
         waitForStart();
@@ -141,11 +138,10 @@ public class SpecimenHangRightSide extends LinearOpMode {
         telemetry.update();
         drive.followTrajectory(backUpFromHang);
         drive.followTrajectory(splineRightOfSubmersible);
-        robot.raiseForSpecimenCollect();
         drive.followTrajectory(forwardOfSpikeMarks);
-        drive.followTrajectory(strafeToSpikeThree);
         drive.followTrajectory(pushToObservationZoneSpikeThree);
         drive.followTrajectory(lineUpForSpecimenPickUpOne);
+        robot.raiseForSpecimenCollect();
         telemetry.update();
         safelyApproachSpecimen(drive, pickUpSpecimenOne);
         collectSpecimenWithClaw(robot);
